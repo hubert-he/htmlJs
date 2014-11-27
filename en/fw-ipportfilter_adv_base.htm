@@ -1,0 +1,421 @@
+<VWS_FUNCTION (void*)SendWebMetaStr();>
+<VWS_FUNCTION (void*)SendWebCssStr();>
+	<title>IP/Port Filtering</title>
+    <script>
+
+        var retNum = /^[0-9]{1,15}$/;
+
+        function OnHelp(page) {
+            HelpWin = window.open(page, "Help", "toolbar=no,location=no,directories=no,   status=no,menubar=no,scrollbars=yes,resizable=yes,width=500,height=500");
+        }
+        function protocalSelection() {
+            if (document.formFilterAdd.protocol.selectedIndex <= 1) //IP,ICMP
+            {
+                document.formFilterAdd.srcportfrom.disabled = true;
+                document.formFilterAdd.srcportto.disabled = true;
+                document.formFilterAdd.dstportfrom.disabled = true;
+                document.formFilterAdd.dstportto.disabled = true;
+            } else {		// TCP, UDP
+                document.formFilterAdd.srcportfrom.disabled = false;
+                document.formFilterAdd.srcportto.disabled = false;
+                document.formFilterAdd.dstportfrom.disabled = false;
+                document.formFilterAdd.dstportto.disabled = false;
+            }
+        }
+
+        function addClick() {
+            if (document.formFilterAdd.sourceip.value != "") {
+                /*
+                if ( !checkIP(document.formFilterAdd.sourceip))
+                return false;
+                if (document.formFilterAdd.sourcemask.value != "")
+                {
+                if (!checkMask(document.formFilterAdd.sourcemask))
+                return false;
+
+                }
+                */
+                if (validateKey(document.formFilterAdd.sourceip.value) == 0) {
+                    alert("Invalid Source value.");
+                    document.formFilterAdd.sourceip.focus();
+                    return false;
+                }
+                var str = document.formFilterAdd.sourceip.value;
+                var count = 0;
+                for (var i = 0; i < str.length; i++) {
+                    if (str.charAt(i) == '.') {
+                        count++;
+                    }
+                }
+                if (count != 3) {
+                    alert("Invalid Source value.");
+                    document.formFilterAdd.sourceip.focus();
+                    return false;
+                }
+                if (!checkDigitRange(document.formFilterAdd.sourceip.value, 1, 0, 239)) {
+                    alert('Invalid Source range in 1st digit. It should be 0-239.');
+                    document.formFilterAdd.sourceip.focus();
+                    return false;
+                }
+                if (IsLoopBackIP(document.formFilterAdd.sourceip.value)) {
+                    alert('Invalid Source range in 1st digit. 127.xx.xx.xx is loopback ip address!');
+                    document.formFilterAdd.sourceip.focus();
+                    return false;
+                }
+                /*	
+                if ( !checkDigitRange(document.formFilterAdd.sourceip.value,1,0,255) ) {
+                alert('Invalid Source range in 1st digit. It should be 0-255.');
+                document.formFilterAdd.sourceip.focus();
+                return false;
+                }
+                */
+                if (!checkDigitRange(document.formFilterAdd.sourceip.value, 2, 0, 255)) {
+                    alert('Invalid Source range in 2nd digit. It should be 0-255.');
+                    document.formFilterAdd.sourceip.focus();
+                    return false;
+                }
+                if (!checkDigitRange(document.formFilterAdd.sourceip.value, 3, 0, 255)) {
+                    alert('Invalid Source range in 3rd digit. It should be 0-255.');
+                    document.formFilterAdd.sourceip.focus();
+                    return false;
+                }
+                if (!checkDigitRange(document.formFilterAdd.sourceip.value, 4, 0, 254)) {
+                    alert('Invalid Source range in 4th digit. It should be 0-254.');
+                    document.formFilterAdd.sourceip.focus();
+                    return false;
+                }
+
+                if (!checkMask(document.formFilterAdd.sourcemask)) {
+                    return false;
+                }
+                if (document.formFilterAdd.sourcemask.value == "") {
+                    alert("Enter Source Subnet Mask!");
+                    document.formFilterAdd.sourcemask.focus();
+                    return false;
+                }
+                ip = document.formFilterAdd.sourceip.value;
+                ip1 = getDigit(ip, 1);
+                ip2 = getDigit(ip, 2);
+                ip3 = getDigit(ip, 3);
+                ip4 = getDigit(ip, 4);
+                mask = document.formFilterAdd.sourcemask.value;
+                mask1 = getDigit(mask, 1);
+                mask2 = getDigit(mask, 2);
+                mask3 = getDigit(mask, 3);
+                mask4 = getDigit(mask, 4);
+                if (((ip1 & mask1) != ip1) ||
+		((ip2 & mask2) != ip2) ||
+		((ip3 & mask3) != ip3) ||
+		((ip4 & mask4) != ip4)) {
+                    alert("Source mask doesn't match source ip address!");
+                    return false;
+                }
+            }
+            else
+                document.formFilterAdd.sourcemask.value = "";
+
+            if (document.formFilterAdd.destip.value != "") {
+                /*
+                if ( !checkIP(document.formFilterAdd.destip))
+                return false;
+                if (document.formFilterAdd.destmask.value != "")
+                {
+                if (!checkMask(document.formFilterAdd.destmask))
+                return false;
+
+                }
+                */
+                if (validateKey(document.formFilterAdd.destip.value) == 0) {
+                    alert("Invalid Destination value.");
+                    document.formFilterAdd.destip.focus();
+                    return false;
+                }
+                var str = document.formFilterAdd.destip.value;
+                var count = 0;
+                for (var i = 0; i < str.length; i++) {
+                    if (str.charAt(i) == '.') {
+                        count++;
+                    }
+                }
+                if (count != 3) {
+                    alert("Invalid Destination value.");
+                    document.formFilterAdd.destip.focus();
+                    return false;
+                }
+                if (!checkDigitRange(document.formFilterAdd.destip.value, 1, 0, 239)) {
+                    alert('Invalid Destination range in 1st digit. It should be 0-239.');
+                    document.formFilterAdd.destip.focus();
+                    return false;
+                }
+                if (IsLoopBackIP(document.formFilterAdd.destip.value)) {
+                    alert('Invalid Destination range in 1st digit. 127.xx.xx.xx is loopback ip address!');
+                    document.formFilterAdd.destip.focus();
+                    return false;
+                }
+                /*	
+                if ( !checkDigitRange(document.formFilterAdd.destip.value,1,0,255) ) {
+                alert('Invalid Destination range in 1st digit. It should be 0-255.');
+                document.formFilterAdd.destip.focus();
+                return false;
+                }
+                */
+                if (!checkDigitRange(document.formFilterAdd.destip.value, 2, 0, 255)) {
+                    alert('Invalid Destination range in 2nd digit. It should be 0-255.');
+                    document.formFilterAdd.destip.focus();
+                    return false;
+                }
+                if (!checkDigitRange(document.formFilterAdd.destip.value, 3, 0, 255)) {
+                    alert('Invalid Destination range in 3rd digit. It should be 0-255.');
+                    document.formFilterAdd.destip.focus();
+                    return false;
+                }
+                if (!checkDigitRange(document.formFilterAdd.destip.value, 4, 0, 254)) {
+                    alert('Invalid Destination range in 4th digit. It should be 0-254.');
+                    document.formFilterAdd.destip.focus();
+                    return false;
+                }
+
+                if (!checkMask(document.formFilterAdd.destmask)) {
+                    return false;
+                }
+                if (document.formFilterAdd.destmask.value == "") {
+                    alert("Enter Destination Subnet Mask!");
+                    document.formFilterAdd.destmask.focus();
+                    return false;
+                }
+                ip = document.formFilterAdd.destip.value;
+                ip1 = getDigit(ip, 1);
+                ip2 = getDigit(ip, 2);
+                ip3 = getDigit(ip, 3);
+                ip4 = getDigit(ip, 4);
+                mask = document.formFilterAdd.destmask.value;
+                mask1 = getDigit(mask, 1);
+                mask2 = getDigit(mask, 2);
+                mask3 = getDigit(mask, 3);
+                mask4 = getDigit(mask, 4);
+                if (((ip1 & mask1) != ip1) ||
+		((ip2 & mask2) != ip2) ||
+		((ip3 & mask3) != ip3) ||
+		((ip4 & mask4) != ip4)) {
+                    alert("destination mask doesn't match destination ip address!");
+                    return false;
+                }
+            }
+            else
+                document.formFilterAdd.destmask.value = "";
+
+            if (document.formFilterAdd.protocol.selectedIndex != 0 &&
+        document.formFilterAdd.protocol.selectedIndex != 1) {
+                digit1 = getDigit(document.formFilterAdd.srcportfrom.value, 1);
+                if ((document.formFilterAdd.srcportfrom.value != "") && (digit1 > 65535 || digit1 <= 0)) {
+                    alert("Invalid SPort value! You should set a value between 1-65535.");
+                    document.formFilterAdd.srcportfrom.focus();
+                    return false;
+                }
+                digit2 = getDigit(document.formFilterAdd.srcportto.value, 1);
+                if ((document.formFilterAdd.srcportto.value != "") && ((digit2 > 65535 || digit2 <= 0)
+      	|| (!(retNum.test(document.formFilterAdd.srcportto.value))))) {
+                    alert("Invalid SPort value! You should set a value between 1-65535.");
+                    document.formFilterAdd.srcportto.focus();
+                    return false;
+                }
+                if ((document.formFilterAdd.srcportfrom.value != "") &&
+      	(document.formFilterAdd.srcportto.value != "") && (digit1 > digit2)) {
+                    alert("Invalid Sport value range! port from is larger than port to.");
+                    document.formFilterAdd.srcportfrom.focus();
+                    return false;
+                }
+
+                digit1 = getDigit(document.formFilterAdd.dstportfrom.value, 1);
+                if ((document.formFilterAdd.dstportfrom.value != "") && ((digit1 > 65535 || digit1 <= 0)
+      || (!(retNum.test(document.formFilterAdd.dstportfrom.value))))) {
+                    alert("Invalid DPort value! You should set a value between 1-65535.");
+                    document.formFilterAdd.dstportfrom.focus();
+                    return false;
+                }
+                digit2 = getDigit(document.formFilterAdd.dstportto.value, 1);
+                if ((document.formFilterAdd.dstportto.value != "") && ((digit2 > 65535 || digit2 <= 0)
+      	|| (!(retNum.test(document.formFilterAdd.dstportto.value))))) {
+                    alert("Invalid DPort value! You should set a value between 1-65535.");
+                    document.formFilterAdd.dstportto.focus();
+                    return false;
+                }
+                if ((document.formFilterAdd.dstportfrom.value != "") &&
+      	(document.formFilterAdd.dstportto.value != "") && (digit1 > digit2)) {
+                    alert("Invalid Dport value range! port from is larger than port to.");
+                    document.formFilterAdd.dstportfrom.focus();
+                    return false;
+                }
+            }
+        }
+        /*star:20091015 START add to select interface when setting acl*/
+        function Dchange(action) {
+            if (action == "0") {
+                document.getElementById("directiondisplay").style.display = "";
+                document.getElementById("interfacedisplay").style.display = "none";
+            } else {
+                document.getElementById("directiondisplay").style.display = "none";
+                document.getElementById("interfacedisplay").style.display = "";
+            }
+            return true;
+        }
+        /*star:20091015 END*/
+        
+    </script>
+    <style type="text/css">
+	  td 
+	  {  
+		  word-wrap:break-word;
+		  word-break:keep-all;
+		  word-break:break-all;
+	  } 
+	</style>
+</head>
+<body>
+    <form action="form2Acldefaultcfg.cgi" method=POST name="formFilterDefault">
+    <div class="intro_main ">
+        <p class="intro_title">IP/Port Filtering</p>
+        <p class="intro_content">Entries in this table are used to restrict certain types of data packets from your local network to Internet through the Gateway. Use of such filters can be helpful in securing or restricting your local network.</p>
+    </div>
+    <div class="data_common data_common_notitle">
+        <table>
+            <tr>
+                <th width="30%">Outgoing Default Policy</th>
+                <td>
+                    <VWS_SCREEN (char*) xscrnSetOutactState[];>
+                </td>
+            </tr>
+            <tr>
+                <th>Incoming Default Policy</th>
+                <td>
+                    <VWS_SCREEN (char*) xscrnSetInactState[];>
+                </td>
+            </tr>
+        </table>
+    </div>
+    </form>
+    <form action="form2Aclcfg.cgi" method=POST name="formFilterAdd">
+    <INPUT TYPE="HIDDEN" NAME="acltype" VALUE="fwd" >
+    <div class="data_common data_common_notitle">
+        <table>
+            <tr class="data_common_sth">
+                <th>Rule Action:</th>
+                <td colspan="3">
+                    <input type="radio" checked="" value="Permit" name="operate"/>
+                    Permit
+                    <input type="radio" value="Deny" name="operate"/>
+                    Deny
+                </td>
+            </tr>
+             <tr 
+             <VWS_FUNCTION (void*)ipPortFilterItfDisplay();>
+             >
+                <th>WAN Interface:</th>
+                <td colspan="3">
+                    <select style="width:200" size="1" name="fromwanitf">
+                        <VWS_SCREEN (char*) xscrnNaptWanRouterPvcWithPPPOE[];>
+                        <option value="any">any</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <th>Protocol:</th>
+                <td colspan="3">
+                    <select onchange="protocalSelection();" name="protocol">
+                    <option selected="" value="0"> IP
+                    </option><option value="1"> ICMP
+                    </option><option value="6"> TCP
+                    </option><option value="17"> UDP
+                    </option></select>
+                </td>
+            </tr>
+            <VWS_SCREEN (char*) xscrnSetDirection[];>
+            <tr>
+                <th width="20%">Source IP Address:</th>
+                <td width="30%"><input type="text" maxlength="15" size="15" name="sourceip"></td>
+                <th width="20%">Mask Address:</th>
+                <td width="30%"><input type="text" value="255.255.255.255" maxlength="15" size="15" name="sourcemask"/></td>
+            </tr>
+            <tr>
+                <th>Dest IP Address:</th>
+                <td><input type="text" maxlength="15" size="15" name="destip"></td>
+                <th>Mask Address:</th>
+                <td><input type="text" value="255.255.255.255" maxlength="15" size="15" name="destmask"/></td>
+            </tr>
+            <tr>
+                <th>SPort:</th>
+                <td>
+                    <input type="text" disabled="" maxlength="5" size="5" name="srcportfrom"/>
+                    &nbsp;&nbsp;-&nbsp;&nbsp;
+                    <input type="text" disabled="" maxlength="5" size="5" name="srcportto"/>
+                </td>
+                <td>DPort:</td>
+                <td>
+                    <input type="text" disabled="" maxlength="5" size="5" name="dstportfrom"/>
+                    &nbsp;&nbsp;-&nbsp;&nbsp;
+                    <input type="text" disabled="" maxlength="5" size="5" name="dstportto"/>
+                </td>
+            </tr>
+            <tr>
+                <th>Enable:</th>
+                <td colspan="3"><input type="CHECKBOX" checked="" value="enable" name="state"/></td>
+            </tr>
+            <tr>
+				<td><input class="inner_btn" type="submit" onclick="return addClick()" value="Apply Changes"></td>
+				<td><input class="inner_btn" type="submit" value="Reset"></td>
+				<td><input class="inner_btn" type="submit" onclick=OnHelp("hlpacl.htm") value="Help"></td>
+				<td><input type="hidden" name="submit.htm?fw-ipportfilter_adv.htm" value="Send"></td>
+            </tr>
+        </table>
+    </div>
+    </form>
+	<form method=POST Action="form2Acldel.cgi">
+    <INPUT TYPE="HIDDEN" NAME="acldel" VALUE="" >
+    <INPUT TYPE="HIDDEN" NAME="acllocaldel" VALUE="" >
+    <INPUT TYPE="HIDDEN" NAME="state" VALUE="" >
+    <div class="column">
+        <div class="column_title">
+            <div class="column_title_left"></div>
+            <p>Current Filter Table:</p>
+            <div class="column_title_right"></div>
+        </div>
+        <div class="data_common data_vertical">
+            <table>
+                <tr class="data_common_sth">
+                    <th width="8%">Rule</th>
+                    <th width="8%" 
+                    <VWS_FUNCTION (void*)ipPortFilterItfDisplay();>
+                    >WanItf</th>
+                    <th width="8%">Protocol</th>
+                    <th width="18%">Source IP/Mask</th>
+                    <th width="10%">SPort</th>
+                    <th width="18%">Dest IP/Mask</th>
+                    <th width="10%">DPort</th>
+                    <th width="8%">State</th>
+                    <th width="12%">Direction</th>
+                    <th>Action</th>
+                </tr>
+                <tr>
+                    <VWS_FUNCTION (void*)showACList();>
+                </tr>
+            </table>
+        </div>
+    </div>
+		<script language="JavaScript">
+		//<!--
+		function aclDelFunc( form , acldel, acllocaldel, state){ 
+		form.elements[0].value=acldel; 
+		form.elements[1].value=acllocaldel;
+		form.elements[2].value=state;  
+		form.submit();
+		}
+		//-->
+		document.formFilterDefault.outAct[0].disabled = true;
+		document.formFilterDefault.outAct[1].disabled = true;
+		document.formFilterDefault.inAct[0].disabled = true;
+		document.formFilterDefault.inAct[1].disabled = true;
+		</script>
+		<input type="hidden" name="submit.htm?fw-ipportfilter_adv.htm" value="Send">
+    </form>
+</body>
+</html>

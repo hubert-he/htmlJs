@@ -1,0 +1,271 @@
+<VWS_FUNCTION (void*)SendWebMetaStr();>
+<VWS_FUNCTION (void*)SendWebCssStr();>
+<title>IP/Port Filtering</title>
+<script>
+function OnHelp( page)
+{
+    HelpWin= window.open(page,"Help","toolbar=no,location=no,directories=no,   status=no,menubar=no,scrollbars=yes,resizable=yes,width=500,height=500");
+}
+function protocalSelection()
+{
+	if ( document.formFilterAdd.protocol.selectedIndex <=1 ) //IP,ICMP
+	{
+		document.formFilterAdd.sourceport.disabled = true;
+		document.formFilterAdd.destport.disabled = true;
+	}else{		// TCP, UDP
+		document.formFilterAdd.sourceport.disabled = false;
+		document.formFilterAdd.destport.disabled = false;
+   }
+}
+function checkip(ipaddr)
+{
+   if (ipaddr=="") {
+      alert("IP address cannot be empty!");
+      return false;
+  	}
+  	if ( validateKey( ipaddr ) == 0 ) {
+  	   alert("Invalid IP address value.");
+  	   return false;
+  	}
+  	if ( !checkDigitRange(ipaddr,1,0,255) ) {
+  	   alert('Invalid IP address range in 1st digit. It should be 0-255.');
+  	   return false;
+  	}
+  	if ( !checkDigitRange(ipaddr,2,0,255) ) {
+  	   alert('Invalid IP address range in 2nd digit. It should be 0-255.');
+  	   return false;
+  	}
+  	if ( !checkDigitRange(ipaddr,3,0,255) ) {
+  	   alert('Invalid IP address range in 3rd digit. It should be 0-255.');
+  	   return false;
+  	}
+  	if ( !checkDigitRange(ipaddr,4,0,254) ) {
+  	   alert('Invalid IP address range in 4th digit. It should be 1-254.');
+  	   return false;
+  	}
+  	return true;
+}
+function addClick()
+{
+//ql:20080811 START: null value should be allowed.
+   /*if ( !checkip(document.formFilterAdd.sourceip.value))
+   {
+		return false;
+   }
+   if ( !checkMask(document.formFilterAdd.sourcemask))
+   {
+		return false;
+   }
+   if ( !checkip(document.formFilterAdd.destip.value))
+	{	  
+		return false;
+   }
+   if ( !checkMask(document.formFilterAdd.destmask))
+   {
+		return false;
+   }
+	if ( document.formFilterAdd.protocol.selectedIndex != 0 )
+	{
+		digit = getDigit(document.formFilterAdd.sourceport.value, 1);
+		if ( (document.formFilterAdd.sourceport.value != "") && (digit > 65535 || digit <= 0) ) {
+			alert("Invalid SPort value! You should set a value between 1-65535.");
+			document.formFilterAdd.sourceport.focus();
+			return false;
+		}
+		digit = getDigit(document.formFilterAdd.destport.value, 1);
+		if ( (document.formFilterAdd.destport.value != "") && (digit > 65535 || digit <= 0) ) {
+			alert("Invalid DPort value! You should set a value between 1-65535.");
+			document.formFilterAdd.destport.focus();
+			return false;
+		}
+   }
+   */
+   if (document.formFilterAdd.sourceip.value != "")
+   {
+      if ( !checkip(document.formFilterAdd.sourceip.value))
+         return false;
+      if (document.formFilterAdd.sourcemask.value != "")
+      {
+         if (!checkMask(document.formFilterAdd.sourcemask))
+            return false;
+      }
+   }
+   else
+      document.formFilterAdd.sourcemask.value = "";
+
+   if (document.formFilterAdd.destip.value != "")
+   {
+      if ( !checkip(document.formFilterAdd.destip.value))
+         return false;
+      if (document.formFilterAdd.destmask.value != "")
+      {
+         if (!checkMask(document.formFilterAdd.destmask))
+            return false;
+      }
+   }
+   else
+      document.formFilterAdd.destmask.value = "";
+
+   if ( document.formFilterAdd.protocol.selectedIndex != 0 &&
+        document.formFilterAdd.protocol.selectedIndex != 1 )
+   {
+      digit = getDigit(document.formFilterAdd.sourceport.value, 1);
+      if ( (document.formFilterAdd.sourceport.value != "") && (digit > 65535 || digit <= 0) )
+      {
+         alert("Invalid SPort value! You should set a value between 1-65535.");
+         document.formFilterAdd.sourceport.focus();
+         return false;
+      }
+      digit = getDigit(document.formFilterAdd.destport.value, 1);
+      if ( (document.formFilterAdd.destport.value != "") && (digit > 65535 || digit <= 0) )
+      {
+         alert("Invalid DPort value! You should set a value between 1-65535.");
+         document.formFilterAdd.destport.focus();
+         return false;
+      }
+   }
+//ql:20080811 END
+}
+</script>
+</head>
+
+<body>
+<blockquote>
+<h2><font color="#0000FF">IP/Port Filtering</font></h2>
+
+<table border=0 width="80%" cellspacing=4 cellpadding=0>
+<tr><td><font size=2>
+ Entries in this table are used to restrict certain types of data packets from your local
+ network to Internet through the Gateway.  Use of such filters can be helpful in securing
+ or restricting your local network.
+</font></td></tr>
+
+<tr><td><hr size=1 noshade align=top></td></tr>
+
+<form action="form2Acldefaultcfg.cgi" method=POST name="formFilterDefault">
+<VWS_COMMENTS><tr><td><b>Incoming Domain: LAN&nbsp;&nbsp;&nbsp;&nbsp;Outgoing Domain: WAN</b></td></tr></VWS_COMMENTS>
+<tr><td><font size=2><b>
+    Default Action:
+<VWS_COMMENTS>   	<input type="radio" name="defaultAct" value="Deny" >&nbsp;&nbsp;Deny</VWS_COMMENTS>
+<VWS_COMMENTS>   	<input type="radio" name="defaultAct" value="Allow" checked>&nbsp;&nbsp;Allow</b><br></VWS_COMMENTS>
+<VWS_SCREEN (char*) xscrnSetDefaultState[];>
+    </b></td>
+</tr>
+<tr><td>
+<VWS_COMMENTS>	<input type="submit" value="Apply Changes" name="setDefaultAction">&nbsp;&nbsp;</VWS_COMMENTS>
+	<input type="submit" value="Apply Changes">&nbsp;&nbsp;
+	<input type="reset" value="Reset" name="reset">&nbsp;&nbsp;
+   <INPUT TYPE=BUTTON VALUE="Help" onclick=OnHelp("hlpacldefault.htm")>
+<VWS_COMMENTS>	<input type="hidden" value="/fw-ipportfilter.asp" name="submit-url"></VWS_COMMENTS>
+   <input type="hidden" NAME="submit.htm?fw-ipportfilter.htm" value="Send">
+</td></tr>
+</form>
+
+<br>
+</table>
+<table border=0 width="100%" cellspacing=4 cellpadding=0>
+<form action="form2Aclcfg.cgi" method=POST name="formFilterAdd">
+<INPUT TYPE="HIDDEN" NAME="acltype" VALUE="fwd" >
+<tr>
+	<td><font size=2><b>  Rule Action:</td>
+   	<td><input type="radio" name="operate" value="Permit" checked>&nbsp;&nbsp;Permit</td>
+   	<td><input type="radio" name="operate" value="Deny">&nbsp;&nbsp;Deny</b><br></td>
+    	<td></td>
+</tr>
+
+<tr><td><font size=2><b>Protocol:</b></td> 
+     <td><select name="protocol" onChange="protocalSelection();">
+      <option VALUE="0" SELECTED> IP
+      <option VALUE="1"> ICMP
+      <option VALUE="6"> TCP
+      <option VALUE="17"> UDP
+      
+     </select>
+</font></td>
+<td><font size=2><b>Direction:</b> </td>
+<td><select name="name" >
+      <option VALUE="out2wan" SELECTED> Outgoing
+      <option VALUE="out2lan"> Incoming      
+     </select>
+</font></td>
+</tr>
+<tr>
+<td><font size=2> <b>Source IP Address:&nbsp;&nbsp;&nbsp;</b></td>
+<td><input type="text" name="sourceip" size="15" maxlength="15">&nbsp;&nbsp;</td>
+<td><b>Mask Address:</b></td>
+<td><input type="text" name="sourcemask" size="15" maxlength="15" VALUE="0.0.0.0">&nbsp;&nbsp;</font></td>
+</tr>
+<tr>
+<td><font size=2><b>Dest IP Address:</b></td>
+<td><input type="text" name="destip" size="15" maxlength="15">&nbsp;&nbsp;</td>
+<td><b>Mask Address:</b></td>
+<td><input type="text" name="destmask" size="15" maxlength="15" VALUE="0.0.0.0">&nbsp;&nbsp;</font></td>
+</tr>
+<tr>
+<td><font size=2><b>SPort:</b>&nbsp;</td>
+<td><input type="text" name="sourceport" size="5" maxlength="5" disabled>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+<td><font size=2><b>DPort:</b>&nbsp;</td>
+<td><input type="text" name="destport" size="5" maxlength="5" disabled></td>
+</tr>
+<tr>
+<td><font size=2><b>Enable:</b></td>
+<td><INPUT TYPE="CHECKBOX" NAME="state" VALUE="enable" CHECKED></font></td>
+<td>&nbsp;&nbsp;&nbsp;&nbsp</td>
+<td>&nbsp;&nbsp;&nbsp;&nbsp</td>
+</tr>
+<tr>
+<td>
+<VWS_COMMENTS>   <p><input type="submit" value="Apply Changes" onClick="return addClick()">&nbsp;&nbsp;</VWS_COMMENTS>
+   <p><input type="submit" value="Apply Changes" onClick="return addClick()">&nbsp;&nbsp;</td>
+<td>   <input type="reset" value="Reset" name="reset">&nbsp;&nbsp;</td>
+<td>   <INPUT TYPE=BUTTON VALUE="Help" onclick=OnHelp("hlpacl.htm")></td>
+<td>   <input type="hidden" NAME="submit.htm?fw-ipportfilter.htm" value="Send">
+   </p></td></tr>
+</form>
+</table>
+
+<form method=POST Action="form2Acldel.cgi">
+<INPUT TYPE="HIDDEN" NAME="acldel" VALUE="" >
+<INPUT TYPE="HIDDEN" NAME="state" VALUE="" >
+<BR>
+  <table border="0" width=630>
+  <tr><font size=2><b>Current Filter Table:</b></font></tr>
+  <tr><td align=center bgcolor="#808080"><font size="2"><b>Rule</b></font></td>
+  <td align=center bgcolor="#808080"><font size="2"><b>Protocol</b></font></td>
+  <td align=center bgcolor="#808080"><font size="2"><b>Source IP/Mask</b></font></td>
+  <td align=center bgcolor="#808080"><font size="2"><b>SPort</b></font></td>
+  <td align=center bgcolor="#808080"><font size="2"><b>Dest IP/Mask</b></font></td>
+  <td align=center bgcolor="#808080"><font size="2"><b>DPort</b></font></td>
+  <td align=center bgcolor="#808080"><font size="2"><b>State</b></font></td>
+  <td align=center bgcolor="#808080"><font size="2"><b>Direction</b></font></td>
+  <td align=center bgcolor="#808080"><font size="2"><b>Action</b></font></td></tr>
+<VWS_COMMENTS><TR></VWS_COMMENTS>
+<VWS_COMMENTS><TD ><b>permit</b></TD></VWS_COMMENTS>
+<VWS_COMMENTS><TD ><b>ip</b></TD></VWS_COMMENTS>
+<VWS_COMMENTS><TD ><b>192.168.5.1/255.255.255.255</b></TD></VWS_COMMENTS>
+<VWS_COMMENTS><TD ><b>---</b></TD></VWS_COMMENTS>
+<VWS_COMMENTS><TD ><b>0.0.0.0/0.0.0.0</b></TD></VWS_COMMENTS>
+<VWS_COMMENTS><TD ><b>---</b></TD></VWS_COMMENTS>
+<VWS_COMMENTS><TD ><b>enable</b></TD></VWS_COMMENTS>
+<VWS_COMMENTS><TD ><b></VWS_COMMENTS>
+<VWS_COMMENTS><INPUT TYPE="BUTTON" VALUE="Delete" onClick="aclDelFunc( this.form, 'ip access-list extend wan   permit ip host 192.168.5.1 any enable', 'delete');"></VWS_COMMENTS>
+<VWS_COMMENTS><INPUT TYPE="BUTTON" VALUE="disable" onClick="aclDelFunc( this.form, 'ip access-list extend wan   permit ip host 192.168.5.1 any enable', 'enable');"></VWS_COMMENTS>
+<VWS_COMMENTS></b></TD></VWS_COMMENTS>
+<VWS_COMMENTS></TR></VWS_COMMENTS>
+<VWS_FUNCTION (void*)showACList();>
+</TABLE>
+
+<script language="JavaScript">
+<!--
+function aclDelFunc( form , acldel, state){
+  form.elements[0].value=acldel;
+  form.elements[1].value=state;
+  form.submit();
+}
+//-->
+</script>
+<input type="hidden" NAME="submit.htm?fw-ipportfilter.htm" value="Send">
+</form>
+</blockquote>
+</body>
+</html>

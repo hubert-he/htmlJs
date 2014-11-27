@@ -1,0 +1,276 @@
+<VWS_FUNCTION (void*)SendWebMetaStr();>
+<VWS_FUNCTION (void*)SendWebCssStr();>
+	<title>Ethernet to ATM PVC Mapping </title>
+    <SCRIPT>
+        function adminClick() {
+            with (document.eth2pvc) {
+                if (pmap[0].checked) {
+                    rmbtn.disabled = true;
+                    adbtn.disabled = true;
+                    lstGrp.disabled = true;
+                    WANAvail.disabled = true;
+                    //	LANAvail.disabled = false;
+                    LANAvail.disabled = true;
+                    //			for (i=0; i<4; i++)
+                    //				select[i].disabled = true;
+                    //			for(i=0; i<4; i++)
+                    //				priority[i].disabled = true;
+                }
+                else {
+                    rmbtn.disabled = false;
+                    adbtn.disabled = false;
+                    lstGrp.disabled = false;
+                    WANAvail.disabled = false;
+                    LANAvail.disabled = false;
+                    //			for (i=0; i<4; i++)
+                    //				select[i].disabled = false;
+                    //			for(i=0; i<4; i++)
+                    //				priority[i].disabled = false;				
+                }
+            }
+        }
+
+        function btnRemove() {
+            with (document.eth2pvc) {
+                var arrSelected = new Array();
+                var count = 0;
+                for (i = 0; i < lstGrp.options.length; i++) {
+                    if (lstGrp.options[i].selected == true) {
+                        arrSelected[count] = lstGrp.options[i].value;
+                        count++;
+                    }
+                }
+                var x = 0;
+                for (i = lstGrp.options.length - 1; i >= 0; i--) {
+                    for (x = 0; x < arrSelected.length; x++) {
+                        if (lstGrp.options[i].value == arrSelected[x]) {
+                            varOpt = new Option(lstGrp.options[i].text, lstGrp.options[i].value);
+                            if (lstGrp.options[i].value < 1024 && lstGrp.options[i].value > 511)
+                                WANAvail.options[WANAvail.length] = varOpt;
+                            else
+                                LANAvail.options[LANAvail.length] = varOpt;
+                            lstGrp.options[i] = null;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        function btnAdd() {
+            with (document.eth2pvc) {
+                var arrSelected1 = new Array();
+                var arrSelected2 = new Array();
+                var count1 = 0, count2 = 0;
+                for (i = 0; i < WANAvail.options.length; i++) {
+                    if (WANAvail.options[i].selected == true) {
+                        arrSelected1[count1] = WANAvail.options[i].value;
+                        count1++;
+                    }
+                }
+                for (i = 0; i < LANAvail.options.length; i++) {
+                    if (LANAvail.options[i].selected == true) {
+                        arrSelected2[count2] = LANAvail.options[i].value;
+                        count2++;
+                    }
+                }
+                var x = 0;
+                for (i = WANAvail.options.length - 1; i >= 0; i--) {
+                    for (x = 0; x < arrSelected1.length; x++) {
+                        if (WANAvail.options[i].value == arrSelected1[x]) {
+                            varOpt = new Option(WANAvail.options[i].text, WANAvail.options[i].value);
+                            lstGrp.options[lstGrp.length] = varOpt;
+                            WANAvail.options[i] = null;
+                            break;
+                        }
+                    }
+                }
+                for (i = LANAvail.options.length - 1; i >= 0; i--) {
+                    for (x = 0; x < arrSelected2.length; x++) {
+                        if (LANAvail.options[i].value == arrSelected2[x]) {
+                            varOpt = new Option(LANAvail.options[i].text, LANAvail.options[i].value);
+                            lstGrp.options[lstGrp.length] = varOpt;
+                            LANAvail.options[i] = null;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        function btnApply() {
+            with (document.eth2pvc) {
+                var wan_selected;
+                var lan_selected;
+                lan_selected = 0;
+                wan_selected = 0;
+                for (i = 0; i < lstGrp.options.length; i++) {
+                    if (lstGrp.options[i].value < 1024 && lstGrp.options[i].value > 511)
+                        wan_selected = 1;
+                    else
+                        lan_selected = 1;
+                }
+                if (lan_selected == 1 && wan_selected == 0) {
+                    alert('Group must have WAN interface !');
+                    return false;
+                }
+                if (lan_selected == 0 && wan_selected == 1) {
+                    alert('Group must have LAN interface !');
+                    return false;
+                }
+                for (i = 0; i < lstGrp.options.length; i++) {
+                    itfsGroup.value += lstGrp.options[i].value + ',';
+                }
+                for (i = 0; i < WANAvail.options.length; i++)
+                    WANAvail.value += WANAvail.options[i].value + ',';
+
+                for (i = 0; i < WANAvail.options.length; i++)
+                    itfsAvail.value += WANAvail.options[i].value + ',';
+
+                for (i = 0; i < LANAvail.options.length; i++)
+                    itfsAvail.value += LANAvail.options[i].value + ',';
+                return true;
+
+            }
+        }
+
+        function postit(groupitf, groupval, availitf, availval) {
+            var interfaces;
+            with (document.eth2pvc) {
+                interfaces = groupitf.split(',');
+                itfvals = groupval.split(',');
+                lstGrp.options.length = 0;
+                for (i = 0; i < interfaces.length; i++) {
+                    if (interfaces[i] != '') {
+                        lstGrp.options[i] = new Option(interfaces[i], itfvals[i]);
+                    }
+                }
+
+                interfaces = availitf.split(',');
+                itfvals = availval.split(',');
+                WANAvail.options.length = 0;
+                LANAvail.options.length = 0;
+                j = 0;
+                k = 0;
+                for (i = 0; i < interfaces.length; i++) {
+                    if (interfaces[i] != '') {
+                        if (itfvals[i] >= 1024 || itfvals[i] < 512) {
+                            LANAvail.options[j] = new Option(interfaces[i], itfvals[i]);
+                            j++;
+                        }
+                        else {
+                            WANAvail.options[k] = new Option(interfaces[i], itfvals[i]);
+                            k++;
+                        }
+                    }
+                }
+            }
+        }
+
+        /*
+        function checkpriority(prio) 
+        {
+        with ( document.eth2pvc ) 
+        {
+        if (prio == '低')
+        {
+        priority[0].checked=true;	
+        }
+        if (prio == '中')
+        {
+        priority[1].checked=true;	
+        }
+        if (prio == '高')
+        {
+        priority[2].checked=true;	
+        }
+        if (prio == '最高')
+        {
+        priority[3].checked=true;
+        }
+  		
+        }
+        }
+        */
+    </SCRIPT>
+</head>
+<body>
+    <form action=form2portmap.cgi  method=POST name="eth2pvc">
+    <div class="intro_main ">
+        <p class="intro_title">Port Mapping Configuration</p>
+        <p class="intro_content">To manipulate a mapping group:<br>
+            1. Select a group from the table.<br>
+            2. Select interfaces from the available/grouped interface list and add it to the grouped/available interface list using the arrow buttons to manipulate the required mapping of the ports.<br>
+            3. Click "Apply Changes" button to save the changes.<br><br>
+        <b >Note that the selected interfaces will be removed from their existing groups and added to the new group.</b>
+    </div>
+    <div class="data_common data_common_notitle">
+        <table>
+            <tr>
+                <td>
+                    <input type="radio" onclick="return adminClick()" value="0" name="pmap">
+                    Disable&nbsp;&nbsp;
+                    <input type="radio" onclick="return adminClick()" value="1" name="pmap">
+                    Enable
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="data_common data_common_notitle">
+        <table>
+            <tr>
+                <td><strong>WAN</strong></td>
+                <td rowspan="4" class="table_inner">
+                    <table>
+                        <tr>
+                            <td align="center">
+                                <input class="inner_btn" type="button" onclick="btnAdd()" value="Add>" name="rmbtn"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="center">
+                                <input class="inner_btn" type="button"  onclick="btnRemove()" value="<Del" name="adbtn">
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+                <td rowspan="4">
+                    <select style="width: 150px;height: 240px" size="8" name="lstGrp" multiple="" disabled="">
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <select style="width: 150px;height: 120px" size="8" name="WANAvail" multiple="" disabled="">
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td><strong>LAN</strong></td>
+            </tr>
+            <tr>
+                <td>
+                    <select style="width: 150px;height: 120px" size="8" name="LANAvail" multiple="" disabled="">
+                    </select>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="data_common data_common_notitle data_vertical">
+        <table>
+             <VWS_FUNCTION (void*)itfGrpList();> 
+        </table>
+    </div>
+    <div class="btn_ctl">
+        <input type="hidden" name=itfsGroup>
+        <input type="hidden" name=itfsAvail>
+        <input class="link_bg" type=submit name="save" onClick="return btnApply()"; value="Apply">
+        <input type="hidden" NAME="submit.htm?portmap.htm" value="Send"> 
+    </div>
+    <script>
+    <VWS_FUNCTION (void*)initportmap();>
+    adminClick();
+    </script>
+    </form>
+</body>
+</html>

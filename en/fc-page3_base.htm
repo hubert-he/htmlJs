@@ -1,0 +1,399 @@
+<VWS_FUNCTION (void*)SendWebMetaStr();>
+<VWS_FUNCTION (void*)SendWebCssStr();>
+	<title>Quick Setup</title>
+	<SCRIPT language="JavaScript">
+	<VWS_FUNCTION (void*)SendItemHiddenStyle();>
+	</SCRIPT>
+<SCRIPT>
+function dnssetEnable(){
+	document.getElementById("dnssetid1").style.display="";
+	document.getElementById("dnssetid2").style.display="";
+	document.getElementById("dnsid1").style.display="";
+	document.getElementById("dnsid2").style.display="";
+	document.form2FastConfig3.dnsMode[0].disabled=false;
+	document.form2FastConfig3.dnsMode[1].disabled=false;
+	if(document.form2FastConfig3.dnsMode[0].checked){
+		disableTextField(document.form2FastConfig3.dns1);
+		disableTextField(document.form2FastConfig3.dns2);
+	}else{
+		enableTextField(document.form2FastConfig3.dns1);
+		enableTextField(document.form2FastConfig3.dns2);
+	}
+		
+}
+
+function dnssetDisable(){
+	document.getElementById("dnssetid1").style.display="none";
+	document.getElementById("dnssetid2").style.display="none";
+	document.getElementById("dnsid1").style.display="none";
+	document.getElementById("dnsid2").style.display="none";
+	document.form2FastConfig3.dnsMode[0].disabled=true;
+	document.form2FastConfig3.dnsMode[1].disabled=true;
+	disableTextField(document.form2FastConfig3.dns1);
+	disableTextField(document.form2FastConfig3.dns2);		
+}
+
+function wanipEnable(){
+	document.getElementById("wanipsetid1").style.display="";
+	document.getElementById("wanipsetid2").style.display="";
+	document.getElementById("fixipid").style.display="";
+	document.getElementById("fixmaskid").style.display="";
+	if(skipItem=='0')
+	document.getElementById("fixgwmodeid").style.display="";
+	document.getElementById("fixgwid").style.display="";
+	
+	document.form2FastConfig3.wanipMode[0].disabled=false;
+	document.form2FastConfig3.wanipMode[1].disabled=false;
+	
+	if(document.form2FastConfig3.wanipMode[0].checked){
+		disableTextField(document.form2FastConfig3.wanip);
+		disableTextField(document.form2FastConfig3.wanmask);
+		disableTextField(document.form2FastConfig3.gateway);
+	} else {
+		enableTextField(document.form2FastConfig3.wanip);
+		enableTextField(document.form2FastConfig3.wanmask);
+		enableTextField(document.form2FastConfig3.gateway);
+	}
+}
+
+function wanipDisable(){
+	document.getElementById("wanipsetid1").style.display="none";
+	document.getElementById("wanipsetid2").style.display="none";
+	document.getElementById("fixipid").style.display="none";
+	document.getElementById("fixmaskid").style.display="none";
+	if(skipItem=='0')
+	document.getElementById("fixgwmodeid").style.display="none";
+	document.getElementById("fixgwid").style.display="none";
+
+//	document.form2FastConfig3.droute[1].checked=true;
+
+	document.form2FastConfig3.wanipMode[0].disabled=true;
+	document.form2FastConfig3.wanipMode[1].disabled=true;
+	disableTextField(document.form2FastConfig3.wanip);
+	disableTextField(document.form2FastConfig3.wanmask);
+	disableTextField(document.form2FastConfig3.gateway);
+}
+
+function pppsetDisable(){
+	document.getElementById("pppsetid").style.display="none";
+	document.getElementById("pppsetid2").style.display="none"; //2014-02-07
+	disableTextField(document.form2FastConfig3.pppUserName);
+	disableTextField(document.form2FastConfig3.pppPassword);
+}
+
+function pppsetEnable(){
+	document.getElementById("pppsetid").style.display="";
+	document.getElementById("pppsetid2").style.display=""; //2014-02-07
+	if(skipItem=='0')
+	document.getElementById("fixgwmodeid").style.display="";
+	enableTextField(document.form2FastConfig3.pppUserName);
+	enableTextField(document.form2FastConfig3.pppPassword);
+}
+function wanTypeSelection(){
+	if(document.form2FastConfig3.wantype[0].checked){
+		//1483 bridge mode
+		document.form2FastConfig3.droute[1].checked=true;
+		pppsetDisable();
+		wanipDisable();
+		dnssetDisable();
+	}
+
+	if(document.form2FastConfig3.wantype[1].checked){
+		//1483 mer mode
+		document.form2FastConfig3.droute[0].checked=true;
+		pppsetDisable();
+		wanipEnable();
+		dnssetEnable();
+	}
+
+	if(document.form2FastConfig3.wantype[2].checked){
+		//PPPoE mode
+		document.form2FastConfig3.droute[0].checked=true;
+		
+		wanipDisable();
+		pppsetEnable();
+		dnssetEnable();
+	}
+
+	if(document.form2FastConfig3.wantype[3].checked){
+		//PPPoA mode
+		document.form2FastConfig3.droute[0].checked=true;
+		
+		wanipDisable();
+		pppsetEnable();
+		dnssetEnable();
+	}
+
+	if(document.form2FastConfig3.wantype[4].checked){
+		//1483 router mode
+		document.form2FastConfig3.droute[0].checked=true;
+		document.form2FastConfig3.wanipMode[1].checked=true;
+		pppsetDisable();
+		wanipEnable();
+		document.getElementById("wanipsetid1").style.display="none";
+		document.getElementById("wanipsetid2").style.display="none";
+		dnssetEnable();	
+	}
+
+}
+
+function wanipselcetion(){
+	if(document.form2FastConfig3.wanipMode[0].checked){
+		disableTextField(document.form2FastConfig3.wanip);
+		disableTextField(document.form2FastConfig3.wanmask);
+		disableTextField(document.form2FastConfig3.gateway);
+	}
+
+	if(document.form2FastConfig3.wanipMode[1].checked){
+		enableTextField(document.form2FastConfig3.wanip);
+		enableTextField(document.form2FastConfig3.wanmask);
+		enableTextField(document.form2FastConfig3.gateway);
+	}
+	
+}
+
+function dnsselcetion(){
+		if(document.form2FastConfig3.dnsMode[0].checked){
+		disableTextField(document.form2FastConfig3.dns1);
+		disableTextField(document.form2FastConfig3.dns2);
+	}
+
+	if(document.form2FastConfig3.dnsMode[1].checked){
+		enableTextField(document.form2FastConfig3.dns1);
+		enableTextField(document.form2FastConfig3.dns2);
+	}
+}
+
+function vcCheck(){
+	var digit = getDigit(document.form2FastConfig3.vpi.value, 1);
+	if ( validateKey(document.form2FastConfig3.vpi.value) == 0 ||
+		(digit > 255 || digit < 0) ) {
+		alert(" Invalid VPI , should be in 0 ~ 255.");
+		document.form2FastConfig3.vpi.focus();
+		return false;
+	}
+
+	digit = getDigit(document.form2FastConfig3.vci.value, 1);
+	if ( validateKey(document.form2FastConfig3.vci.value) == 0 ||
+		(digit > 65535 || digit < 32) ) {
+		alert("Invalid VCI should be in 32~65535.");
+		document.form2FastConfig3.vci.focus();
+		return false;
+	}
+
+	 return true;
+}
+
+function pppCheck(){
+	if (document.form2FastConfig3.pppUserName.value=="") {
+		alert('PPP username can\'t be empty!');
+		document.form2FastConfig3.pppUserName.focus();
+		return false;
+	}
+		
+	if (document.form2FastConfig3.pppPassword.value=="") {
+		alert('PPP password can\'t be empty!');
+		document.form2FastConfig3.pppPassword.focus();
+		return false;
+	}
+
+	 return true;
+		
+}
+
+function wanipCheck(){
+	if(document.form2FastConfig3.wanipMode[0].checked){
+			return true;
+	}
+	 if ( !checkIP(document.form2FastConfig3.wanip))
+	  {
+		return false;
+	 }
+
+	  if ( !checkMask(document.form2FastConfig3.wanmask))
+	  {
+		return false;
+	 }
+
+	if(document.form2FastConfig3.droute[0].checked){
+		 if ( !checkIP(document.form2FastConfig3.gateway))
+		  {
+			return false;
+		 }
+	}
+ 	 return true;
+}
+
+function dnsCheck(){
+	if(document.form2FastConfig3.dnsMode[0].checked){
+		return ture;
+	}
+	 if ( !checkIP(document.form2FastConfig3.dns1))
+	  {
+		return false;
+	 }
+
+	if (document.form2FastConfig3.dns2.value != ""){
+		 if ( !checkIP(document.form2FastConfig3.dns2))
+		  {
+			return false;
+		 }
+	}
+	 return true;
+}
+
+function addClick()
+{	
+	if(!vcCheck()){
+		return false;
+	}
+
+	if(document.form2FastConfig3.wantype[2].checked || document.form2FastConfig3.wantype[3].checked){
+		if(!pppCheck()){
+			return false;
+		}
+	}
+
+	if(document.form2FastConfig3.wantype[1].checked || document.form2FastConfig3.wantype[4].checked){
+		if(!wanipCheck()){
+			return false;
+		}
+
+		if(!dnsCheck()){
+			return false;
+		}
+	}
+	
+	return true;
+}
+
+function enterKey()
+{
+	if(window.event)
+	{
+		if ( window.event.keyCode==13 )
+			document.form2FastConfig3.nextstep.focus();
+	}
+}
+</SCRIPT>
+</head>
+
+<body>
+<div class="intro_main ">
+	<p class="intro_title">Quick Setup</p>
+</div>
+<table>
+	<VWS_FUNCTION (void*)SendFastConfigDescribeStr();>
+</table>
+<div class="data_common data_common_notitle">
+	<table>
+		<tr>
+			<th>Step 1: WAN Connection Setting</th>
+		</tr>
+		<tr>
+			<td>
+				Please select the wan connection mode
+			</td>
+		</tr>
+	</table>
+</div>	
+<form action="form2FastConf3.cgi" method=POST name="form2FastConfig3" onKeyDown="enterKey()">
+<div class="data_common data_common_notitle">
+	<table>
+		<tr>
+			<th>VPI/VCI:</th>
+			<td>VPI: <input type="text" name="vpi" size="3" maxlength="3" value="0">(0-255)&nbsp;&nbsp;VCI: <input type="text" name="vci" size="5" maxlength="5" value="0">(32-65535)</td>
+		</tr>
+		<tr>
+			<th>Encapsulation:</th>
+			<td>
+				<input type="radio" name="adslEncap" value="0" checked >LLC/SNAP
+				<input type="radio" name="adslEncap" value="1" >VC-Mux
+			</td>
+		</tr>
+		<tr>
+			<th width="30%" rowspan="5">Connection Mode:</th>
+			<td><input type="radio" name="wantype" value="0" onClick="wanTypeSelection()">1483 Bridged</td>
+		</tr>
+		<tr>
+			<td><input type="radio" name="wantype" value="1" onClick="wanTypeSelection()">1483 MER&nbsp;&nbsp;</td>
+		</tr>
+		<tr>
+			<td><input type="radio" name="wantype" value="2" checked onClick="wanTypeSelection()">PPP over Ethernet(PPPoE)&nbsp;&nbsp;</td>
+		</tr>
+		<tr>
+			<td><input type="radio" name="wantype" value="3" onClick="wanTypeSelection()" >PPP over ATM(PPPoA)&nbsp;&nbsp;</td>
+		</tr>
+		<tr>
+			<td><input type="radio" name="wantype" value="4"  onClick="wanTypeSelection()">1483 Routed&nbsp;&nbsp;</td>
+		</tr>
+		<tr id="pppsetid" style="display:none">
+			<th rowspan="2">PPP Settings:</th>
+			<td>
+				Username: <input type="text" name="pppUserName" size="36" maxlength="32" >
+		</tr>
+		<tr id="pppsetid2" style="display:none">
+		    <td>
+				Password: <input type="password" name="pppPassword" size="36" maxlength="30" >
+			</td>
+		</tr>
+		
+		
+		
+		<tr id="wanipsetid1" style="display:none">
+			<th>WAN IP Settings:</th>
+			<td><input type="radio" name="wanipMode" value="1" checked onClick="wanipselcetion()">Attain IP Automatically </td>
+		</tr>
+		<tr id="wanipsetid2" style="display:none">
+			<th></th>
+			<td><input type="radio" name="wanipMode" value="0"  onClick="wanipselcetion()">IP Manually:</td>
+		</tr>
+		<tr id="fixipid" style="display:none">
+			<th>IP Address: </th>
+			<td><input type="text" name="wanip" size="15" maxlength="15"></td>
+		</tr> 
+		<tr id="fixmaskid" style="display:none">
+			<th>Netmask: </th>
+			<td><input type="text" name="wanmask" size="15" maxlength="15"></td>
+		</tr> 
+		<tr id="fixgwid" style="display:none">
+			<th>Gateway: </th>
+			<td ><input type="text" name="gateway" size="15" maxlength="15" ></td>
+		</tr>
+		<tr id="fixgwmodeid" style="display:none">
+			<th>Default Route:</th>
+			<td><input type="radio" name="droute" value="1" checked >Enable&nbsp;<input type="radio" name="droute" value="0" >Disable &nbsp;</td>
+		</tr>	
+		<tr id="dnssetid1" style="display:none">
+			<th>DNS Settings:</th>
+			<td><input type="radio" name="dnsMode" value="0" checked onClick="dnsselcetion()">Attain DNS Automatically  </td>
+		</tr>
+		<tr id="dnssetid2" style="display:none">
+			<th><input type="radio" name="dnsMode" value="1"  onClick="dnsselcetion()">Set DNS Manually :</th>
+			<td></td>
+		</tr>
+		<tr id="dnsid1" style="display:none">
+			<th>DNS Server 1: </th>
+			<td><input type="text" name="dns1" size="15" maxlength="15" ></td>
+		</tr>
+		<tr id="dnsid2" style="display:none">
+			<th>DNS Server 2: </th>
+			<td><input type="text" name="dns2" size="15" maxlength="15" ></td>
+		</tr>	
+	</table>
+</div>
+<div class="btn_ctl">
+	<input class="link_bg" type="submit" value="next" name="nextstep" onClick="return addClick()">
+	<VWS_FUNCTION (void*)SendNextFastConfigPage();>
+</div>
+<script>
+	wanipDisable();
+	pppsetEnable();
+	dnssetEnable();
+</script>
+
+</form>
+
+</body>
+
+</html>

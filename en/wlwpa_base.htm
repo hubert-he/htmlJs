@@ -1,0 +1,436 @@
+<VWS_FUNCTION (void*)SendWebMetaStr();>
+<VWS_FUNCTION (void*)SendWebCssStr();>
+	<title>Wireless Security Setup</title>
+	<script>
+	var defPskLen, defPskFormat;
+	 function isValidWPAPasswd(str)   
+	{   
+
+		var patrn=/^[a-zA-Z0-9!#$%&\'()*+,-./:;=?@[\\^_`{|}~]{1}[a-zA-Z0-9!#$%&\'()*+,-./:;=?@[\\^_`{|}~\x20]{6,61}[a-zA-Z0-9!#$%&\'()*+,-./:;=?@[\\^_`{|}~]{1}$/;   
+		if (!patrn.exec(str)) return false  ; 
+
+		if(str.indexOf("  ") != -1)
+		return false;
+		
+		if(document.formEncrypt.pskValue.value.indexOf("  ",0)!=-1)
+			return false;
+		return true;	
+	} 
+	function disableRadioGroup (radioArrOrButton)
+	{
+	  if (radioArrOrButton.type && radioArrOrButton.type == "radio") {
+	 	var radioButton = radioArrOrButton;
+	 	var radioArray = radioButton.form[radioButton.name];
+	  }
+	  else
+	 	var radioArray = radioArrOrButton;
+	 	radioArray.disabled = true;
+	 	for (var b = 0; b < radioArray.length; b++) {
+	 	if (radioArray[b].checked) {
+	 		radioArray.checkedElement = radioArray[b];
+	 		break;
+		}
+	  }
+	  for (var b = 0; b < radioArray.length; b++) {
+	 	radioArray[b].disabled = true;
+	 	radioArray[b].checkedElement = radioArray.checkedElement;
+	  }
+	}
+
+	function enableRadioGroup (radioArrOrButton)
+	{
+	  if (radioArrOrButton.type && radioArrOrButton.type == "radio") {
+	 	var radioButton = radioArrOrButton;
+	 	var radioArray = radioButton.form[radioButton.name];
+	  }
+	  else
+	 	var radioArray = radioArrOrButton;
+
+	  radioArray.disabled = false;
+	  radioArray.checkedElement = null;
+	  for (var b = 0; b < radioArray.length; b++) {
+	 	radioArray[b].disabled = false;
+	 	radioArray[b].checkedElement = null;
+	  }
+	}
+
+	function skip () { this.blur(); }
+	function preserve () { this.checked = this.storeChecked; }
+	function disableCheckBox (checkBox) {
+	  if (!checkBox.disabled) {
+	    checkBox.disabled = true;
+	    if (!document.all && !document.getElementById) {
+	      checkBox.storeChecked = checkBox.checked;
+	      checkBox.oldOnClick = checkBox.onclick;
+	      checkBox.onclick = preserve;
+	    }
+	  }
+	}
+
+	function enableCheckBox (checkBox)
+	{
+	  if (checkBox.disabled) {
+	    checkBox.disabled = false;
+	    if (!document.all && !document.getElementById)
+	      checkBox.onclick = checkBox.oldOnClick;
+	  }
+	}
+
+	function check_wepbutton_state()
+	{
+	  if (document.formEncrypt.method.selectedIndex==1)
+		enableButton(document.formEncrypt.wepKey);
+	  else
+	 	disableButton(document.formEncrypt.wepKey);
+	}
+
+	function check_radius_state()
+	{
+	  form = document.formEncrypt ;
+	  use1x = form.use1x;
+	  wpaAuth = form.wpaAuth;
+	  if ( (form.method.selectedIndex<2 && use1x.checked) ) {
+		enableTextField(form.radiusPort);
+	  	enableTextField(form.radiusIP);
+	  	enableTextField(form.radiusPass);
+	  }
+	  else if ( form.method.selectedIndex<2 ){ 
+	  	disableTextField(form.radiusPort);
+	  	disableTextField(form.radiusIP);
+	  	disableTextField(form.radiusPass);
+	  }
+	  
+	  if ( (form.method.selectedIndex>=2 && wpaAuth[0].checked) ) {
+		enableTextField(form.radiusPort);
+	  	enableTextField(form.radiusIP);
+	  	enableTextField(form.radiusPass);
+	  	
+	  	disableTextField(document.formEncrypt.pskFormat);
+	  	disableTextField(document.formEncrypt.pskValue);
+	  }
+	  else if ( (form.method.selectedIndex>=2 && wpaAuth[1].checked) ){
+	  	disableTextField(form.radiusPort);
+	  	disableTextField(form.radiusIP);
+	  	disableTextField(form.radiusPass);
+	  	
+	  	enableTextField(document.formEncrypt.pskFormat);
+	  	enableTextField(document.formEncrypt.pskValue);
+	  }
+	}
+
+
+	function check_nonWpaSupp_state()
+	{
+	  check_radius_state();
+	  check_wepbutton_state();
+	  check_wepKeyLen_state();
+	}
+
+	function check_wepKeyLen_state()
+	{
+	  form = document.formEncrypt ;
+	  use1x = form.use1x;
+	  if ((form.method.selectedIndex==1 && use1x.checked) )
+	  	enableRadioGroup(form.wepKeyLen);
+	  else
+	  	disableRadioGroup(form.wepKeyLen);
+	}
+
+	function disable_wpa()
+	{
+	  disableTextField(document.formEncrypt.pskFormat);
+	  disableTextField(document.formEncrypt.pskValue);
+
+	  //if(document.formEncrypt.elements.use1x.disabled != true)
+	  	enableCheckBox(document.formEncrypt.elements.use1x);
+	  disableRadioGroup(document.formEncrypt.elements.wpaAuth);
+	  check_nonWpaSupp_state();
+	}
+
+	function enable_wpa()
+	{
+	  enableTextField(document.formEncrypt.pskFormat);
+	  enableTextField(document.formEncrypt.pskValue);  
+	  
+	  disableCheckBox(document.formEncrypt.elements.use1x);
+	 // if(document.formEncrypt.elements.use1x.disabled != true)
+		enableRadioGroup(document.formEncrypt.elements.wpaAuth);  	
+	  check_nonWpaSupp_state();
+	}
+
+	function checkState()
+	{
+	  if (document.formEncrypt.wlanDisabled.value == "ON") {
+	    disableTextField(document.formEncrypt.method);
+	    disableButton(document.formEncrypt.wepKey);
+	    disableTextField(document.formEncrypt.use1x);
+	    disableRadioGroup(document.formEncrypt.wepKeyLen);
+	    disableRadioGroup(document.formEncrypt.elements.wpaAuth);
+	    disableTextField(document.formEncrypt.pskFormat);
+	    disableTextField(document.formEncrypt.pskValue);
+	    disableTextField(document.formEncrypt.radiusPort);
+	    disableTextField(document.formEncrypt.radiusIP);
+	    disableTextField(document.formEncrypt.radiusPass);
+	    disableButton(document.formEncrypt.save);
+	  } else {
+	    if (document.formEncrypt.method.selectedIndex>=2)
+	  	  enable_wpa();
+	    else
+	  	  disable_wpa();
+	 };
+	}
+
+	function openWindow(url, windowName)
+	{
+		var wide=620;
+		var high=420;
+		if (document.all)
+			var xMax = screen.width, yMax = screen.height;
+		else if (document.layers)
+			var xMax = window.outerWidth, yMax = window.outerHeight;
+		else
+		   var xMax = 640, yMax=500;
+		var xOffset = (xMax - wide)/2;
+		var yOffset = (yMax - high)/3;
+
+		var settings = 'width='+wide+',height='+high+',screenX='+xOffset+',screenY='+yOffset+',top='+yOffset+',left='+xOffset+', resizable=yes, toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes';
+
+		window.open( url, windowName, settings );
+	}
+
+
+	function wepKeyClick(url)
+	{
+	  
+	  if (document.formEncrypt.method.selectedIndex==1) {
+	    if (document.formEncrypt.checkWPS2.value == 1){
+	      if (confirm("If the security is WEP, the WPS would be disabled.\nDo you sure?") == 0){
+	        return false;
+	      }
+		}
+	    
+	    openWindow(url, 'SetWEPKey' );
+	  }
+	}
+
+	function saveChanges()
+	{
+	  if (document.formEncrypt.method.selectedIndex>=2) {
+		var str = document.formEncrypt.pskValue.value;
+		if (document.formEncrypt.pskFormat.selectedIndex==1) {
+			if (str.length != 64) {
+				alert('Pre-Shared Key value should be 64 characters.');
+				document.formEncrypt.pskValue.focus();
+				return false;
+			}
+			takedef = 0;
+			if (defPskFormat == 1 && defPskLen == 64) {
+				for (var i=0; i<64; i++) {
+	    				if ( str.charAt(i) != '*')
+						break;
+				}
+				if (i == 64 )
+					takedef = 1;
+	  		}
+			if (takedef == 0) {
+				for (var i=0; i<str.length; i++) {
+	    				if ( (str.charAt(i) >= '0' && str.charAt(i) <= '9') ||
+						(str.charAt(i) >= 'a' && str.charAt(i) <= 'f') ||
+						(str.charAt(i) >= 'A' && str.charAt(i) <= 'F') )
+						continue;
+					alert("Invalid Pre-Shared Key value. It should be in hex number (0-9 or a-f).");
+					document.formEncrypt.pskValue.focus();
+					return false;
+	  			}
+			}
+		}
+		else {
+			if ( (document.formEncrypt.method.selectedIndex>=2 && wpaAuth[1].checked) ) {
+			if (str.length < 8) {
+				alert('Pre-Shared Key value should be set at least 8 characters.');
+				document.formEncrypt.pskValue.focus();
+				return false;
+			}
+			if (str.length > 64) {
+				alert('Pre-Shared Key value should be less than 64 characters.');
+				document.formEncrypt.pskValue.focus();
+				return false;
+			}
+
+			//add by ramen 20090603 for telefonica 
+			if(!isValidWPAPasswd(str))
+			{
+				alert('Pre-Shared Key value has illegal characters.');
+				return false;
+			}
+			}
+		}
+	  }
+
+	  if (document.formEncrypt.checkWPS2.value == 1){
+	    if (document.formEncrypt.method.selectedIndex == 1){
+	      if (confirm("If the security is WEP, the WPS would be disabled.\nDo you sure?") == 0){
+	        return false;
+	      }
+	    }else if (document.formEncrypt.method.selectedIndex == 2 || document.formEncrypt.method.selectedIndex == 5){
+	      if (confirm("If the security is WPA-TKIP/WPA2-TKIP, the WPS would be disabled.\nDo you sure?") == 0){
+	        return false;
+	      }
+	    }
+	  }
+
+	  return true;
+	}
+
+
+	function postSecurity(encrypt, enable1X, wep, wpaAuth, wpaPSKFormat, wpaPSK, rsPort, rsIpAddr, rsPassword) 
+	{	
+		document.formEncrypt.method.value = encrypt;
+		document.formEncrypt.pskFormat.value = wpaPSKFormat;
+		document.formEncrypt.pskValue.value = wpaPSK;				
+		document.formEncrypt.radiusIP.value = rsIpAddr;
+		document.formEncrypt.radiusPort.value = rsPort;
+		document.formEncrypt.radiusPass.value = rsPassword;
+			
+		if ( wep != 0 )
+			document.formEncrypt.wepKeyLen[wep-1].checked = true;
+		
+		if (enable1X==1)
+			document.formEncrypt.use1x.checked = true;		
+		else
+			document.formEncrypt.use1x.checked = false;			
+		document.formEncrypt.wpaAuth[wpaAuth-1].checked = true;	
+		
+		checkState();
+	        defPskLen = document.formEncrypt.pskValue.value.length;
+		defPskFormat = document.formEncrypt.pskFormat.selectedIndex;	
+	}
+	</script>
+</head>
+
+<body>
+    <form action=form2WlEncrypt.cgi method=POST name="formEncrypt">
+    <div class="intro_main ">
+        <p class="intro_title">Wireless Security Setup</p>
+        <p class="intro_content">This page allows you setup the wireless security. Turn on WEP or WPA by using Encryption Keys could prevent any unauthorized access to your wireless network. </p>
+        <input type=hidden name="wlanDisabled" 
+        <VWS_SCREEN (char*) webShowWlanDISABLED[];>
+        >        
+    </div>
+    <div class="data_common data_common_notitle" id="security_data">
+        <table>
+#ifdef CONFIG_MBSSID
+            <tr>
+                <th width="30%">SSID TYPE:</th>
+                <td>
+                    <label><input type="radio" checked value="0" name="wpaSSID" 
+                    <VWS_SCREEN (char*) webShowWlanSECURITY_ROOTINFO[];>
+                    >Root &nbsp;</label>
+                    <label><input type="radio" value="1" name="wpaSSID" 
+                    <VWS_SCREEN (char*) webShowWlanSECURITY_VAP0INFO[];>
+                    >VAP0 &nbsp;</label>
+#if !defined(CONFIG_WLAN_MBSSID_NUM) || CONFIG_WLAN_MBSSID_NUM >=2                    
+                    <label><input type="radio" value="2" name="wpaSSID" 
+                    <VWS_SCREEN (char*) webShowWlanSECURITY_VAP1INFO[];>
+                    >VAP1 &nbsp;</label>
+#endif
+#if !defined(CONFIG_WLAN_MBSSID_NUM) || CONFIG_WLAN_MBSSID_NUM >=3
+                    <label><input type="radio" value="3" name="wpaSSID" 
+                    <VWS_SCREEN (char*) webShowWlanSECURITY_VAP2INFO[];>
+                    >VAP2 &nbsp;</label>
+#endif
+#if !defined(CONFIG_WLAN_MBSSID_NUM) || CONFIG_WLAN_MBSSID_NUM == 4
+                    <label><input type="radio" value="4" name="wpaSSID" 
+                    <VWS_SCREEN (char*) webShowWlanSECURITY_VAP3INFO[];>
+                    >VAP3</label>
+#endif                    
+                </td>
+            </tr>
+#endif
+            <tr>
+                <th width="30%">Encryption:</th>
+				<td>
+                    <select name="method" size="1" onChange="checkState()">
+                    <option value="0">None</option>
+                    <option value="1">WEP</option>
+                    <option value="2">WPA (TKIP)</option>
+                    <option value="3">WPA (AES)</option>
+                    <option value="4">WPA2(AES)</option>
+                    <option value="5">WPA2(TKIP)</option>
+                    <option value="6">WPA2 Mixed</option>
+                    </select>&nbsp;&nbsp;
+                    <input class="inner_btn" type="button" name="wepKey" value="Set WEP Key" onClick="wepKeyClick('wlwep.htm')">
+                </td>
+            </tr>
+            <tr>
+                <th><label><input type="checkbox" value="ON" name="use1x" onClick="checkState()">Use 802.1x Authentication</label></th>
+                <td>
+                    <label><input type="radio" value="1" name="wepKeyLen">
+                    WEP 64bits&nbsp;</label>
+                    <label><input type="radio" value="2" name="wepKeyLen">
+                    WEP 128bits</label>
+                </td>
+            </tr>
+            <tr>
+                <th>WPA Authentication Mode:</th>
+                <td>
+                    <label><input type="radio" value="1" name="wpaAuth" onClick="checkState()">
+                    Enterprise (RADIUS)&nbsp;</label>
+                    <label><input type="radio" value="2" name="wpaAuth" onClick="checkState()">
+                    Personal (Pre-Shared Key)</label>
+                </td>
+            </tr>
+            <tr>
+                <th>Pre-Shared Key Format:</th>
+                <td>
+                    <select name="pskFormat" size="1">
+                    <option value="0">Passphrase</option>
+                    <option value="1">Hex (64 characters)</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <th>Pre-Shared Key:</th>
+                <td>
+                    <input type="text" maxlength="64" size="32" name="pskValue" value=
+                    <VWS_SCREEN (char*) webShowWlanPSK[];>
+                    >
+                </td>
+            </tr>
+            <tr>
+                <th>Authentication RADIUS Server:</th>
+                <td>
+                    Port
+                    <input type="text"  maxlength="5" size="4" name="radiusPort" 
+                    <VWS_SCREEN (char*) webShowWlanRS_PORT[];> 
+                    >
+                    &nbsp;&nbsp; IP address
+                    <input type="text" size="10" name="radiusIP" 
+                    <VWS_SCREEN (char*) webShowWlanRS_IP[];> 
+                    > &nbsp;&nbsp; Password
+                    <input type="password"  maxlength="64" size="8" name="radiusPass" 
+                    <VWS_SCREEN (char*) webShowWlanRS_PASSWORD[];> 
+                    >
+                </td>
+            </tr>
+            <tr>
+                <th colspan="2">
+                    <em>Note: When encryption WEP is selected, you must set WEP key value.</em>
+                </th>
+            </tr>
+       </table>
+    </div>
+    <div class="btn_ctl">
+        <VWS_SCREEN (char*) webShowWPS2Check[];>
+        <input class="link_bg" type=submit name=save onClick="return saveChanges()" value="Apply Changes">
+        <INPUT TYPE="hidden" NAME="submit.htm?wlwpa.htm" VALUE="Send">
+        <script>
+        <VWS_SCREEN (char*) webShowWlanSECURITY_INIT[];>
+    	checkState();
+        defPskLen = document.formEncrypt.pskValue.value.length;
+        defPskFormat = document.formEncrypt.pskFormat.selectedIndex;
+        </script>
+    </div>
+    </form>
+</body>
+</html>

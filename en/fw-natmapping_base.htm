@@ -1,0 +1,382 @@
+<VWS_FUNCTION (void*)SendWebMetaStr();>
+<VWS_FUNCTION (void*)SendWebCssStr();>
+#if defined(CONFIG_IP_NAT_FOURTYPE)
+	<title>NAT IP MAPPING</title>
+    <script>
+    var curTblNum=0;
+    <VWS_FUNCTION (void*)showNatMappingTableNum();>
+
+    function checkIpRangeValid(lowipstr,highipstr)
+    {
+
+	    if((getDigit(lowipstr,1)>getDigit(highipstr,1))) return -2;
+	    if((getDigit(lowipstr,2)>getDigit(highipstr,2))) return -2;
+	    if((getDigit(lowipstr,3)>getDigit(highipstr,3))) return -2;
+	    if((getDigit(lowipstr,4)>getDigit(highipstr,4))) return -2;  		
+	    return true;
+    }
+    function addClick()
+    {
+
+	    if(curTblNum>=20){
+		    alert("The nat ip mapping table(MAX 20) is full!");
+		    return false;
+	    }
+
+	      with(document.formNatmappingSetting){
+		    if (lowip.value=="")return false;
+		    if(!checkIP(lowip))	return false;
+		    if(highip.value!=""){
+			    if(!checkIP(highip))return false;
+			    var checkre=checkIpRangeValid(lowip.value,highip.value);
+			    if(checkre==-2){
+				    alert("The high ip should be bigger than the low ip!");
+				    return false;
+			    }
+	      }
+	      if (mappinglowip.value=="")return false;
+		    if(!checkIP(mappinglowip))	return false;
+		    if(mappinghighip.value!=""){
+			    if(!checkIP(mappinghighip))return false;
+			    var checkre=checkIpRangeValid(mappinglowip.value,mappinghighip.value);
+			    if(checkre==-2){
+				    alert("The high ip should be bigger than the low ip!");
+				    return false;
+			    }
+	      }
+		    return true;
+	    }
+    }
+    function checkState()
+    {              		
+	     if ( document.formNatmappingSetting.addressMapType.selectedIndex == 0 ) {
+		    //alert('You select One-to-One.');				
+  		    enableTextField(document.formNatmappingSetting.lowip);
+  		    disableTextField(document.formNatmappingSetting.highip);
+  		    enableTextField(document.formNatmappingSetting.mappinglowip);
+  		    disableTextField(document.formNatmappingSetting.mappinghighip);  		
+  	    } else if ( document.formNatmappingSetting.addressMapType.selectedIndex == 1 ) {
+		    //alert('You select Many-to-One.');				
+  		    enableTextField(document.formNatmappingSetting.lowip);
+  		    enableTextField(document.formNatmappingSetting.highip);
+  		    enableTextField(document.formNatmappingSetting.mappinglowip);
+  		    disableTextField(document.formNatmappingSetting.mappinghighip);   		
+  	    } else if ( document.formNatmappingSetting.addressMapType.selectedIndex == 2 ) {
+		    //alert('You select Many-to-Many.');
+		    enableTextField(document.formNatmappingSetting.lowip);
+  		    enableTextField(document.formNatmappingSetting.highip);
+  		    enableTextField(document.formNatmappingSetting.mappinglowip);
+  		    enableTextField(document.formNatmappingSetting.mappinghighip); 				 		
+  	    } else if ( document.formNatmappingSetting.addressMapType.selectedIndex == 3 ) {
+		    //alert('You select Many One-to-Many.');
+		    enableTextField(document.formNatmappingSetting.lowip);
+  		    disableTextField(document.formNatmappingSetting.highip);
+  		    enableTextField(document.formNatmappingSetting.mappinglowip);
+  		    enableTextField(document.formNatmappingSetting.mappinghighip); 				 		
+  	    }
+  
+    }
+    </script>
+</head>
+<body onload="checkState();">
+    <form action="form2natmapping.cgi" method=POST name="formNatmappingSetting">
+    <div class="intro_main ">
+        <p class="intro_title">NAT IP MAPPING</p>
+        <p class="intro_content">Entries in this table allow you to config one IP pool for specified source ip address from lan,so one packet which's source ip is in range of the specified address will select one IP address from pool for NAT. </p>
+    </div>
+    <div class="data_common data_common_notitle">
+        <table>
+            <tr>
+               <th width="30%">Type:</th>
+			   <td> 
+                   <select onchange="checkState()" name="addressMapType" size="1">
+                   <option value="1">One-to-One</option>
+                   <option value="2">Many-to-One</option>
+                   <option value="3">Many-to-Many</option>
+                   <option value="4">One-to-Many</option>
+                   </select>
+               </td>
+            </tr>
+            <tr>
+                <th width="30%">Local Start IP:</th>
+                <td><input type="TEXT" value="" maxlength="15" size="20" name="lowip"></td>
+            </tr>
+            <tr>
+                <th>Local End IP:</th>
+                <td><input type="TEXT" value="" maxlength="15" size="20" name="highip"></td>
+            </tr>
+            <tr>
+                <th>Global Start IP:</th>
+                <td><input type="TEXT" value="" maxlength="15" size="20" name="mappinglowip"></td>
+            </tr>
+            <tr>
+                <th>Global End IP:</th>
+                <td><input type="TEXT" value="" maxlength="15" size="20" name="mappinghighip"></td>
+            </tr>
+        </table>
+    </div>
+    <div class="adsl clearfix">
+        <div class="btn_ctls">
+            <input class="link_bg" type="submit" onClick="return addClick()" value="Apply Changes">
+            <input class="link_bg" type="reset" name="reset" value="Reset">
+        </div>
+        <input type="hidden" name="submit.htm?fw-natmapping.htm" VALUE="Send">
+    </div>
+    </form>
+    <form method=POST Action="form2natmappingdel.cgi" name="form2natmappingdel">
+    <INPUT TYPE="HIDDEN" NAME="actiontype" VALUE="" >
+    <INPUT TYPE="HIDDEN" NAME="state" VALUE="" >
+    <div class="column">
+        <div class="column_title">
+            <div class="column_title_left"></div>
+            <p>Current NAT IP MAPPING Table:</p>
+            <div class="column_title_right"></div>
+        </div>
+        <div class="data_common data_vertical">
+            <table>
+                <tr>
+                    <th>Local Start IP </th>
+                    <th>Local End IP</th>
+                    <th>Global Start IP</th>
+                    <th>Global End IP</th>
+                    <th>Action</th>
+                </tr>
+                <tr>
+                <VWS_FUNCTION (void*)showNatMappingTable();>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div class="adsl clearfix">
+        <div class="btn_ctls">
+            <input class="link_bg" type="submit" onClick="deleteSelectClick()" value="Delete Selected">
+            <input class="link_bg" onclick="return deleteAllClick()" type=submit name=deleteAllAddressMap value="Delete All">
+        </div>
+        <INPUT TYPE="HIDDEN" NAME="deleteindex" VALUE="" >
+        <INPUT TYPE="HIDDEN" NAME="submit.htm?fw-natmapping.htm" VALUE="Send" >
+    </div>
+    </form>
+    <script language="JavaScript">
+    <!--
+            function deleteSelectClick() {
+                with (document) {
+                    var deleteindexobj = form2natmappingdel.deleteindex;
+                    var i = 0;
+                    while (1) {
+                        var objname = 'select' + i;
+                        if (!getElementById(objname))
+                            break;
+                        if (getElementById(objname).checked) {
+                            if (deleteindexobj.value.length)
+                                deleteindexobj.value = deleteindexobj.value + ',' + i;
+                            else
+                                deleteindexobj.value = i;
+                        }
+                        i++;
+                    }
+                }
+            }
+            function natActionFunc(form, actiontype, natcmd, state) {
+                form.elements[0].value = actiontype;
+                form.elements[1].value = natcmd;
+                form.elements[2].value = state;
+                form.submit();
+            }
+    //-->
+    </script>
+</body>
+</html>
+#else
+	<title>NAT IP POOL</title>
+	<script>
+	function itfIpNetmask(name, ip0,ip1,ip2,ip3,mk0,mk1,mk2,mk3)
+	{
+		this.name = name;
+		this.ip0 = ip0;
+		this.ip1 = ip1;
+		this.ip2 = ip2;
+		this.ip3 = ip3;
+		this.mk0 = mk0;
+		this.mk1 = mk1;
+		this.mk2 = mk2;
+		this.mk3 = mk3;
+	}
+
+	function checkIpRangeValid(lowipstr,highipstr)
+	{
+		var IpRanges = new Array();
+		<VWS_FUNCTION (void*)CreateWanInterfaceArray();>
+		for(var i=0; i<IpRanges.length; i++)
+		{
+			if(document.formNatPoolSetting.wanport.value==IpRanges[i].name)
+			{
+				/*
+				if(((IpRanges[i].ip0&IpRanges[i].mk0)!=(getDigit(lowipstr,1)&IpRanges[i].mk0)||(IpRanges[i].ip0&IpRanges[i].mk0)!=(getDigit(highipstr,1)&IpRanges[i].mk0)))			return -1;		
+				if(((IpRanges[i].ip1&IpRanges[i].mk1)!=(getDigit(lowipstr,2)&IpRanges[i].mk1)||(IpRanges[i].ip1&IpRanges[i].mk1)!=(getDigit(highipstr,2)&IpRanges[i].mk1)))			return -1;			
+				if(((IpRanges[i].ip2&IpRanges[i].mk2)!=(getDigit(lowipstr,3)&IpRanges[i].mk2)||(IpRanges[i].ip2&IpRanges[i].mk2)!=(getDigit(highipstr,3)&IpRanges[i].mk2)))			return -1;			
+				if(((IpRanges[i].ip3&IpRanges[i].mk3)!=(getDigit(lowipstr,4)&IpRanges[i].mk3)||(IpRanges[i].ip3&IpRanges[i].mk3)!=(getDigit(highipstr,4)&IpRanges[i].mk3)))			return -1;				
+				*/
+				if((getDigit(lowipstr,1)>getDigit(highipstr,1))) return -2;
+				if((getDigit(lowipstr,2)>getDigit(highipstr,2))) return -2;
+				if((getDigit(lowipstr,3)>getDigit(highipstr,3))) return -2;
+				if((getDigit(lowipstr,4)>getDigit(highipstr,4))) return -2;  
+				break;
+			}
+		}	
+		
+		return true;
+	}
+	function addClick()
+	{
+		
+	  if (document.formNatPoolSetting.lowip.value=="" && document.formNatPoolSetting.highip.value=="" )
+		return false;
+
+		if(!checkIP(document.formNatPoolSetting.lowip))
+		{
+		return false;
+	  }
+		if(!checkIP(document.formNatPoolSetting.highip))
+		{
+		return false;
+	  }
+
+	   var checkre=checkIpRangeValid(document.formNatPoolSetting.lowip.value,document.formNatPoolSetting.highip.value);
+	/*
+	   if(checkre==-1) {
+		alert("The range's ip should be in the same network with the interface!");
+	   return false;
+	  }
+	 */
+	  if(checkre==-2){
+		alert("The high ip should be bigger than the low ip!");
+		return false;
+	  }
+
+		  if(!checkMask(document.formNatPoolSetting.netmask))
+	{
+		return false;
+	  }
+
+		return true;
+	}
+
+
+
+	function disableDelButton()
+	{
+	  if (verifyBrowser() != "ns") {
+		disableButton(document.formPortFwDel.deleteSelPortFw);
+		disableButton(document.formPortFwDel.deleteAllPortFw);
+	  }
+	}
+	function naptTblClick(url)
+	{
+		var wide=600;
+		var high=400;
+		if (document.all)
+			var xMax = screen.width, yMax = screen.height;
+		else if (document.layers)
+			var xMax = window.outerWidth, yMax = window.outerHeight;
+		else
+		   var xMax = 640, yMax=480;
+		var xOffset = (xMax - wide)/2;
+		var yOffset = (yMax - high)/3;
+
+		var settings = 'width='+wide+',height='+high+',screenX='+xOffset+',screenY='+yOffset+',top='+yOffset+',left='+xOffset+', resizable=yes, toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes';
+
+		window.open( url, 'NATTbl', settings );
+	}
+	function loadCheck()
+	{
+		
+		if(document.formNatPoolSetting.wanport.length==0)//disable the pool config
+		{
+			document.formNatPoolSetting.wanport.disabled=true;
+			document.formNatPoolSetting.lowip.disabled=true;
+			document.formNatPoolSetting.highip.disabled=true;
+			document.formNatPoolSetting.netmask.disabled=true;
+		}
+	}
+
+	</script>
+</head>
+<body onload="loadCheck();">
+	<div class="intro_main ">
+        <p class="intro_title">NAT IP POOL</p>
+        <p class="intro_content">Entries in this table allow you to config one IP pool for any WAN Router pvc interface,so 
+			one packet through the interface will select one IP address from pool for NAT.
+        </p>
+    </div>
+	<form action="form2pool.cgi" method=POST name="formNatPoolSetting">
+	<div class="data_common data_common_notitle">
+        <table>
+            <tr>
+                <th>IP Range:</th>
+                <td>
+					<SELECT NAME="wanport" WIDTH=30 >
+						<VWS_SCREEN (char*) xscrnNaptWanRouterPoolPvc[];>
+					</SELECT>
+                </td>
+            </tr>
+			<tr>
+                <th>interface:</th>
+                <td>
+					<INPUT TYPE="TEXT" NAME="lowip" SIZE="15" MAXLENGTH="15" VALUE="" >-<INPUT TYPE="TEXT" NAME="highip" SIZE="15" MAXLENGTH="15" VALUE="" >
+                </td>
+            </tr>
+			<tr>
+                <th>netmask:</th>
+                <td>
+					<INPUT TYPE="TEXT" NAME="netmask" SIZE="15" MAXLENGTH="15" VALUE="" >
+                </td>
+            </tr>
+        </table>
+    </div>
+	<div class="btn_ctl clearfix">
+		<input class="link_bg" type="submit" value="Apply Changes" onClick="return addClick()">&nbsp;&nbsp;
+		<input class="link_bg" type="reset" value="Reset" name="reset">&nbsp;&nbsp;
+		<input type="hidden" name="submit.htm?fw-pool.htm" VALUE="Send">
+	</div>
+	</form>
+	<form method=POST Action="form2natpooldel.cgi">
+	<INPUT TYPE="HIDDEN" NAME="actiontype" VALUE="" >
+	<INPUT TYPE="HIDDEN" NAME="natcmd" VALUE="" >
+	<INPUT TYPE="HIDDEN" NAME="state" VALUE="" >
+	<INPUT TYPE="HIDDEN" NAME="waninterface" VALUE="" >
+	<div id="pptpstatus" class="column clearfix">
+        <div class="column_title">
+            <div class="column_title_left"></div>
+            <p>Current NAT Pool Table:</p>
+            <div class="column_title_right"></div>
+         </div>
+         <div class="data_common data_vertical">
+            <table>
+				<tr>
+					<th>WAN Interface</th>
+					<th>Low IP</th>
+					<th>High IP</th>
+					<th>Netmask</th>
+					<th>Action</th>
+				</tr>
+				<VWS_FUNCTION (void*)showNatPoolTable();>
+            </table>
+            
+         </div>
+    </div>
+	<INPUT TYPE="HIDDEN" NAME="submit.htm?fw-pool.htm" VALUE="Send" >
+	</form>
+	<script language="JavaScript">
+	<!--
+	function natActionFunc( form , actiontype, natcmd, state,waninterface){
+	  form.elements[0].value=actiontype;
+	  form.elements[1].value=natcmd;
+	  form.elements[2].value=state;
+	  form.elements[3].value=waninterface;
+	  form.submit();
+	}
+	//-->
+	</script>
+</body>
+</html>
+#endif

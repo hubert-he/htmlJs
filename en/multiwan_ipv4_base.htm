@@ -1,0 +1,1041 @@
+<VWS_FUNCTION (void*)SendWebMetaStr();>
+<VWS_FUNCTION (void*)SendWebCssStr();>
+<title>ADSL Connection Mode</title>
+<script>
+
+var initConnectMode;
+var pppConnectStatus=0;
+var selectflag=0;
+
+//var privilege= 1; //admin priviledge, 0 for user privilege
+
+<VWS_FUNCTION (void*)showPrivilegeVar();>
+
+function pppTypeSelection()
+{
+	if ( document.adsl.pppConnectType.selectedIndex == 2) {
+		document.adsl.pppIdleTime.value = "";
+		disableTextField(document.adsl.pppIdleTime);
+	}
+	else {
+		if (document.adsl.pppConnectType.selectedIndex == 1) {
+//			document.adsl.pppIdleTime.value = 600;
+			if(document.adsl.pppIdleTime.value=="")
+				document.adsl.pppIdleTime.value = 600;
+			enableTextField(document.adsl.pppIdleTime);
+		}
+		else {
+			document.adsl.pppIdleTime.value = "";
+			disableTextField(document.adsl.pppIdleTime);
+		}
+	}
+}
+
+function pppConnectClick(connect)
+{
+	if (( document.adsl.adslConnectionMode.selectedIndex == 2 ) ||
+	    ( document.adsl.adslConnectionMode.selectedIndex == 3 )) {
+		
+		if ( document.adsl.pppConnectType.selectedIndex == 2 && pppConnectStatus==connect) {
+			if (document.adsl.pppUserName.value=="") {
+				alert('PPP user name cannot be empty!');
+				document.adsl.pppUserName.focus();
+				return false;
+			}
+			//removed by ramen 20090919 start--abbreviate to check the password empty
+			/*
+			if (document.adsl.pppPassword.value=="") {
+				alert('PPP password cannot be empty!');
+				document.adsl.pppPassword.focus();
+				return false;
+			}
+			*/
+			//removed by ramen 20090919 end
+		}
+		
+		return true;
+	}
+	
+	return false;
+}
+
+function addClick()
+{
+	return vcCheck();
+}
+
+function modifyCheck()
+{
+   if(selectflag==0)
+   {
+      alert('Select an entry to be modified !!');
+      return false;
+   }
+   if( (document.adsl.vpi.value==1)&&(document.adsl.vci.value==39))
+   {
+      alert('This interface (vpi='+document.adsl.vpi.value+', vci='+document.adsl.vci.value+') is reserved can not be modified !!');
+      return false;
+   }
+	return vcCheck();
+}
+
+function vcCheck()
+{
+//   if(document.adsl.enablepvc.value == 0){
+	digit = getDigit(document.adsl.vpi.value, 1);
+	if(document.actionadsl.phyType[0].checked == true)
+	{   //ADSL UP type
+		if ( validateKey(document.adsl.vpi.value) == 0 ||
+			(digit > 255 || digit < 0) ) {
+			alert("Invalid VPI value! You should set a value between 0-255.");
+			document.adsl.vpi.focus();
+			return false;
+		}
+
+		digit = getDigit(document.adsl.vci.value, 1);
+		if ( validateKey(document.adsl.vci.value) == 0 ||
+			(digit > 65535 || digit < 32) ) {
+			alert("Invalid VCI value! You should set a value between 32-65535.");
+			document.adsl.vci.focus();
+			return false;
+		}
+	}
+ //  }	
+	if (( document.adsl.adslConnectionMode.selectedIndex == 2 ) ||
+	    ( document.adsl.adslConnectionMode.selectedIndex == 3 )) {
+		if (document.adsl.pppUserName.value=="") {
+			alert('PPP user name cannot be empty!');
+			document.adsl.pppUserName.focus();
+			return false;
+		}
+		//removed by ramen 20090919 start--abbreviate to check the password empty
+		/*
+		if (document.adsl.pppPassword.value=="") {
+			alert('PPP password cannot be empty!');
+			document.adsl.pppPassword.focus();
+			return false;
+		}
+		*/
+		//removed by ramen 20090919 end
+		if(!checkSpecialChar(document.adsl.pppUserName.value,1))
+			{
+					alert("Invalid characters!");
+					document.adsl.pppUserName.focus();
+					return false;
+			}
+		if(!checkSpecialChar(document.adsl.pppPassword.value,0))
+			{
+					alert("Invalid characters!");
+					document.adsl.pppPassword.focus();
+					return false;
+			}
+		if(document.adsl.pppConnectType.value==1){
+			digit = getDigit(document.adsl.pppIdleTime.value, 1);
+			if( validateKey(document.adsl.pppIdleTime.value) == 0 ||
+			    (digit==0)){
+					alert('Invalid PPP IdleTime!');
+					document.adsl.pppIdleTime.focus();
+					return false;
+			}
+		}
+	}
+	
+	if (( document.adsl.adslConnectionMode.selectedIndex == 1 ) ||
+		( document.adsl.adslConnectionMode.selectedIndex == 4 ) || 
+		( document.adsl.adslConnectionMode.selectedIndex == 5 ))   
+		{
+		if (document.adsl.ipMode[0].checked) {
+		   if ( !checkIP(document.adsl.ip))
+		   {
+				return false;
+		   }
+		if (document.adsl.remoteIp.value!="")
+		 {
+		   if ( !checkIP(document.adsl.remoteIp))
+		   {
+				return false;
+		   }
+		 }
+		 if (!checkMask(document.adsl.netmask))
+					return false;
+		}
+	}
+	
+	return true;
+}
+
+function setPPPConnected()
+{
+	pppConnectStatus = 1;
+}
+
+function resetClicked()
+{
+	if (( initConnectMode == 2 ) ||
+		( initConnectMode == 3 )) {
+		pppSettingsEnable();
+		ipSettingsDisable();
+	}
+	else if ( initConnectMode == 0 ) {
+		// bridge mode
+		document.adsl.naptEnabled.disabled = true;
+		document.adsl.igmpEnabled.disabled = true;
+		pppSettingsDisable();
+		ipSettingsDisable();
+	}
+	else {
+		pppSettingsDisable();
+		ipSettingsEnable();
+	}
+	if (initConnectMode == 4)  
+		document.adsl.ipUnnum.disabled = false;
+	selectflag=0;
+}
+
+function disableFixedIpInput()
+{
+	disableTextField(document.adsl.ip);
+	disableTextField(document.adsl.remoteIp);
+	disableTextField(document.adsl.netmask);
+}
+
+function enableFixedIpInput()
+{
+	
+	enableTextField(document.adsl.ip);
+	enableTextField(document.adsl.netmask);
+	if(document.adsl.droute[1].checked)
+		enableTextField(document.adsl.remoteIp);
+}
+
+function ipTypeSelection()
+{
+	if ( document.adsl.ipMode[0].checked ) {
+		enableFixedIpInput();
+	} else {
+		disableFixedIpInput()
+	}
+}
+
+function pppSettingsEnable()
+{
+	//disableTextField(document.adsl.unnumberedip);
+	//disableTextField(document.adsl.unnumberedmask);
+	enableTextField(document.adsl.pppUserName);
+	enableTextField(document.adsl.pppPassword);
+	enableTextField(document.adsl.pppConnectType);
+	pppTypeSelection();
+	document.adsl.droute[0].disabled = false;
+	document.adsl.droute[1].disabled = false;
+}
+
+function updateWanSettingPrivilege()
+{
+	if(privilege == 1)
+	{
+/*	
+		document.actionadsl.phyType[0].disabled = false;
+		document.actionadsl.phyType[1].disabled = false;
+		document.adsl.vpi.readonly = false;
+		document.adsl.vci.readonly = false;
+//		document.adsl.adslEncap[0].disabled =false;
+//		document.adsl.adslEncap[1].disabled =false;		
+//		document.adsl.adslConnectionMode.readonly =false;
+//		document.adsl.naptEnabled.readonly = false;
+//		document.adsl.igmpEnabled.readonly = false;
+//		document.adsl.chEnable[0].disabled =false;
+//		document.adsl.chEnable[1].disabled =false;		
+		document.adsl.ipMode[0].disabled = false;
+		document.adsl.ipMode[1].disabled = false;
+		document.adsl.ip.readonly = false;
+		document.adsl.remoteIp.readonly = false;
+		document.adsl.droute[0].disabled = false;
+		document.adsl.droute[1].disabled = false;	
+		document.adsl.ipUnnum.readonly = false;
+		document.adsl.add.disabled = false;
+		document.adsl.delvc.disabled = false;	
+		
+		document.getElementById('wanModeBlockDiv').style.display = '';
+*/		
+	}else
+	{
+		
+		var control = document.getElementById('control');
+		document.actionadsl.phyType[0].disabled = true;
+		document.actionadsl.phyType[1].disabled = true;
+//		document.adsl.vpi.readonly = true;
+//		document.adsl.vci.readonly = true;
+//		document.adsl.adslEncap[0].disabled =true;
+//		document.adsl.adslEncap[1].disabled =true;	
+		control.style.display = 'none';
+//		document.adsl.adslConnectionMode.readonly =true;
+//		document.adsl.naptEnabled.readonly = true;
+//		document.adsl.igmpEnabled.readonly = true;
+//		document.adsl.chEnable[0].disabled =true;
+//		document.adsl.chEnable[1].disabled =true;		
+		if(document.adsl.ipMode[0].checked == false)
+			document.adsl.ipMode[0].disabled = true;
+		else
+			document.adsl.ipMode[1].disabled = true;
+//		document.adsl.ip.readonly = true;
+//		document.adsl.remoteIp.readonly = true;
+		if(document.adsl.droute[0].checked == false)
+			document.adsl.droute[0].disabled = true;
+		else
+			document.adsl.droute[1].disabled = true;	
+		document.adsl.add.disabled = true;
+		document.adsl.delvc.disabled = true;		
+		document.getElementById('wanModeBlockDiv').style.display = 'none';
+	}
+}
+
+function naptClicked()
+{
+      if(document.adsl.adslConnectionMode.selectedIndex == 4 ) 
+      	{
+      	   		if (document.adsl.naptEnabled.checked == true) {
+			document.adsl.ipUnnum.checked = false;
+			document.adsl.ipUnnum.disabled = true;
+		}
+		else
+			document.adsl.ipUnnum.disabled = false;    	    
+      	}
+}
+
+function pppUnnumberedSettingsEnable()
+{
+	enableTextField(document.adsl.pppUserName);
+	enableTextField(document.adsl.pppPassword);
+	enableTextField(document.adsl.pppConnectType);
+	enableTextField(document.adsl.unnumberedip);
+	enableTextField(document.adsl.unnumberedmask);
+	pppTypeSelection();
+}
+
+function pppSettingsDisable()
+{
+	disableTextField(document.adsl.pppUserName);
+	disableTextField(document.adsl.pppPassword);
+	disableTextField(document.adsl.pppIdleTime);
+	disableTextField(document.adsl.pppConnectType);
+//	disableTextField(document.adsl.unnumberedip);
+//	disableTextField(document.adsl.unnumberedmask);
+	
+		document.adsl.droute[0].disabled = true;
+	document.adsl.droute[1].disabled = true;
+}
+/*
+function ipSettingsEnable()
+{
+	document.adsl.ipMode[0].disabled = false;
+	document.adsl.ipMode[1].disabled = false;
+	ipTypeSelection();
+	document.adsl.droute[0].disabled = false;
+	document.adsl.droute[1].disabled = false;
+}
+*/
+
+function ipSettingsEnable()
+{
+	if ( document.adsl.adslConnectionMode.selectedIndex == 4)  
+	{
+		document.adsl.ipMode[0].checked = true;
+		if (document.adsl.naptEnabled.checked)
+			document.adsl.ipUnnum.disabled = true;
+		else
+			document.adsl.ipUnnum.disabled = false;
+		document.adsl.ipMode[0].disabled = true;
+		document.adsl.ipMode[1].disabled = true;
+	}
+	else {	
+		document.adsl.ipMode[0].disabled = false;
+		document.adsl.ipMode[1].disabled = false;
+	}
+	document.adsl.droute[0].disabled = false;
+	document.adsl.droute[1].disabled = false;
+	if(document.adsl.droute[0].checked==true)
+		document.adsl.remoteIp.disabled=true;
+	else
+		document.adsl.remoteIp.disabled=false;	
+	ipTypeSelection();
+}
+function ipunnumSettingsEnable()
+{
+	if ( document.adsl.adslConnectionMode.selectedIndex == 4)   
+	{
+		document.adsl.ipMode[0].checked = true;
+		if (document.adsl.naptEnabled.checked)
+			document.adsl.ipUnnum.disabled = true;
+		else
+			document.adsl.ipUnnum.disabled = false;
+		document.adsl.ipMode[0].disabled = true;
+		document.adsl.ipMode[1].disabled = true;
+		document.adsl.remoteIp.disabled = true;
+		  
+		document.adsl.droute[0].disabled = false;
+	        document.adsl.droute[1].disabled = false;
+	        ipTypeSelection();
+	}
+	else
+		{
+		 document.adsl.ipMode[0].disabled = true;
+	         document.adsl.ipMode[1].disabled = true;
+	         disableFixedIpInput();
+		}
+
+}
+
+function ipSettingsDisable()
+{
+	document.adsl.ipMode[0].disabled = true;
+	document.adsl.ipMode[1].disabled = true;
+	disableFixedIpInput();
+	document.adsl.droute[0].disabled = true;
+	document.adsl.droute[1].disabled = true;
+
+}
+function ipModeSelection()
+{
+	if (document.adsl.ipUnnum.checked) {
+		pppSettingsDisable();
+		ipSettingsDisable();
+		document.adsl.droute[0].disabled = false;
+		document.adsl.droute[1].disabled = false;
+	}
+	else
+		ipSettingsEnable();
+}
+
+function ipUnnumModeSelection()
+{
+	if (document.adsl.ipUnnum.checked) {
+//		pppSettingsDisable();
+		ipSettingsDisable();
+		document.adsl.droute[0].disabled = false;
+		document.adsl.droute[1].disabled = false;
+		document.adsl.ipMode[0].checked = false;
+		document.adsl.ipMode[1].checked = false;
+		document.adsl.remoteIp.disabled = true;
+	}
+	else
+		ipunnumSettingsEnable();
+}
+
+function adslConnectionModeSelection()
+{
+	document.adsl.naptEnabled.disabled = false;
+	document.adsl.igmpEnabled.disabled = false;
+	document.adsl.igmpEnabled.checked = false;
+	document.adsl.adslEncap[1].disabled = false;
+//	document.adsl.ipUnnum.checked=false;
+         if (( document.adsl.adslConnectionMode.selectedIndex == 1 ) ||
+		( document.adsl.adslConnectionMode.selectedIndex == 2 ))
+		// MER, PPPoE
+		document.adsl.naptEnabled.checked = true;
+	else
+		document.adsl.naptEnabled.checked = false;
+	
+	if ( document.adsl.adslConnectionMode.selectedIndex == 2 )
+	{
+		
+		ipSettingsDisable();
+		pppSettingsEnable();
+		
+		document.adsl.ipUnnum.disabled =true;
+	}
+	else if ( document.adsl.adslConnectionMode.selectedIndex == 3 ) {
+
+                ipSettingsDisable();
+		pppSettingsEnable();
+		
+		document.adsl.ipUnnum.disabled =true;
+	}
+	else if ((document.adsl.adslConnectionMode.selectedIndex == 4) )  
+	{
+		document.adsl.ipMode[0].checked = true;
+		pppSettingsDisable();
+		ipSettingsEnable();
+		document.adsl.ipUnnum.disabled = true;
+		document.adsl.ipMode[0].disabled = true;
+		document.adsl.ipMode[1].disabled = true;
+		document.adsl.ipUnnum.disabled =false;
+	}
+	else if (document.adsl.adslConnectionMode.selectedIndex == 5)  
+	{
+		document.adsl.ipMode[0].checked = true;
+		document.adsl.adslEncap[0].checked = true;
+		pppSettingsDisable();
+		ipSettingsEnable();
+		document.adsl.ipUnnum.disabled = true;
+		document.adsl.ipMode[0].disabled = true;
+		document.adsl.ipMode[1].disabled = true;
+		document.adsl.adslEncap[1].disabled = true;
+	}
+
+	else if ( document.adsl.adslConnectionMode.selectedIndex == 0 ) {
+		// bridge mode
+		document.adsl.ipUnnum.disabled = true;
+	//	document.adsl.ipUnnum.checked=false;
+		document.adsl.naptEnabled.disabled = true;
+		document.adsl.igmpEnabled.disabled = true;
+		pppSettingsDisable();
+		ipSettingsDisable();
+	}
+	else {
+		pppSettingsDisable();
+		ipSettingsEnable();
+		document.adsl.ipUnnum.disabled = true;
+	}
+	updateWanSettingPrivilege();	
+}
+
+function DeleteClick()
+{
+   if(selectflag==0)
+   {
+      alert('Select an entry to be deleted !!');
+      return false;
+   }
+   if( (document.adsl.vpi.value==1)&&(document.adsl.vci.value==39))
+   {
+      alert('This interface (vpi='+document.adsl.vpi.value+', vci='+document.adsl.vci.value+') is reserved can not be deleted !!');
+      return false;
+   }
+   
+	if ( !confirm('Do you really want to delete the selected entry?') ) {
+		return false;
+	}
+	else
+		return true;
+}
+
+/*function deleteAllClick()
+{
+	if ( !confirm('Do you really want to delete the all entries?') ) {
+		return false;
+	}
+	else
+		return true;
+}*/
+
+function clearAll()
+{
+	document.adsl.vpi.value = 0;
+	document.adsl.vci.value = "";
+	document.adsl.adslEncap.value = 0;
+	document.adsl.naptEnabled.checked = false;
+	document.adsl.igmpEnabled.checked = false;
+	document.adsl.adslConnectionMode.value = 0;
+	
+	document.adsl.pppUserName.value = "";
+	document.adsl.pppPassword.value = "";
+	document.adsl.pppConnectType.value = 0;
+	document.adsl.pppIdleTime.value = "";
+//   document.adsl.unnumberedip.value = "";
+//   document.adsl.unnumberedmask.value = "";
+	document.adsl.netmask.value = "";
+	document.adsl.ipMode.value = 0;
+	document.adsl.ip.value = "";
+	document.adsl.remoteIp.value = "";
+}
+
+//function postVC(vpi,vci,encap,napt,mode,username,passwd,auth,pppType,idletime,ipmode,ipaddr,remoteip,status,droute,enable, unip, unmask)
+function postVC(phytype, vpi,vci,encap,napt,mode,igmp,username,passwd,auth,acname,servicename,pppType,idletime,ipmode,ipaddr,netmask,remoteip,ipunnum,status,droute,enable)
+
+{
+	clearAll();
+	document.adsl.vpi.value = vpi;
+	document.adsl.vci.value = vci;
+	if (encap == "LLC")
+		document.adsl.adslEncap[0].checked = true;
+	else
+		document.adsl.adslEncap[1].checked = true;
+	if (mode == "br1483")
+		document.adsl.adslConnectionMode.value = 0;
+	else if (mode == "mer1483")
+		document.adsl.adslConnectionMode.value = 1;
+	else if (mode == "PPPoE")
+	   document.adsl.adslConnectionMode.value = 2;
+	else if (mode == "PPPoA")
+          document.adsl.adslConnectionMode.value = 3;
+    else if (mode == "rt1483")
+		document.adsl.adslConnectionMode.value = 4;
+    else if (mode == "IPoA")
+		document.adsl.adslConnectionMode.value = 5;  
+	
+	adslConnectionModeSelection();
+	if (napt == "On")
+		document.adsl.naptEnabled.checked = true;
+	else
+		document.adsl.naptEnabled.checked = false;
+	if (igmp == "On")
+		document.adsl.igmpEnabled.checked = true;
+	else
+		document.adsl.igmpEnabled.checked = false;
+	if (enable == 0)
+		document.adsl.chEnable[1].checked = true;
+	else
+		document.adsl.chEnable[0].checked = true;
+       if((mode == "PPPoE") || (mode == "PPPoA") )
+	{
+		document.adsl.pppUserName.value = username;
+		document.adsl.pppPassword.value = passwd;
+		document.adsl.pppauth.value=auth;
+		document.adsl.pppacname.value = acname;
+		document.adsl.pppservicename.value = servicename;
+//		if(document.adsl.naptEnabled.checked ==true)
+//			     document.adsl.ipUnnum.disabled = true;
+//		else
+//			 document.adsl.ipUnnum.disabled = false;
+              document.adsl.ipUnnum.disabled = true;  
+		if (pppType == "persistent")
+			document.adsl.pppConnectType.value = 0;
+		else if (pppType == "dial-on-demand")
+			document.adsl.pppConnectType.value = 1;
+		else
+		{
+			document.adsl.pppConnectType.value = 2;
+		
+		}
+		
+		pppTypeSelection();
+		
+		if (pppType == "dial-on-demand")
+			document.adsl.pppIdleTime.value = idletime;
+	}
+	else if (mode == "mer1483" || mode == "rt1483" || mode == "IPoA")   
+	{
+		document.adsl.ipMode[ipmode].checked = true;
+		if (ipmode == 0)
+		{
+			document.adsl.ip.value=ipaddr;
+			document.adsl.remoteIp.value=remoteip;
+			document.adsl.netmask.value=netmask;
+		}
+		if(mode == "rt1483")    
+              {
+                  	if(document.adsl.naptEnabled.checked ==true)
+			     document.adsl.ipUnnum.disabled = true;
+		else
+			 document.adsl.ipUnnum.disabled = false;
+              }
+		
+	}
+	if (droute == 1){
+		document.adsl.droute[1].checked = true;
+		if(ipunnum == 0)
+		    document.adsl.remoteIp.disabled=false;
+		
+	}
+	else{
+		document.adsl.droute[0].checked = true;
+		document.adsl.remoteIp.disabled=true;
+	}
+	if(ipunnum == 1)
+		document.adsl.ipUnnum.checked = true;
+	else 
+		document.adsl.ipUnnum.checked = false;
+	selectflag=1;
+
+
+	adslConnectionModeSelection();
+}
+
+function remoteipenable()
+{
+	if(document.adsl.adslConnectionMode.selectedIndex==1)
+		document.adsl.remoteIp.disabled=false;
+	else if((document.adsl.adslConnectionMode.selectedIndex==4)) 
+	{
+	   if(document.adsl.ipUnnum.checked)
+	      document.adsl.remoteIp.disabled=true;
+	   else 
+	     document.adsl.remoteIp.disabled=false;
+	}
+	else if((document.adsl.adslConnectionMode.selectedIndex==5)){
+		document.adsl.remoteIp.disabled=false;
+	}
+}
+
+function remoteipdisable()
+{
+	if(document.adsl.adslConnectionMode.selectedIndex==1||document.adsl.adslConnectionMode.selectedIndex==4
+	    || document.adsl.adslConnectionMode.selectedIndex==5) 
+		document.adsl.remoteIp.disabled=true;
+}
+function autopvcapplycheckclick()
+{
+
+    if(document.adsl.autopvc.checked == true ){
+        if(!confirm("auto search pvc mode will have only one wan interface,really?")){
+          document.adsl.autopvc.checked = false;
+	  return false;	
+      }	
+    }	
+    updatepvcState();	
+}
+function updatepvcState()
+{
+  
+  
+  if (document.adsl.autopvc.checked== true) {
+  
+         	 
+	document.adsl.autopvc.value="ON";
+	document.adsl.enablepvc.value = 1;
+	disableTextField(document.adsl.vpi);
+	disableTextField(document.adsl.vci);
+	enableTextField(document.adsl.autopvcvci);
+	enableTextField(document.adsl.autopvcvpi);
+	enableButton(document.adsl.autopvcadd);		
+  } else {
+  	document.adsl.autopvc.value="OFF";
+	document.adsl.enablepvc.value = 0;
+//	enableTextField(document.adsl.vpi);
+//	enableTextField(document.adsl.vci);
+	disableTextField(document.adsl.autopvcvci);
+	disableTextField(document.adsl.autopvcvpi);
+	disableButton(document.adsl.autopvcadd);	
+  }
+}
+function updateauto()
+{
+     if(document.adsl.enablepvc.value==1)
+     {
+          disableTextField(document.adsl.vpi);
+          disableTextField(document.adsl.vci);
+     }
+     else
+     {
+              enableTextField(document.adsl.vpi);
+	enableTextField(document.adsl.vci);
+     }
+	 	
+}
+
+function updatepvcState2()
+{
+  if (document.adsl.autopvc.checked == true) {
+  	document.adsl.autopvc.value="ON";
+	document.adsl.enablepvc.value = 1;  	
+	//enableTextField(document.adsl.autopvcvci);
+	//enableTextField(document.adsl.autopvcvpi);
+	//enableButton(document.adsl.autopvcadd);		
+  } else {
+  	document.adsl.autopvc.value="OFF";
+	document.adsl.enablepvc.value = 0;  	
+	//disableTextField(document.adsl.autopvcvci);
+	//disableTextField(document.adsl.autopvcvpi);
+	//disableButton(document.adsl.autopvcadd);	
+  }
+}
+
+function autopvcCheckClick()
+{
+	var dVPI,dVCI;
+	if (document.adsl.autopvc.checked == true) {
+
+		document.adsl.enablepvc.value = 1;  	
+
+		dVPI = getDigit(document.adsl.autopvcvpi.value, 1);
+		if ( validateKey(document.adsl.autopvcvpi.value) == 0 ||
+			(dVPI > 255 || dVPI < 0) ) {
+			alert("Invalid VPI value! You should set a value between 0-255.");
+			document.adsl.autopvcvpi.focus();
+			return false;
+		}
+
+		dVCI = getDigit(document.adsl.autopvcvci.value, 1);
+		if ( validateKey(document.adsl.autopvcvci.value) == 0 ||
+			(dVCI > 65535 || dVCI < 32) ) {
+			alert("Invalid VCI value! You should set a value between 32-65535.");
+			document.adsl.autopvcvci.focus();
+			return false;
+		}
+	
+		if ( (dVPI == 0 && dVCI == 0) ) {
+			alert("Invalid VPI/VCI value!");
+			document.adsl.autopvcvpi.focus();
+			return false;
+		}
+
+		document.adsl.addVPI.value = dVPI;
+		document.adsl.addVCI.value = dVCI;
+
+	}else {
+		alert(" You should enable Auto-PVC search first.");	
+		return false;
+	}
+}
+/******************************************************/
+	function toBreakWord(name,intLen)
+	{
+		var objs=document.getElementsByName(name); 
+		  for(i=0;i<objs.length;i++)
+		  {
+			var strContent=objs[i].innerHTML;
+			var strTemp="";
+			while(strContent.length>intLen)
+			{
+				strTemp+=strContent.substr(0,intLen)+" ";
+				strContent=strContent.substr(intLen,strContent.length);
+			}
+			strTemp+=" "+strContent;
+			  objs[i].innerHTML=strTemp;
+		}
+	}
+	function myLoad(){
+		  if(document.getElementsByName && !document.all){
+			toBreakWord("pppoeusername",12);
+		}
+	}
+/*********************************************************/
+	function turn(ele) {
+		var cf = window.confirm('WAN physical type will be changed and system will be reboot to effect automatically, are you sure to switch?');	
+		if (cf) {
+			if (rdoadsl.checked) {
+				control.style.display = '';
+			} else {
+				control.style.display = 'none';
+			}
+			setTimeout(function() {
+				formActionadsl.submit();
+			}, 300);
+			
+		
+		} else {
+			if(rdoadsl.checked == true)
+			{
+				rdoadsl.checked = false;
+				ethadsl.checked = true;
+			}else
+			{
+				rdoadsl.checked = true;
+				ethadsl.checked = false;
+			}
+		}
+
+	}
+window.onload = function() {
+	var rdoadsl = document.getElementById('rdoadsl');
+	var ethadsl = document.getElementById('ethadsl');
+	var control = document.getElementById('control');
+	var formActionadsl = document.actionadsl;
+
+	var radioGroup = [rdoadsl, ethadsl];
+
+	var checkedRadio = null, currentRadio = null;
+	if (rdoadsl.checked) {
+		control.style.display = '';
+	} else {
+		control.style.display = 'none';
+	}	
+	for (var i = 0; i < radioGroup.length; i++) {	
+			radioGroup[i].onclick = function() {
+					turn(this);	
+			}			
+	}
+	myLoad();
+}
+
+</script>
+<style type="text/css">
+  td 
+  {  
+	  word-wrap:break-word;
+	  word-break:keep-all;
+  } 
+</style>
+</head>  
+<BODY>
+	<div class="intro_main ">
+		<p class="intro_title">WAN Configuration</p>
+		<p class="intro_content">
+		This page is used to configure the parameters for the WAN interface of your ADSL and(or) Ethernet
+    Modem/Router.</p>
+	</div>	
+	<form action="form2WanPhy.cgi" method=POST name="actionadsl">
+	<div class="data_common data_common_notitle">
+	<table >
+	<tr>
+		<td><b> WAN Physical Type: </b></font>
+		</td>	
+		<td><b>
+			<input type="radio" name="phyType" value="0" id="rdoadsl"  
+<VWS_SCREEN (char*)xscrnMultiWanDSLType[];>			
+			>ADSL WAN
+			<input type="radio" name="phyType" value="1" id="ethadsl"
+<VWS_SCREEN (char*)xscrnMultiWanEthType[];>	
+			>Ethernet WAN
+			</b></font>
+		</td>
+		</tr>
+	</table>
+	<input type="hidden" NAME="submit.htm?multiwan.htm" value="Send">
+	</div>
+</form>
+	
+<form action="form2WanAdsl.cgi" method=POST name="adsl">
+	<div class="data_common data_common_notitle">
+		<table>
+			<tr>
+				<th width="50%">VPI: <input type="text" name="vpi" size="4" maxlength="3" value=0></th>
+				<th>VCI: <input type="text" name="vci" size="6" maxlength="5"></th>
+						</tr>
+						<tr>
+							<th>Encapsulation:</th>
+							<th>
+								<input type="radio" value="0" name="adslEncap" checked>LLC&nbsp;&nbsp;
+								<input type="radio" value="1" name="adslEncap">VC-Mux
+							</th>
+						</tr>
+
+				<table id="wanModeBlockDiv"> 
+					<tr>
+						<th>Channel Mode:
+							<VWS_SCREEN (char*) xscrnAdslConnectionMode[];>
+						</th>
+						<th>
+							Enable NAPT: <input type="checkbox" name="naptEnabled" size="2" maxlength="2" value="ON" onClick="naptClicked()">	
+						</th>
+					</tr>
+					<tr>
+						<th>
+							Enable IGMP: <input type="checkbox" name="igmpEnabled" size="2" maxlength="2" value="ON">
+						</th>
+						<th>
+							<input type="radio" value=1 name="chEnable" checked style="display:none">
+							<input type="radio" value=0 name="chEnable" style="display:none">			   
+						</th>
+					</tr>	
+				</table>
+			</tr>
+		</table>
+	</div>
+	<div class="data_common data_common_notitle">
+		<table>
+			<tr>
+				<th width="50%">PPP Settings:</th>
+				<th></th>
+			</tr>
+			<tr>
+				<th>User Name: <input name="pppUserName" type="text" size="10" /></th>
+				<th>Password: <input name="pppPassword" type="password" size="10" /></th>
+				<input type="hidden" name="pppauth"  maxlength="30">
+				<input type="hidden" name="pppacname"  maxlength="30">
+				<input type="hidden" name="pppservicename"  maxlength="30">
+	
+
+			</tr>
+			<tr>
+				<th>Type:<select size="1" name="pppConnectType" onChange="pppTypeSelection()">
+					<option selected value="0">Continuous</option>
+					<option value="1">Connect on Demand</option>
+					<option value="2">Manual</option>
+					</select>
+				</th>
+				<th>Idle Time(min):<input type="text" name="pppIdleTime" size="10" maxlength="3"></th>	
+			</tr>
+		</table>
+	</div>
+	<div class="data_common data_common_notitle">
+		<table>
+			<tr>
+				<th>WAN IP Settings:</th>
+				<th colspan="3"></th>
+			</tr>
+			<tr>
+				<th width = "25%">Type:</th>
+				<th width = "25%"><input type="radio" value="0" name="ipMode" checked onClick="ipTypeSelection()" />Fixed IP </th>
+				<th width="25%"> <input type="radio" value="1" name="ipMode" onClick="ipTypeSelection()" />DHCP</th>
+				<th width="25%"></th>
+			</tr>
+			<tr>
+				<th>Local IP Address:</th>
+				<th><input name="ip" type="text" size="10" maxlength="15" /></th>
+				<th>Remote IP Address:</th>
+				<th><input name="remoteIp" type="text" size="10" maxlength="15" /></th>
+			</tr>  
+			<tr>
+				<th>NetMask:</th>
+				<th><input name="netmask" type="text" size="10" maxlength="15" /></th>
+				<th colspan="2"></th>
+			</tr>
+			<tr style="
+				<VWS_FUNCTION (void*)SendDivHiddenStyle();>
+				">
+				<th>Default Route:</th>
+				<th><input type=radio value=0 name="droute" onClick="remoteipdisable()">Disable</th>
+				<th><input type=radio value=1 name="droute" checked onClick="remoteipenable()">Enable&nbsp;&nbsp;</th>
+			</tr>
+			<tr style="
+			<VWS_FUNCTION (void*)SendDivHiddenStyle();>
+			">		
+				<th colspan="3">Unnumbered:</th>
+				<th ><input  type="checkbox" name="ipUnnum" size="2" maxlength="2" value="ON"  onClick="ipUnnumModeSelection()"></th>
+			</tr>
+		</table>
+	</div>
+
+	<div class="adsl clearfix">
+		<div class="btn_ctls">
+			<input class="link_bg"  type="submit" value="Add" name="add" onClick="return addClick()">
+			<input class="link_bg"  type="submit" value="Modify" name="modify" onClick="return modifyCheck()" >
+			<input class="link_bg"  type="submit" value="Delete" name="delvc" >
+			<input  class="link_bg"  type="reset" value="Undo" name="reset" onClick="resetClicked()">
+			<input  class="link_bg"  type="button" value="Refresh" onClick="window.location.href='multiwan.htm'">
+		</div>
+	</div>
+	<div class="column">
+        <div class="column_title">
+		<div class="column_title_left"></div>
+		<p>WAN Interfaces Table:</p>
+		<div class="column_title_right"></div>
+        </div>
+        <div class="data_common_sth data_common data_vertical">
+			<table>
+		 		<tr class="data_common_sth">	
+					<th width="5%">Select</th>
+					<th width="5%">Inf</th>
+					<th width="5%">Mode</th>
+					<th width="5%">VPI</th>
+					<th width="5%">VCI</th>
+					<th width="5%">Encap</th>
+					<th width="5%">NAPT</th>
+					<th width="5%">IGMP</th>
+					<th width="5%">DRoute</th>
+					<th width="10%">IP Addr</th>
+					<th width="10%">Remote IP</th>
+					<th width="10%">NetMask</th>
+					<th width="10%">User Name</th>
+					<!--<th width="5%">Unnumber</th>-->
+					<th width="5%">Status</th>
+					<th width="5%">Edit</th>
+				</tr>
+				<tr>
+					<VWS_FUNCTION (void*)showAdslTable();>
+				</tr>
+			</table>
+				<VWS_FUNCTION (void*)showAutoSearch();>
+		</div>
+	</div>
+<script>
+	initConnectMode = document.adsl.adslConnectionMode.selectedIndex;
+	
+	adslConnectionModeSelection();
+	naptClicked();
+	if(privilege == 0)
+		document.getElementById('control').style.display = 'none';
+	
+</script>
+<input type="hidden" NAME="submit.htm?multiwan.htm" value="Send">
+</form>
+<form action="form2WanAdsl.cgi" method=POST name="actionForm">
+<input type="hidden" name="action">
+<input type="hidden" name="idx">
+<input type="hidden" name="connid">
+<input type="hidden" NAME="submit.htm?multiwan.htm" value="Send">
+</form>
+</blockquote>
+</body>
+</html>

@@ -1,0 +1,457 @@
+<VWS_FUNCTION (void*)SendWebMetaStr();>
+<VWS_FUNCTION (void*)SendWebCssStr();>
+	<title>Interface IP Range Set</title>
+#if defined(CONFIG_DHCP_WITHOUT_CHECK_LANIP)
+	<SCRIPT>
+	var pool_ipprefix;
+	function postsetting(devname, interface, startip, endip, mask, gwip, ltime, domain, dns1, dns2, dns3)
+	{
+		var itf=interface.split(",");
+		for(i=0;itf[i];i++){
+			document.forms[0].elements[6+i].checked=false;
+			if(itf[i]=="1")
+				document.forms[0].elements[6+i].checked=true;
+		}
+		document.ipInterface.name.value = devname;
+		document.ipInterface.sIp.value = startip;
+		document.ipInterface.dIp.value = endip;
+		document.ipInterface.mask.value = mask;
+	       document.ipInterface.gwIp.value = gwip;
+	       document.ipInterface.ltime.value = ltime;
+	       document.ipInterface.dname.value = domain;
+	       document.ipInterface.dns1.value = dns1;
+	       document.ipInterface.dns2.value = dns2;
+	       document.ipInterface.dns3.value = dns3;
+	}
+
+	function addClick() 
+	{
+		if (document.ipInterface.name.value=="") {
+			alert("device name cannot be NULL!");
+			document.ipInterface.name.focus();
+			return false;
+		}
+
+		if(document.ipInterface.lan1.checked==false
+			//&&document.ipInterface.lan2.checked==false
+			//&&document.ipInterface.lan3.checked==false
+			//&&document.ipInterface.lan4.checked==false
+			&&document.ipInterface.wlan.checked==false
+			&&document.ipInterface.vap0.checked==false
+			&&document.ipInterface.vap1.checked==false
+			&&document.ipInterface.vap2.checked==false
+			&&document.ipInterface.vap3.checked==false
+			//&&document.ipInterface.usb.checked==false
+			){
+			alert("you should select at least one interface!");
+			document.ipInterface.lan1.focus();
+			return false;
+		}
+			
+		if (document.ipInterface.sIp.value=="") {
+	   	   	alert("Please input DHCP IP pool range.");
+			document.ipInterface.sIp.focus();
+			return false;
+		}
+		if (!checkIP( document.ipInterface.sIp)) {
+			document.ipInterface.sIp.focus();
+			return false;
+		}
+		
+		if (document.ipInterface.dip.value=="") {
+	   	   	alert("Please input DHCP IP pool range.");
+			document.ipInterface.dIp.focus();
+			return false;
+		}
+		if (!checkIP( document.ipInterface.dIp)) {
+			document.ipInterface.dIp.focus();
+			return false;
+		}
+		
+		if(!checkNetwork(document.ipInterface.sIp.value, document.ipInterface.dIp.value)) {
+			alert("Starting address should be in the same network with ending address.");
+			document.ipInterface.sIp.focus();
+			return false;
+		}
+
+		if(!checkpoolsize(document.ipInterface.sIp.value, document.ipInterface.dIp.value)){
+			alert("dhcp pool size is larger than 254!");
+			document.ipInterface.sIp.focus();
+			return false;
+		}
+
+		if (!checkMaskSpecial(document.ipInterface.mask))
+			return false;
+			
+		if (document.ipInterface.gwIp.value=="") {
+	   	   	alert("Please input DHCP IP pool default gateway.");
+			document.ipInterface.gwIp.focus();
+			return false;
+		}
+		if (!checkIP( document.ipInterface.gwIp)) {
+			document.ipInterface.gwIp.focus();
+			return false;
+		}
+		if (  document.ipInterface.ltime.value  == 0 ) {
+			alert('Invalid DHCP lease time. It should not be 0.');
+			document.ipInterface.ltime.focus();
+			return false;
+		}
+		if ( validateKey( document.ipInterface.ltime.value ) == 0 ) {
+			alert('Invalid DHCP lease time. It should be the decimal number (0-9).');
+			document.ipInterface.ltime.focus();
+			return false;
+		}
+		//check lease time range, mins
+		var maxleasetime=365*24*60;
+		if ( !checkDigitRange(document.ipInterface.ltime.value,1,1,maxleasetime) ) {
+	   	   	alert('Invalid DHCP lease time. It should be 1-'+maxleasetime+'.');
+			document.ipInterface.ltime.value = document.ipInterface.ltime.defaultValue;
+			document.ipInterface.ltime.focus();
+			return false;
+		}
+	  	if(checkIP(document.ipInterface.dns1) == false){
+	  		document.ipInterface.dns1.focus();
+	  		return false;
+	    	}
+	    	if(!checkSpecialChar(document.ipInterface.dname.value,1))
+	    	{
+	    		alert("Invalid characters!");
+	    		document.ipInterface.dname.focus();
+	    		return false;
+	    	}
+	  	if( (document.ipInterface.dns2.value != '') && checkIP(document.ipInterface.dns2) == false){
+	  		document.ipInterface.dns2.focus();
+	  		return false;
+	    }
+	  	if( (document.ipInterface.dns3.value != '') && checkIP(document.ipInterface.dns3) == false){
+	  		document.ipInterface.dns3.focus();
+	  		return false;
+	    }    
+	  }
+	</SCRIPT>
+#else
+<SCRIPT>
+function postsetting(devname, interface, startip, endip, mask, gwip, ltime, domain, dns1, dns2, dns3)
+	{
+		var itf=interface.split(",");
+		for(i=0;itf[i];i++){
+			document.forms[0].elements[6+i].checked=false;
+			if(itf[i]=="1")
+				document.forms[0].elements[6+i].checked=true;
+		}
+		document.ipInterface.name.value = devname;
+		document.ipInterface.sIp.value = getDigit(startip,4);
+		document.ipInterface.dIp.value = getDigit(endip,4);
+		document.ipInterface.mask.value = mask;
+	       document.ipInterface.gwIp.value = gwip;
+	       document.ipInterface.ltime.value = ltime;
+	       document.ipInterface.dname.value = domain;
+	       document.ipInterface.dns1.value = dns1;
+	       document.ipInterface.dns2.value = dns2;
+	       document.ipInterface.dns3.value = dns3;
+	}
+
+function checkInputIP(client)
+{
+	var pool_ip, mask,ipstart,ipend;
+	var i, mask_d, ip_d, pool_d,ipstart_d,ipend_d;
+	var pool_ip_d, client_d;
+	
+	pool_ip = document.ipRange.lan_ip.value;
+	mask = document.ipRange.lan_mask.value;
+	ipstart = document.ipRange.lan_dhcpRangeStart.value;
+	ipend = document.ipRange.lan_dhcpRangeEnd.value;
+	
+	for( i=1;i<5;i++ ) {
+		mask_d = getDigit(mask, i);
+		pool_ip_d = getDigit(pool_ip, i);
+		client_d = getDigit(client, i);
+		ipstart_d = getDigit(ipstart, i);
+		ipend_d = getDigit(ipend, i);
+
+		if( (pool_ip_d & mask_d) != (client_d & mask_d ) ) {
+			return false;
+		}
+	}
+
+	if( (ipstart_d > client_d) || (ipend_d < client_d) ) {
+			return false;
+	}
+		
+	return true;
+}
+function checkpool(start,end)
+{
+	for(var i=1;i<4;i++)
+	{
+		if(getDigit(start, i) ==getDigit(end, i) ) {
+		     if(i!=4)
+		         continue;
+		     else
+		         return false;
+		}
+		else if(getDigit(start, i) <getDigit(end, i) )
+		     return true;
+		else
+		     return false;
+	}
+
+	return true;
+}
+function checkSubnet(ip, mask, client)
+{
+  ip_d = getDigit(ip, 4);
+  mask_d = getDigit(mask, 4);
+  if ( (ip_d & mask_d) != (client & mask_d ) )
+	return false;
+
+  return true;
+}
+function ShowIP(ipVal) {
+    document.write(getDigit(ipVal,1));
+    document.write('.');
+    document.write(getDigit(ipVal,2));
+    document.write('.');
+    document.write(getDigit(ipVal,3));
+    document.write('.');
+}
+function addClick() 
+	{
+		if (document.ipInterface.name.value=="") {
+			alert("device name cannot be NULL!");
+			document.ipInterface.name.focus();
+			return false;
+		}
+
+		if(document.ipInterface.lan1.checked==false
+			//&&document.ipInterface.lan2.checked==false
+			//&&document.ipInterface.lan3.checked==false
+			//&&document.ipInterface.lan4.checked==false
+			&&document.ipInterface.wlan.checked==false
+			&&document.ipInterface.vap0.checked==false
+			&&document.ipInterface.vap1.checked==false
+			&&document.ipInterface.vap2.checked==false
+			&&document.ipInterface.vap3.checked==false
+			//&&document.ipInterface.usb.checked==false
+			){
+			alert("you should select at least one interface!");
+			document.ipInterface.lan1.focus();
+			return false;
+		}
+		
+		if (document.ipRange.sIp.value=="") {
+	   	   	alert("Please input DHCP IP pool range.");
+			document.ipRange.sIp.focus();
+			return false;
+		}
+		if ( validateKey( document.ipRange.sIp.value ) == 0 ) {
+			alert("Invalid DHCP client start range. It should be the decimal number (0-9).");
+			document.ipRange.sIp.focus();
+			return false;
+		}
+		if ( !checkDigitRange(document.ipRange.sIp.value,1,1,254) ) {
+	   	   	alert('Invalid DHCP client start range. It should be 1-254.');
+			document.ipRange.sIp.focus();
+			return false;
+		}
+		if ( !checkSubnet(document.ipRange.lan_ip.value,document.ipRange.lan_mask.value,document.ipRange.sIp.value)) {
+			alert('Invalid DHCP client start address!\nIt should be located in the same subnet of current IP address.');
+			document.ipRange.sIp.focus();
+			return false;
+		}
+		if (document.ipRange.dIp.value=="") {
+	   	   	alert("Please input DHCP IP pool range.");
+			document.ipRange.dIp.focus();
+			return false;
+		}
+		if ( validateKey( document.ipRange.dIp.value ) == 0 ) {
+			alert("Invalid DHCP client end address range. It should be the decimal number (0-9).");
+			document.ipRange.dIp.focus();
+			return false;
+		}
+		if ( !checkDigitRange(document.ipRange.dIp.value,1,1,254) ) {
+	   	   	alert('Invalid DHCP client end range. It should be 1-254.');
+			document.ipRange.dIp.focus();
+			return false;
+		}
+		if ( !checkSubnet(document.ipRange.lan_ip.value,document.ipRange.lan_mask.value,document.ipRange.dIp.value)) {
+			alert('Invalid DHCP client end address!\nIt should be located in the same subnet of current IP address.');
+			document.ipRange.dIp.focus();
+			return false;
+		}
+	        if ( parseInt(document.ipRange.sIp.value, 10) >= parseInt(document.ipRange.dIp.value, 10) ) {
+			alert('Invalid DHCP client address range!\nEnding address should be greater than starting address.');
+			document.ipRange.sIp.focus();
+			return false;
+		}			
+
+		if (!checkMaskSpecial(document.ipInterface.mask))
+			return false;
+			
+		if (document.ipInterface.gwIp.value=="") {
+	   	   	alert("Please input DHCP IP pool default gateway.");
+			document.ipInterface.gwIp.focus();
+			return false;
+		}
+		if (!checkIP( document.ipInterface.gwIp)) {
+			document.ipInterface.gwIp.focus();
+			return false;
+		}
+		if (  document.ipInterface.ltime.value  == 0 ) {
+			alert('Invalid DHCP lease time. It should not be 0.');
+			document.ipInterface.ltime.focus();
+			return false;
+		}
+		if ( validateKey( document.ipInterface.ltime.value ) == 0 ) {
+			alert('Invalid DHCP lease time. It should be the decimal number (0-9).');
+			document.ipInterface.ltime.focus();
+			return false;
+		}
+		//check lease time range, mins
+		var maxleasetime=365*24*60;
+		if ( !checkDigitRange(document.ipInterface.ltime.value,1,1,maxleasetime) ) {
+	   	   	alert('Invalid DHCP lease time. It should be 1-'+maxleasetime+'.');
+			document.ipInterface.ltime.value = document.ipInterface.ltime.defaultValue;
+			document.ipInterface.ltime.focus();
+			return false;
+		}
+	  	if(checkIP(document.ipInterface.dns1) == false){
+	  		document.ipInterface.dns1.focus();
+	  		return false;
+	    	}
+	    	if(!checkSpecialChar(document.ipInterface.dname.value,1))
+	    	{
+	    		alert("Invalid characters!");
+	    		document.ipInterface.dname.focus();
+	    		return false;
+	    	}
+	  	if( (document.ipInterface.dns2.value != '') && checkIP(document.ipInterface.dns2) == false){
+	  		document.ipInterface.dns2.focus();
+	  		return false;
+	    }
+	  	if( (document.ipInterface.dns3.value != '') && checkIP(document.ipInterface.dns3) == false){
+	  		document.ipInterface.dns3.focus();
+	  		return false;
+	    }    
+	  }
+</SCRIPT>
+#endif
+</head>
+
+<body>
+	<div class="intro_main ">
+        	<p class="intro_title">Interface IP Range Table</p>
+        	<p class="intro_content">This page is used to configure the IP address range based on interface.</p>
+	</div>
+	<form action="formDHCPInterface.cgi" method=POST name="ipInterface">
+	<div class="data_common data_common_notitle">	
+		<input type="hidden" name="lan_ip" value=
+		<VWS_SCREEN (char*) xscrnLanIPAddr[];>
+		>
+		<input type="hidden" name="lan_mask" value=
+		<VWS_SCREEN (char*) xscrnLanSubnetMask[];>
+		>
+		<input type="hidden" name="lan_dhcpRangeStart" value=
+		<VWS_SCREEN (char*) xscrnDhcpdHostStartIp[];>
+		>
+		<input type="hidden" name="lan_dhcpRangeEnd" value=
+		<VWS_SCREEN (char*) xscrnDhcpdHostEndIp[];>
+		>
+		<input type="hidden" name="lan_dhcpSubnetMask" value=
+		<VWS_SCREEN (char*) xscrnLanSubnetMask[];>
+		>
+		<table>
+			<tr>
+				<th width=30%><font size=2>Device name:&nbsp;&nbsp;</th>
+				<td><input type="text" name="name" size="20" maxlength="20"></td>
+			</tr>
+			<VWS_FUNCTION (void*)showDhcpdInterfaceListForSP();>
+#if defined(CONFIG_DHCP_WITHOUT_CHECK_LANIP)
+			<tr>
+				<th><font size=2>Start address:&nbsp;&nbsp;</th>
+				<td><input type="text" name="sIp" size="20" maxlength="15"></td>
+			</tr>
+			<tr>
+				<th><font size=2>End address:&nbsp;&nbsp;</th>
+				<td><input type="text" name="dIp" size="20" maxlength="15"></td>
+			</tr>
+#else
+<tr>
+    <th><font size=2>Start address:&nbsp;&nbsp;</th>
+    <td><script>ShowIP(document.ipRange.lan_ip.value);</script><input type="text" name="sIp" size="3" maxlength="3"></td>
+</tr>
+<tr>
+    <th><font size=2>End address:&nbsp;&nbsp;</th>
+    <td><script>ShowIP(document.ipRange.lan_ip.value);</script><input type="text" name="dIp" size="3" maxlength="3"></td>
+</tr>
+#endif
+			<tr>
+				<th><font size=2>Subnet mask:&nbsp;&nbsp;</th>
+				<td><input type="text" name="mask" size="20" maxlength="15"></td>
+			</tr>
+			<VWS_SCREEN (char*) xscrnDhcpdSPDefaultGateway[];>
+			  <tr>
+			      <th><font size=2>Max Lease Time:</th>
+			      <td><input type="text" name="ltime" size=10 maxlength=9 value=""><b> minutes</b>
+			      </td>
+			  </tr>
+			  <tr>
+			      <th>Domain Name:</th>
+			      <td><input type="text" name="dname" size="20" maxlength=19 value="">
+			      </td>
+			  </tr>
+			  <tr>
+			      <th>DNS Servers:</th>
+			      <td><input type="text" name="dns1" size="20" maxlength=19 value="">
+			      </td>
+			  </tr>  
+			    <tr>
+			      <th></th>
+			      <td><input type="text" name="dns2" size="20" maxlength=19 value="">
+			      </td>
+			  </tr>
+			    <tr>
+			      <th></th>
+			      <td><input type="text" name="dns3" size="20" maxlength=19 value="">
+			      </td>
+			  </tr>
+		</table>
+	</div>
+	<br>   
+	<div class="adsl clearfix">
+        	<div class="btn_ctls">
+			<input class="link_bg" type="submit" value=" add " name="add" onClick="return addClick()">&nbsp;&nbsp;
+			<input class="link_bg" type="submit" value=" delete " name="del">&nbsp;&nbsp;
+			<input class="link_bg" type="submit" value=" modify " name="mod" onClick="return addClick()">&nbsp;&nbsp 
+			<input class="link_bg" type="button" value=" Close " name="close" onClick="javascript: window.close();">
+		</div>
+	</div>
+	<div class="column">
+	        <div class="column_title">
+	            <div class="column_title_left"></div>
+	            <p>IP Range Table:</p>
+	            <div class="column_title_right"></div>
+	        </div>
+	        <div class="data_common data_vertical">
+	            <table>
+	                <tr>
+	                    <th>Select</th>
+	                    <th>Device name</th>
+	                    <th>Interface</th>
+	                    <th>Start address</th>
+	                    <th>End address</th>
+	                    <th>Subnet mask</th>
+	                    <th>Default gateway</th>
+	                    <th>Lease time</th>
+	                    <th>Domain name</th>
+	                    <th>DNS</th>
+	                </tr>
+	                <VWS_FUNCTION (void*)showDHCPInterfaceTable();>
+	            </table>
+	        </div>
+	</div>
+	<INPUT TYPE="hidden" NAME="submit.htm?dhcpinterface.htm" VALUE="Send">
+	</form>
+</body>
+</html>

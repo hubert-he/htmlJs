@@ -1,0 +1,390 @@
+<VWS_FUNCTION (void*)SendWebMetaStr();>
+<VWS_FUNCTION (void*)SendWebCssStr();>
+	<title>MBSSID Setup </title>
+	<SCRIPT>
+	function checkVapState(vap)
+	{
+	    if(vap == 0){
+		    if(document.WlanMBSSID.En_vap0.checked == true){
+			    enableTextField(document.WlanMBSSID.ssid_v0);
+			    enableRadioGroup(document.WlanMBSSID.authType0);
+			    enableRadioGroup(document.WlanMBSSID.brssid_v0);
+			    <VWS_SCREEN (char*) webShowWlanVAP0_RELAY_BLOCK_ENABLE[];>
+		    }else{
+			    disableTextField(document.WlanMBSSID.ssid_v0);
+			    disableRadioGroup(document.WlanMBSSID.authType0);
+			    disableRadioGroup(document.WlanMBSSID.brssid_v0);
+			    <VWS_SCREEN (char*) webShowWlanVAP0_RELAY_BLOCK_DISABLE[];>
+		    }
+	    }
+#if !defined(CONFIG_WLAN_MBSSID_NUM) || CONFIG_WLAN_MBSSID_NUM >=2
+	    if(vap == 1){
+		    if(document.WlanMBSSID.En_vap1.checked == true){
+			    enableTextField(document.WlanMBSSID.ssid_v1);
+			    enableRadioGroup(document.WlanMBSSID.authType1);
+			    enableRadioGroup(document.WlanMBSSID.brssid_v1);
+			    <VWS_SCREEN (char*) webShowWlanVAP1_RELAY_BLOCK_ENABLE[];>
+		    }else{
+			    disableTextField(document.WlanMBSSID.ssid_v1);
+			    disableRadioGroup(document.WlanMBSSID.authType1);
+			    disableRadioGroup(document.WlanMBSSID.brssid_v1);
+			    <VWS_SCREEN (char*) webShowWlanVAP1_RELAY_BLOCK_DISABLE[];>
+		    }
+	    }
+#endif
+#if !defined(CONFIG_WLAN_MBSSID_NUM) || CONFIG_WLAN_MBSSID_NUM >=3
+	    if(vap == 2){
+		    if(document.WlanMBSSID.En_vap2.checked == true){
+			    enableTextField(document.WlanMBSSID.ssid_v2);
+			    enableRadioGroup(document.WlanMBSSID.authType2);
+			    enableRadioGroup(document.WlanMBSSID.brssid_v2);
+			    <VWS_SCREEN (char*) webShowWlanVAP2_RELAY_BLOCK_ENABLE[];>
+		    }else{
+			    disableTextField(document.WlanMBSSID.ssid_v2);
+			    disableRadioGroup(document.WlanMBSSID.authType2);
+			    disableRadioGroup(document.WlanMBSSID.brssid_v2);
+			    <VWS_SCREEN (char*) webShowWlanVAP2_RELAY_BLOCK_DISABLE[];>
+		    }
+	    }
+#endif
+#if !defined(CONFIG_WLAN_MBSSID_NUM) || CONFIG_WLAN_MBSSID_NUM == 4
+	    if(vap == 3){
+		    if(document.WlanMBSSID.En_vap3.checked == true){
+			    enableTextField(document.WlanMBSSID.ssid_v3);
+			    enableRadioGroup(document.WlanMBSSID.authType3);
+			    enableRadioGroup(document.WlanMBSSID.brssid_v3);
+			    <VWS_SCREEN (char*) webShowWlanVAP3_RELAY_BLOCK_ENABLE[];>
+		    }else{
+			    disableTextField(document.WlanMBSSID.ssid_v3);
+			    disableRadioGroup(document.WlanMBSSID.authType3);
+			    disableRadioGroup(document.WlanMBSSID.brssid_v3);
+			    <VWS_SCREEN (char*) webShowWlanVAP3_RELAY_BLOCK_DISABLE[];>
+		    }
+	    }
+#endif	   
+
+	}
+
+	function updateState()
+	{
+	  if(wlanDisabled){
+	    disableCheckBox(document.WlanMBSSID.En_vap0);
+	    disableTextField(document.WlanMBSSID.ssid_v0);
+	    disableRadioGroup(document.WlanMBSSID.brssid_v0);
+	    disableRadioGroup(document.WlanMBSSID.authType0);
+	    <VWS_SCREEN (char*) webShowWlanVAP0_RELAY_BLOCK_DISABLE[];>
+#if !defined(CONFIG_WLAN_MBSSID_NUM) || CONFIG_WLAN_MBSSID_NUM >=2	    
+	    disableCheckBox(document.WlanMBSSID.En_vap1);
+	    disableTextField(document.WlanMBSSID.ssid_v1);
+	    disableRadioGroup(document.WlanMBSSID.brssid_v1);
+	    disableRadioGroup(document.WlanMBSSID.authType1);
+	    <VWS_SCREEN (char*) webShowWlanVAP1_RELAY_BLOCK_DISABLE[];>
+#endif
+#if !defined(CONFIG_WLAN_MBSSID_NUM) || CONFIG_WLAN_MBSSID_NUM >=3
+	    disableCheckBox(document.WlanMBSSID.En_vap2);
+	    disableTextField(document.WlanMBSSID.ssid_v2);
+	    disableRadioGroup(document.WlanMBSSID.brssid_v2);
+	    disableRadioGroup(document.WlanMBSSID.authType2);
+	    <VWS_SCREEN (char*) webShowWlanVAP2_RELAY_BLOCK_DISABLE[];>
+#endif
+#if !defined(CONFIG_WLAN_MBSSID_NUM) || CONFIG_WLAN_MBSSID_NUM == 4
+	    disableCheckBox(document.WlanMBSSID.En_vap3);
+	    disableTextField(document.WlanMBSSID.ssid_v3);
+	    disableRadioGroup(document.WlanMBSSID.brssid_v3);
+	    disableRadioGroup(document.WlanMBSSID.authType3);
+	    <VWS_SCREEN (char*) webShowWlanVAP3_RELAY_BLOCK_DISABLE[];>
+#endif	    
+	    disableButton(document.WlanMBSSID.save);
+	  } 
+	  else{
+	     checkVapState(0);
+#if !defined(CONFIG_WLAN_MBSSID_NUM) || CONFIG_WLAN_MBSSID_NUM >=2	     
+	     checkVapState(1);
+#endif
+#if !defined(CONFIG_WLAN_MBSSID_NUM) || CONFIG_WLAN_MBSSID_NUM >=3
+	     checkVapState(2);
+#endif
+#if !defined(CONFIG_WLAN_MBSSID_NUM) || CONFIG_WLAN_MBSSID_NUM == 4
+	     checkVapState(3);
+#endif	     
+	     enableButton(document.WlanMBSSID.save);
+	  }
+	}
+
+	function saveChanges()
+	{
+	    if (document.WlanMBSSID.ssid_v0.value=="")
+	    {
+		    alert('SSID cannot be empty!');
+		    document.WlanMBSSID.ssid_v0.value = document.WlanMBSSID.ssid_v0.defaultValue;
+		    document.WlanMBSSID.ssid_v0.focus();
+		    return false;
+	    }
+	    if (includeSpace(document.WlanMBSSID.ssid_v0.value))
+	    {
+		    alert('Invalid SSID.');
+		    document.WlanMBSSID.ssid_v0.focus();
+		    return false;
+	    }
+	    if (checkString(document.WlanMBSSID.ssid_v0.value) == 0)
+	    {
+		    alert('Invalid SSID.');
+		    document.WlanMBSSID.ssid_v0.focus();
+		    return false;
+	    }
+
+#if !defined(CONFIG_WLAN_MBSSID_NUM) || CONFIG_WLAN_MBSSID_NUM >=2
+	    if (document.WlanMBSSID.ssid_v1.value=="")
+	    {
+		    alert('SSID cannot be empty!');
+		    document.WlanMBSSID.ssid_v1.value = document.WlanMBSSID.ssid_v1.defaultValue;
+		    document.WlanMBSSID.ssid_v1.focus();
+		    return false;
+	    }
+	    if (includeSpace(document.WlanMBSSID.ssid_v1.value))
+	    {
+		    alert('Invalid SSID.');
+		    document.WlanMBSSID.ssid_v1.focus();
+		    return false;
+	    }
+	    if (checkString(document.WlanMBSSID.ssid_v1.value) == 0)
+	    {
+		    alert('Invalid SSID.');
+		    document.WlanMBSSID.ssid_v1.focus();
+		    return false;
+	    }
+#endif
+#if !defined(CONFIG_WLAN_MBSSID_NUM) || CONFIG_WLAN_MBSSID_NUM >=3
+	if(document.WlanMBSSID.En_vap2.checked == true)
+	{
+	    if (document.WlanMBSSID.ssid_v2.value=="")
+	    {
+		    alert('SSID cannot be empty!');
+		    document.WlanMBSSID.ssid_v2.value = document.WlanMBSSID.ssid_v2.defaultValue;
+		    document.WlanMBSSID.ssid_v2.focus();
+		    return false;
+	    }
+
+	    if (includeSpace(document.WlanMBSSID.ssid_v2.value))
+	    {
+		    alert('Invalid SSID.');
+		    document.WlanMBSSID.ssid_v2.focus();
+		    return false;
+	    }
+	    if (checkString(document.WlanMBSSID.ssid_v2.value) == 0)
+	    {
+		    alert('Invalid SSID.');
+		    document.WlanMBSSID.ssid_v2.focus();
+		    return false;
+	    }
+	}
+#endif
+
+#if !defined(CONFIG_WLAN_MBSSID_NUM) || CONFIG_WLAN_MBSSID_NUM == 4
+	if(document.WlanMBSSID.En_vap3.checked == true)
+	{
+	    if (document.WlanMBSSID.ssid_v3.value=="")
+	    {
+		    alert('SSID cannot be empty!');
+		    document.WlanMBSSID.ssid_v3.value = document.WlanMBSSID.ssid_v3.defaultValue;
+		    document.WlanMBSSID.ssid_v3.focus();
+		    return false;
+	    }
+	    if (includeSpace(document.WlanMBSSID.ssid_v3.value))
+	    {
+		    alert('Invalid SSID.');
+		    document.WlanMBSSID.ssid_v3.focus();
+		    return false;
+	    }
+	    if (checkString(document.WlanMBSSID.ssid_v3.value) == 0)
+	    {
+		    alert('Invalid SSID.');
+		    document.WlanMBSSID.ssid_v3.focus();
+		    return false;
+	    }
+	}
+#endif	
+	    return true;
+	}
+	</SCRIPT>
+</head>
+
+<body>
+	<form method=POST action="form2WlanMBSSID.cgi" name=WlanMBSSID>
+	<div class="intro_main ">
+        	<p class="intro_title">Wireless Multiple BSSID Setup</p>
+        	<p class="intro_content">This page allows you to set virutal access points(VAP). Here you can enable/disable virtual AP, and set its SSID and authentication type. click "Apply Changes" to take it effect. </p>
+    	</div>
+    	<div class="data_common data_common_notitle" id="VAP0">
+        <table>
+            <tr>
+                <th width="30%"><label><input type="checkbox" value="1" name="En_vap0" 
+                <VWS_SCREEN (char*) webShowWlanVAP0_ENABLE[];> 
+                ONCLICK="checkVapState(0)"> Enable VAP0</label></th>
+                <td></td>
+            </tr>
+            <tr>
+                <th>SSID:</th>
+                <td>
+                    <input type="text" maxlength="16" size="16" name="ssid_v0" 
+                    <VWS_SCREEN (char*) webShowWlanVAP0_NAME[];>
+                    >
+                </td>
+            </tr>
+            <tr>
+                <th>broadcast SSID: </th>
+                <td>
+                    <input type="radio" value="0" name="brssid_v0">
+                    Enable&nbsp;&nbsp;
+                    <input type="radio" value="1" name="brssid_v0">
+                    Disable
+                </td>
+            </tr>
+            <VWS_SCREEN (char*) webShowWlanVAP0_RELAY_BLOCK[];>
+            <tr>
+                <th>Authentication Type:</th>
+                <td>
+                    <input type="radio" value="0" name="authType0">
+                    Open System&nbsp;&nbsp;
+                    <input type="radio" value="1" name="authType0">
+                    Shared Key&nbsp;&nbsp;
+                    <input type="radio" value="2" name="authType0">
+                    Auto
+                </td>
+            </tr>
+       </table>
+    </div>
+#if !defined(CONFIG_WLAN_MBSSID_NUM) || CONFIG_WLAN_MBSSID_NUM >=2
+    <div class="data_common data_common_notitle" id="VAP1">
+        <table>
+            <tr>
+                <th width="30%"><label><input type="checkbox" value="1" name="En_vap1" 
+                <VWS_SCREEN (char*) webShowWlanVAP1_ENABLE[];> 
+                onclick="checkVapState(1)">&nbsp;&nbsp;Enable VAP1 </label></th>
+                <td></td>
+            </tr>
+            <tr>
+                <th>SSID:</th>
+                <td>
+                    <input type="text" maxlength="16" size="16" name="ssid_v1" 
+                    <VWS_SCREEN (char*) webShowWlanVAP1_NAME[];>
+                    >
+                </td>
+            </tr>
+            <tr>
+                <th>broadcast SSID: </th>
+                <td>
+                    <input type="radio" value="0" name="brssid_v1">
+                    Enable&nbsp;&nbsp;
+                    <input type="radio" value="1" name="brssid_v1">
+                    Disable
+                </td>
+            </tr>
+            <VWS_SCREEN (char*) webShowWlanVAP1_RELAY_BLOCK[];>   
+            <tr>
+                <th>Authentication Type:</th>
+                <td>
+                    <input type="radio" value="0" name="authType1">
+                    Open System&nbsp;&nbsp;
+                    <input type="radio" value="1" name="authType1">
+                    Shared Key&nbsp;&nbsp;
+                    <input type="radio" value="2" name="authType1">
+                    Auto
+                </td>
+            </tr>
+       </table>
+    </div>
+#endif
+#if !defined(CONFIG_WLAN_MBSSID_NUM) || CONFIG_WLAN_MBSSID_NUM >=3
+    <div class="data_common data_common_notitle" id="VAP2">
+        <table>
+            <tr>
+                <th width="30%"><label><input type="checkbox" value="1" name="En_vap2" 
+                <VWS_SCREEN (char*) webShowWlanVAP2_ENABLE[];> 
+                ONCLICK="checkVapState(2)">&nbsp;&nbsp;Enable VAP2  </label></th>
+                <td></td>
+            </tr>
+            <tr>
+                <th>SSID:</th>
+                <td>
+                    <input type="text" maxlength="16" size="16" name="ssid_v2" 
+                    <VWS_SCREEN (char*) webShowWlanVAP2_NAME[];>
+                    >
+                </td>
+            </tr>
+            <tr>
+                <th>broadcast SSID: </th>
+                <td>
+                    <input type="radio" value="0" name="brssid_v2" >
+                    Enable&nbsp;&nbsp;
+                    <input type="radio" value="1" name="brssid_v2" >
+                    Disable
+                </td>
+            </tr>
+            <VWS_SCREEN (char*) webShowWlanVAP2_RELAY_BLOCK[];>
+            <tr>
+                <th>Authentication Type:</th>
+                <td>
+                    <input type="radio" value="0" name="authType2">
+                    Open System&nbsp;&nbsp;
+                    <input type="radio" value="1" name="authType2">
+                    Shared Key&nbsp;&nbsp;
+                    <input type="radio" value="2" name="authType2">
+                    Auto
+                </td>
+            </tr>
+       </table>
+    </div>
+#endif
+#if !defined(CONFIG_WLAN_MBSSID_NUM) || CONFIG_WLAN_MBSSID_NUM == 4
+    <div class="data_common data_common_notitle" id="VAP3">
+        <table>
+            <tr>
+                <th width="30%"><label><input type="checkbox" value="1" name="En_vap3" 
+                <VWS_SCREEN (char*) webShowWlanVAP3_ENABLE[];> 
+                ONCLICK="checkVapState(3)">&nbsp;&nbsp;Enable VAP3 </label></th>
+                <td></td>
+            </tr>
+            <tr>
+                <th>SSID:</th>
+                <td>
+                    <input type="text" maxlength="16" size="16" name="ssid_v3" 
+                    <VWS_SCREEN (char*) webShowWlanVAP3_NAME[];>
+                    >
+                </td>
+            </tr>
+            <tr>
+                <th>broadcast SSID: </th>
+                <td>
+                    <input type="radio" value="0" name="brssid_v3">
+                    Enable&nbsp;&nbsp;
+                    <input type="radio" value="1" name="brssid_v3">
+                    Disable
+                </td>
+            </tr>
+            <VWS_SCREEN (char*) webShowWlanVAP3_RELAY_BLOCK[];>
+            <tr>
+                <th>Authentication Type:</th>
+                <td>
+                    <input type="radio" value="0" name="authType3">
+                    Open System&nbsp;&nbsp;
+                    <input type="radio" value="1" name="authType3">
+                    Shared Key&nbsp;&nbsp;
+                    <input type="radio" value="2" name="authType3">
+                    Auto
+                </td>
+            </tr>
+       </table>
+    </div>
+#endif
+    <div class="btn_ctl">
+        <input class="link_bg" type=submit name="save" onClick="return saveChanges()" value="Apply Changes">
+        <INPUT TYPE="hidden" NAME="submit.htm?wlmbssid.htm" VALUE="Send">
+    </div>
+    <script>
+   	<VWS_SCREEN (char*) webShowWlanVAP_INIT[];>
+	updateState();
+    </script>
+  </form>
+</body>
+</html>

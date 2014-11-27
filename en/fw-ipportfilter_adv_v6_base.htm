@@ -1,0 +1,292 @@
+<VWS_FUNCTION (void*)SendWebMetaStr();>
+<VWS_FUNCTION (void*)SendWebCssStr();>
+	<title>IPv6/Port Filtering</title>
+    <script>
+        var retNum = /^[0-9]{1,15}$/;
+
+        function OnHelp(page) {
+            HelpWin = window.open(page, "Help", "toolbar=no,location=no,directories=no,   status=no,menubar=no,scrollbars=yes,resizable=yes,width=500,height=500");
+        }
+        function protocalSelection() {
+            if (document.formFilterAdd.protocol.selectedIndex <= 1) //IPv6,ICMP6
+            {
+                document.formFilterAdd.srcportfrom.disabled = true;
+                document.formFilterAdd.srcportto.disabled = true;
+                document.formFilterAdd.dstportfrom.disabled = true;
+                document.formFilterAdd.dstportto.disabled = true;
+                if (document.formFilterAdd.protocol.selectedIndex == 1)
+                    document.formFilterAdd.icmp6type.disabled = false;
+                else
+                    document.formFilterAdd.icmp6type.disabled = true;
+            } else {		// TCP, UDP
+                document.formFilterAdd.srcportfrom.disabled = false;
+                document.formFilterAdd.srcportto.disabled = false;
+                document.formFilterAdd.dstportfrom.disabled = false;
+                document.formFilterAdd.dstportto.disabled = false;
+                document.formFilterAdd.icmp6type.disabled = true;
+            }
+        }
+
+        function addClick() {
+            if (document.formFilterAdd.sourceip.value != "") {
+                if (!isIpv6Address(document.formFilterAdd.sourceip.value)) {
+                    alert("Invalid Source Address.");
+                    document.formFilterAdd.sourceip.focus();
+                    return false;
+                }
+
+                if (document.formFilterAdd.sourceprefix.value == "") {
+                    alert("Please input Prefix Length!");
+                    document.formFilterAdd.sourceprefix.focus();
+                    return false;
+                }
+
+                if (validateKey(document.formFilterAdd.sourceprefix.value) == 0) {
+                    alert("Wrong Prefix Length!");
+                    document.formFilterAdd.sourceprefix.focus();
+                    return false;
+                }
+
+                var prefixlen = getDigit(document.formFilterAdd.sourceprefix.value, 1);
+                if (prefixlen > 128 || prefixlen < 0) {
+                    alert("Wrong Prefix Length!");
+                    document.formFilterAdd.sourceprefix.focus();
+                    return false;
+                }
+            }
+            else
+                document.formFilterAdd.sourceprefix.value = "";
+
+            if (document.formFilterAdd.destip.value != "") {
+                if (!isIpv6Address(document.formFilterAdd.destip.value)) {
+                    alert("Invalid Destination Address.");
+                    document.formFilterAdd.destip.focus();
+                    return false;
+                }
+
+                if (document.formFilterAdd.destprefix.value == "") {
+                    alert("Please input Prefix Length!");
+                    document.formFilterAdd.destprefix.focus();
+                    return false;
+                }
+
+                if (validateKey(document.formFilterAdd.destprefix.value) == 0) {
+                    alert("Wrong Prefix Length!");
+                    document.formFilterAdd.destprefix.focus();
+                    return false;
+                }
+
+                var prefixlen = getDigit(document.formFilterAdd.destprefix.value, 1);
+                if (prefixlen > 128 || prefixlen < 0) {
+                    alert("Wrong Prefix Length!");
+                    document.formFilterAdd.destprefix.focus();
+                    return false;
+                }
+            }
+            else
+                document.formFilterAdd.destprefix.value = "";
+
+            if (document.formFilterAdd.protocol.selectedIndex != 0 &&
+        document.formFilterAdd.protocol.selectedIndex != 1) {
+                digit1 = getDigit(document.formFilterAdd.srcportfrom.value, 1);
+                if ((document.formFilterAdd.srcportfrom.value != "") && (digit1 > 65535 || digit1 <= 0)) {
+                    alert("Invalid SPort value! You should set a value between 1-65535.");
+                    document.formFilterAdd.srcportfrom.focus();
+                    return false;
+                }
+                digit2 = getDigit(document.formFilterAdd.srcportto.value, 1);
+                if (((document.formFilterAdd.srcportto.value != "") && (digit2 > 65535 || digit2 <= 0))) {
+                    alert("Invalid SPort value! You should set a value between 1-65535.");
+                    document.formFilterAdd.srcportto.focus();
+                    return false;
+                }
+                if ((document.formFilterAdd.srcportfrom.value != "") &&
+      	(document.formFilterAdd.srcportto.value != "") && (digit1 > digit2)) {
+                    alert("Invalid Sport value range! port from is larger than port to.");
+                    document.formFilterAdd.srcportfrom.focus();
+                    return false;
+                }
+
+                digit1 = getDigit(document.formFilterAdd.dstportfrom.value, 1);
+                if (((document.formFilterAdd.dstportfrom.value != "") && (digit1 > 65535 || digit1 <= 0))) {
+                    alert("Invalid DPort value! You should set a value between 1-65535.");
+                    document.formFilterAdd.dstportfrom.focus();
+                    return false;
+                }
+                digit2 = getDigit(document.formFilterAdd.dstportto.value, 1);
+                if (((document.formFilterAdd.dstportto.value != "") && (digit2 > 65535 || digit2 <= 0))) {
+                    alert("Invalid DPort value! You should set a value between 1-65535.");
+                    document.formFilterAdd.dstportto.focus();
+                    return false;
+                }
+                if ((document.formFilterAdd.dstportfrom.value != "") &&
+      	(document.formFilterAdd.dstportto.value != "") && (digit1 > digit2)) {
+                    alert("Invalid Dport value range! port from is larger than port to.");
+                    document.formFilterAdd.dstportfrom.focus();
+                    return false;
+                }
+            }
+        }
+    </script>
+     <style type="text/css">
+	  td 
+	  {  
+		  word-wrap:break-word;
+		  word-break:keep-all;
+		  word-break:break-all;
+	  } 
+	</style>
+</head>
+<body id="adsl">
+    <form action="form2Acl6defaultcfg.cgi" method=POST name="formFilter6Default">
+    <div class="intro_main ">
+        <p class="intro_title">IPv6/Port Filtering</p>
+        <p class="intro_content">Entries in this table are used to restrict certain types of ipv6 data packets from your local network to Internet through the Gateway. Use of such filters can be helpful in securing or restricting your local network. </p>
+    </div>
+    <div class="data_common data_common_notitle">
+        <table>
+            <tr>
+                <th width="30%">Outgoing Default Policy</th>
+                <td>
+                    <VWS_SCREEN (char*) xscrnSetFilter6OutState[];>
+                </td>
+            </tr>
+            <tr>
+                <th>Incoming Default Policy</th>
+                <td>
+                   <VWS_SCREEN (char*) xscrnSetFilter6inState[];>
+                </td>
+            </tr>
+            <tr>
+		<td>
+			<VWS_COMMENTS><input type="submit" value="Apply Changes">&nbsp;&nbsp;</VWS_COMMENTS>
+			<VWS_COMMENTS><input type="reset" value="Reset" name="reset">&nbsp;&nbsp;</VWS_COMMENTS>
+			<VWS_COMMENTS><INPUT TYPE=BUTTON VALUE="Help" onclick=OnHelp("hlpacldefault.htm")></VWS_COMMENTS>
+			<VWS_COMMENTS><input type="hidden" NAME="submit.htm?fw-ipportfilter_adv_v6.htm" value="Send"></VWS_COMMENTS>
+  		</td>
+		</tr>
+        </table>
+    </div>
+    </form>
+    <form action="form2Filter6cfg.cgi" method=POST name="formFilterAdd">
+    <div class="data_common data_common_notitle">
+        <table>
+            <tr>
+                <th width="20%">Rule Action:</th>
+                <td colspan="3">
+                    <input type="radio" checked="" value="allow" name="operate">
+                    Permit
+                    <input type="radio" value="deny" name="operate">
+                    Deny
+                </td>
+            </tr>
+            <tr>
+                <th width="20%">Protocol:</th>
+                <td width="30%">
+                    <select onchange="protocalSelection();" name="protocol">
+                    <option selected="" value="41"> IPv6
+                    </option><option value="58"> ICMP6
+                    </option><option value="6"> TCP
+                    </option><option value="17"> UDP
+                    </option></select>
+                </td>
+                <th width="20%">Icmp6Type:</th>
+                <td width="30%">
+                    <select disabled="" name="icmp6type">
+                    <option selected="" value="1"> PING6
+                    </option></select>
+                </td>
+            </tr>
+            <tr>
+                <th>Direction:</th>
+                <td colspan="3">
+                    <select name="direction">
+                    <option selected="" value="up"> Upstream
+                    </option><option value="down"> Downstream
+                    </option></select>
+                </td>
+            </tr>
+            <tr>
+                <th>Source IPv6 Address:  </th>
+                <td><input type="text" maxlength="40" size="25" name="sourceip"></td>
+                <th>Prefix Length:</th>
+                <td><input type="text" maxlength="5" size="5" name="sourceprefix"></td>
+            </tr>
+            <tr>
+                <th>Dest IPv6 Address:</th>
+                <td><input type="text" maxlength="40" size="25" name="destip"></td>
+                <th>Prefix Length:</th>
+                <td><input type="text" maxlength="5" size="5" name="destprefix"></td>
+            </tr>
+            <tr>
+                <th>SPort:</th>
+                <td>
+                    <input type="text" disabled="" maxlength="5" size="5" name="srcportfrom">
+                    &nbsp;&nbsp;-&nbsp;&nbsp;
+                    <input type="text" disabled="" maxlength="5" size="5" name="srcportto">
+                </td>
+                <th>DPort:</th>
+                <td>
+                    <input type="text" disabled="" maxlength="5" size="5" name="dstportfrom">
+                    &nbsp;&nbsp;-&nbsp;&nbsp;
+                    <input type="text" disabled="" maxlength="5" size="5" name="dstportto">
+                </td>
+            </tr>
+            <tr>
+                <th>Enable:</th>
+                <td colspan="3"><input type="CHECKBOX" checked="" value="enable" name="state" CHECKED></td>
+            </tr>
+            <tr>
+                <td><input class="inner_btn" type="submit" onclick="return addClick()" value="Apply Changes"></td>
+                <td><input class="inner_btn" type="submit" name="reset" value="Reset"></td>
+                <td colspan="2"><input class="inner_btn" type="submit" onclick=OnHelp("hlpacl.htm") value="Help"></td>
+                <input type="hidden" NAME="submit.htm?fw-ipportfilter_adv_v6.htm" value="Send">
+            </tr>
+        </table>
+    </div>
+    </form>
+    <form method=POST Action="form2Filter6del.cgi">
+    <INPUT TYPE="HIDDEN" NAME="rulenum" VALUE="" >
+    <INPUT TYPE="HIDDEN" NAME="state" VALUE="" >
+    <div class="column">
+        <div class="column_title">
+            <div class="column_title_left"></div>
+            <p>Current Filter Table:</p>
+            <div class="column_title_right"></div>
+        </div>
+        <div class="data_common data_vertical">
+            <table>
+                <tr class="data_common_sth">
+                    <th width="8%">Rule</th>
+                    <th width="8%">Protocol</th>
+                    <th>Source IPv6/Prefix</th>
+                    <th>SPort</th>
+                    <th>Dest IPv6/Prefix</th>
+                    <th>DPort</th>
+                    <th width="10%">ICMP6Type</th>
+                    <th width="8%">State</th>
+                    <th width="12%">Direction</th>
+                    <th>Action</th>
+                </tr>
+                <tr>
+                <VWS_FUNCTION (void*)showFilter6List();>
+            </table>
+        </div>
+    </div>
+    <script language="JavaScript">
+        //<!--
+        function aclDelFunc(form, rulenum, state) {
+            form.elements[0].value = rulenum;
+            form.elements[1].value = state;
+            form.submit();
+        }
+        //-->
+        document.formFilter6Default.outAct[0].disabled = true;
+        document.formFilter6Default.outAct[1].disabled = true;
+        document.formFilter6Default.inAct[0].disabled = true;
+        document.formFilter6Default.inAct[1].disabled = true;
+    </script>
+    <input type="hidden" NAME="submit.htm?fw-ipportfilter_adv_v6.htm" value="Send">
+    </form>
+</body>
+</html>

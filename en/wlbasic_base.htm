@@ -1,0 +1,801 @@
+<VWS_FUNCTION (void*)SendWebMetaStr();>
+<VWS_FUNCTION (void*)SendWebCssStr();>
+	<title>WLAN Basic Settings</title>
+	<style>
+	.on {display:on}
+	.off {display:none}
+	</style>
+#if defined(WLAN_11N)
+<SCRIPT>
+	var regDomain, defaultChan, lastBand=0, lastMode=0, WiFiTest=0;
+	var regDomainList = new Array(200);
+
+        function skip() { this.blur(); }
+        function openWindow(url, windowName) {
+            var wide = 620;
+            var high = 420;
+            if (document.all)
+                var xMax = screen.width, yMax = screen.height;
+            else if (document.layers)
+                var xMax = window.outerWidth, yMax = window.outerHeight;
+            else
+                var xMax = 640, yMax = 500;
+            var xOffset = (xMax - wide) / 2;
+            var yOffset = (yMax - high) / 3;
+
+            var settings = 'width=' + wide + ',height=' + high + ',screenX=' + xOffset + ',screenY=' + yOffset + ',top=' + yOffset + ',left=' + xOffset + ', resizable=yes, toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes';
+
+            window.open(url, windowName, settings);
+        }
+
+
+        function showMacClick(url) {
+            //  if (!document.wlanSetup.wlanDisabled.checked)
+            if (document.wlanSetup.wlanDisabled.value != "ON")
+                openWindow(url, 'showWirelessClient');
+        }
+
+        function saveChanges() {
+            /*
+            if (document.wlanSetup.ssid.value=="") {
+            alert('SSID cannot be empty!');
+            document.wlanSetup.ssid.value = document.wlanSetup.ssid.defaultValue;
+            document.wlanSetup.ssid.focus();
+            return false;
+            }
+            if (includeSpace(document.wlanSetup.ssid.value)) {
+            alert('Invalid SSID.');
+            document.wlanSetup.ssid.focus();
+            return false;
+            }
+            if (checkString(document.wlanSetup.ssid.value) == 0) {
+            alert('Invalid SSID.');
+            document.wlanSetup.ssid.focus();
+            return false;
+            }
+            */
+            if (!checkSpecialCharExcludeSpace(document.wlanSetup.ssid.value, 1)) {
+                alert('Invalid SSID.');
+                document.wlanSetup.ssid.focus();
+                return false;
+            }
+
+            if (document.wlanSetup.wlanDisabled.value != "ON") {
+                band = 0;
+                if (document.wlanSetup.band.selectedIndex == 0)
+                    band = 1;
+                else if (document.wlanSetup.band.selectedIndex == 1)
+                    band = 2;
+                else if (document.wlanSetup.band.selectedIndex == 2)
+                    band = 3;
+	else if (document.wlanSetup.band.value == 7)
+		band = 8;
+	else if (document.wlanSetup.band.value == 9)
+		band = 10;
+	else if (document.wlanSetup.band.value == 10)
+		band = 11;
+                else
+                    band = 4;
+
+                basicRate = 0;
+                operRate = 0;
+                if (band & 1) {
+                    basicRate |= 0xf;
+                    operRate |= 0xf;
+                }
+                if ((band & 2) || (band & 4)) {
+                    operRate |= 0xff0;
+		if (!(band & 1)) {
+			if (WiFiTest)
+				basicRate=0x15f;
+			else
+				basicRate=0x1f0;
+		}	
+	}
+	if (band & 8) {
+		if (!(band & 3))
+			operRate|=0xfff;	
+		if (band & 1)
+			basicRate=0xf;
+		else if (band & 2)			
+			basicRate=0x1f0;
+		else
+			basicRate=0xf;
+	}
+	operRate|=basicRate;
+
+                document.wlanSetup.basicrates.value = basicRate;
+                document.wlanSetup.operrates.value = operRate;
+            }
+
+
+            return true;
+        }
+
+        function disableWLAN() {
+            disableTextField(document.wlanSetup.band);
+            disableTextField(document.wlanSetup.mode);
+            disableTextField(document.wlanSetup.ssid);
+  disableTextField(document.wlanSetup.chanwid);
+  disableTextField(document.wlanSetup.ctlband);
+  disableTextField(document.wlanSetup.chan);
+  disableTextField(document.wlanSetup.domain);
+            disableTextField(document.wlanSetup.txpower);
+            disableButton(document.wlanSetup.showMac);
+        }
+
+        function enableWLAN() {
+            enableTextField(document.wlanSetup.band);
+            enableTextField(document.wlanSetup.mode);
+            enableTextField(document.wlanSetup.ssid);
+  enableTextField(document.wlanSetup.chanwid);
+  enableTextField(document.wlanSetup.ctlband);
+  enableTextField(document.wlanSetup.chan);
+  enableTextField(document.wlanSetup.domain);
+            enableTextField(document.wlanSetup.txpower);
+            enableButton(document.wlanSetup.showMac);
+            enableButton(document.wlanSetup.save);
+        }
+
+        function updateIputState() {
+            if (document.wlanSetup.wlanDisabled.checked == true) {
+                document.wlanSetup.wlanDisabled.value = "ON";
+                disableWLAN();
+            } else {
+                document.wlanSetup.wlanDisabled.value = "OFF";
+                enableWLAN();
+            }
+  if (document.wlanSetup.chanwid.selectedIndex == 0)
+  	disableCheckBox(document.wlanSetup.elements.ctlband);
+  else if (document.wlanSetup.wlanDisabled.checked == false)
+  	enableCheckBox(document.wlanSetup.elements.ctlband);
+  if (document.wlanSetup.band.selectedIndex == 0||
+  	document.wlanSetup.band.selectedIndex == 1||
+  	document.wlanSetup.band.selectedIndex == 2){
+  	if (document.getElementById)
+		document.getElementById('optionfor11n').style.display = 'none';
+	else if(document.layers == false)
+		document.all.optionfor11n.style.display = 'none';
+  }
+  else if (document.wlanSetup.band.selectedIndex == 3||
+  	document.wlanSetup.band.selectedIndex == 4||
+  	document.wlanSetup.band.selectedIndex == 5){
+  	if (document.getElementById)
+		document.getElementById('optionfor11n').style.display = 'block';
+	else if(document.layers == false)
+		document.all.optionfor11n.style.display = 'block';
+  }
+  updateChan_channebound();
+}
+
+        function showChannel5G() {
+            document.wlanSetup.chan.length = 0;
+
+            for (idx = 0, chan = 36; chan <= 64; idx++, chan += 4) {
+                document.wlanSetup.chan.options[idx] = new Option(chan, chan, false, false);
+                if (chan == defaultChan)
+                    document.wlanSetup.chan.selectedIndex = idx;
+            }
+            document.wlanSetup.chan.length = idx;
+        }
+
+
+function showChannel2G(bound_40, band)
+{
+	start = 0;
+	end = 0;
+	if (regDomain==1 || regDomain==2) {
+		start = 1;
+		end = 11;
+	}
+	else if (regDomain==3) {
+		start = 1;
+		end = 13;
+	}
+	else if (regDomain==4) {
+		start = 10;
+		end = 11;
+	}
+	else if (regDomain==5) {
+		start = 10;
+		end = 13;
+	}
+	else if (regDomain==6) {
+		start = 1;
+		end = 14;
+	}
+	else {	//wrong regDomain ?
+		start = 1;
+		end = 11;
+	}
+
+	if(band == 9 || band == 10 || band == 7){
+		if(bound_40 ==1){
+			var sideBand_idex = document.wlanSetup.ctlband.selectedIndex;
+			var sideBand = document.wlanSetup.ctlband.options[sideBand_idex].value;
+			if(regDomain==4){
+				if(sideBand ==0){  //upper
+					start = 11;
+					end = 11;
+				}else{ //lower
+					start = 10;
+					end = 10;
+				}
+			}else if(regDomain==5){
+				if(sideBand ==0){  //upper
+					start = 13;
+					end = 13;
+				}else{ //lower
+					start = 10;
+					end = 10;
+				}
+			}else{
+				if(sideBand ==0){  //upper
+					start = 5;
+					if (regDomain==1 || regDomain==2)
+						end = 11;
+					else  				
+						end = 13;			
+					
+				}else{ //lower
+					end = end-4;
+					start = 1;
+				}
+			}
+		}
+	}
+            document.wlanSetup.chan.length = 0;
+            idx = 0;
+            document.wlanSetup.chan.options[idx] = new Option("Auto", 0, false, false);
+            if (0 == defaultChan) {
+                document.wlanSetup.chan.selectedIndex = 0;
+            }
+            idx++;
+
+            for (chan = start; chan <= end; chan++, idx++) {
+                document.wlanSetup.chan.options[idx] = new Option(chan, chan, false, false);
+                if (chan == defaultChan)
+                    document.wlanSetup.chan.selectedIndex = idx;
+            }
+            document.wlanSetup.chan.length = idx;
+        }
+
+function updateChan()
+{
+	var idx_value= document.wlanSetup.band.selectedIndex;
+	var band_value= document.wlanSetup.band.options[idx_value].value;
+/*
+  if (document.wlanSetup.band.selectedIndex == 3)
+     currentBand = 2;
+  else
+*/
+     currentBand = 1;
+
+
+	if(band_value==9 || band_value==10 || band_value==7){
+		updateChan_channebound();
+	}
+	else {
+		  	lastBand = currentBand;
+		  	if (currentBand == 2)
+				showChannel5G();
+		  	else
+				showChannel2G(0, band_value);
+	}
+	lastMode = band_value;
+	
+  if (document.wlanSetup.chanwid.selectedIndex == 0)
+  	disableCheckBox(document.wlanSetup.elements.ctlband);
+  else
+  	enableCheckBox(document.wlanSetup.elements.ctlband);
+  if (document.wlanSetup.band.selectedIndex == 0||
+  	document.wlanSetup.band.selectedIndex == 1||
+  	document.wlanSetup.band.selectedIndex == 2){
+  	if (document.getElementById)
+		document.getElementById('optionfor11n').style.display = 'none';
+	else if(document.layers == false)
+		document.all.optionfor11n.style.display = 'none';
+  }
+  else if (document.wlanSetup.band.selectedIndex == 3||
+  	document.wlanSetup.band.selectedIndex == 4||
+  	document.wlanSetup.band.selectedIndex == 5){
+  	if (document.getElementById)
+		document.getElementById('optionfor11n').style.display = 'block';
+	else if(document.layers == false)
+		document.all.optionfor11n.style.display = 'block';
+  }
+
+}
+
+function updateChan_channebound()
+{
+	var idx_value= document.wlanSetup.band.selectedIndex;
+	var band_value= document.wlanSetup.band.options[idx_value].value;
+	var bound = document.wlanSetup.chanwid.selectedIndex;				/* 0:20Mhz, 1:40Mhz */
+	var adjust_chan;
+
+/*	
+	if(band_value ==3){
+		currentBand = 2;
+	}
+	else if(band_value ==0 || band_value ==1 || band_value ==2 || band_value == 9 || band_value ==10 || band_value ==7 ){
+		currentBand = 1;
+	}else if(band_value == 4 || band_value==5 || band_value==6){
+		currentBand = 3;
+	}
+*/	
+	currentBand = 1;
+
+	if(band_value==9 || band_value==10 || band_value ==7){		/* 11n */
+		if(bound ==0)
+			adjust_chan=0;
+		if(bound ==1 || bound ==2)
+			adjust_chan=1;	
+	}else
+		adjust_chan=0;	
+
+/*
+	if (currentBand == 3) {
+		showChannel2G(form, wlan_id, adjust_chan, band_value);
+		showChannel5G(form, wlan_id);
+	}
+    	if (currentBand == 2) {
+		startChanIdx[wlan_id]=0;
+		showChannel5G(form, wlan_id);
+	}
+*/    	
+  	if (currentBand == 1)
+		showChannel2G(adjust_chan, band_value);
+
+  	if(lastMode == 0)
+  		lastMode = band_value;
+/* 
+  	if(band_value==9 || band_value==10 || band_value==7){
+	  	if(document.wlanSetup.chan.selectedIndex ==0){
+	  		disableTextField(document.wlanSetup.ctlband);	
+		}
+	}
+*/  	
+}
+
+function updateChanWidth()
+{
+   if (document.wlanSetup.chanwid.selectedIndex == 0)
+  	disableCheckBox(document.wlanSetup.elements.ctlband);
+   else
+   {
+  /* 20/40M auto mode*/
+   	if(document.wlanSetup.chanwid.selectedIndex == 2) 
+   	     document.wlanSetup.ctlband.selectedIndex =0;   
+  	enableCheckBox(document.wlanSetup.elements.ctlband);
+   }
+   updateChan_channebound();
+}
+
+function updateRegChan()
+{
+	regDomain = regDomainList[document.wlanSetup.domain.selectedIndex];
+	updateChan();
+}
+	</SCRIPT>
+</head>
+<body>
+	<form action="form2WlanSetup.cgi" method=POST name="wlanSetup">
+    <div class="intro_main ">
+        <p class="intro_title">Wireless Basic Settings</p>
+        <p class="intro_content">This page is used to configure the parameters for your wireless network. </p>
+    </div>
+    <div class="data_common data_common_notitle">
+        <table>
+            <tr>
+                <th width="40%"><label><input type="checkbox" name="wlanDisabled" 
+                <VWS_SCREEN (char*) webShowWlanDISABLED[];>
+                onclick="updateIputState()"> Disable Wireless LAN Interface</label></th>
+                <td></td>
+            </tr>
+            <tr>
+                <th>Band:</th>
+                <td>
+                    <select onchange="updateChan()" name="band" size="1">
+                    <option value="0">2.4 GHz (B)</option>
+                    <option value="1">2.4 GHz (G)</option>
+                    <option value="2">2.4 GHz (B+G)</option>
+                    <option value="7">2.4 GHz (N)</option>
+                    <option value="9">2.4 GHz (G+N)</option>
+                    <option value="10">2.4 GHz (B+G+N)</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <th>Mode:</th>
+                <td>
+                    <select name="mode" size="1">
+                    <VWS_FUNCTION (void*)wlGetWlanMode();>    
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <th>SSID:</th>
+                <td>
+#if defined (CONFIG_VENDOR_DARETECH)
+                    DJAWEB_
+#endif
+                    <input type="text" maxlength="32" size="25" name="ssid" value=
+                    <VWS_SCREEN (char*) webShowWlanSSID[];>
+                    >
+                </td>
+            </tr>
+		</table>
+	</div>
+    <div  class="data_common data_common_notitle" id="optionfor11n" style="display:none">
+		<table>
+            <tr>
+                <th width="40%">Channel Width:</th>
+                <td>
+                    <select onchange="updateChanWidth()" name="chanwid" size="1">
+                    <option value="0">20MHZ</option>
+                    <option value="1">40MHZ</option>
+                    <VWS_SCREEN (char*) webShowCoexist[];> 
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <th>Control Sideband:</th>
+                <td>
+                    <select onchange="updateChan_channebound()" name="ctlband" size="1">
+                    <option value="0">Upper</option>
+                    <option value="1">Lower</option>
+                    </select>
+                </td>
+            </tr>
+		</table>
+    </div>
+	<div class="data_common data_common_notitle">
+		<table>
+		    <tr style="
+			<VWS_FUNCTION (void*)SendDivBlockStyle();>
+			">
+      			<th width="40%">Country/Area:</th>
+      			<td>
+					<select size="1" name="domain" onChange="updateRegChan()">
+    	  			<VWS_SCREEN (char*) webShowWlanCountryDomainList[];> 
+    	   			</select>
+      			</td>
+  			</tr>
+            <tr>
+                <th width="40%">Channel Number:</th>
+                <td>
+                    <select name="chan" size="1">
+                    </select>
+                    <span>Current Channel: </span>
+                    <VWS_SCREEN (char*) webShowCurrentChan[];> 
+                </td>
+                <SCRIPT>
+                <VWS_SCREEN (char*) webShowWlanDomChan[];>
+                updateChan();
+                </SCRIPT>
+            </tr>
+            <tr>
+                <th>Radio Power (Percent):</th>
+                <td>
+                    <select name="txpower" size="1">
+                    <option value="0">100%</option>
+                    <option value="1">80%</option>
+                    <option value="2">50%</option>
+                    <option value="3">25%</option>
+                    <option value="4">10%</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <th>Associated Clients:</th>
+                <td>
+					<input class="inner_btn" type="button" onclick="showMacClick('/wlstatbl.htm')" name="showMac" value="Show Active Clients">
+				</td>
+            </tr>
+       </table>
+    </div>
+    <div class="btn_ctl">
+        <input class="link_bg" type="submit" name="save" onClick="return saveChanges()" value="Apply Changes">
+	<input type="hidden" name="basicrates" value=0>
+        <input type="hidden" name="operrates" value=0>
+        <INPUT TYPE="hidden" NAME="submit.htm?wlbasic.htm" VALUE="Send">
+        <script>
+            <VWS_SCREEN (char*) webShowWlanBand[];>
+            <VWS_SCREEN (char*) webShowWlanChanWidth[];>
+            <VWS_SCREEN (char*) webShowWlanCtrlChan[];>
+            <VWS_SCREEN (char*) webShowWlanTx_Power[];>
+            <VWS_SCREEN (char*) webShowWlanDISABLED2[];>
+			<VWS_SCREEN (char*) webShowWlanCountryDomainINIT[];>
+			<VWS_SCREEN (char*) webShowWlanRegDomainList[];>
+            updateIputState();
+        </script>
+    </div>
+    </form>
+</body>
+</html>
+#else
+	<SCRIPT>
+	var regDomain, defaultChan, lastBand=0;
+
+	function skip () { this.blur(); }
+	function openWindow(url, windowName) {
+		var wide=620;
+		var high=420;
+		if (document.all)
+			var xMax = screen.width, yMax = screen.height;
+		else if (document.layers)
+			var xMax = window.outerWidth, yMax = window.outerHeight;
+		else
+		   var xMax = 640, yMax=500;
+		var xOffset = (xMax - wide)/2;
+		var yOffset = (yMax - high)/3;
+
+		var settings = 'width='+wide+',height='+high+',screenX='+xOffset+',screenY='+yOffset+',top='+yOffset+',left='+xOffset+', resizable=yes, toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes';
+
+		window.open( url, windowName, settings );
+	}
+
+
+	function showMacClick(url)
+	{
+	//  if (!document.wlanSetup.wlanDisabled.checked)
+	  if (document.wlanSetup.wlanDisabled.value != "ON")
+		openWindow(url, 'showWirelessClient' );
+	}
+
+	function saveChanges()
+	{
+	/*
+	  if (document.wlanSetup.ssid.value=="") {
+		alert('SSID cannot be empty!');
+		document.wlanSetup.ssid.value = document.wlanSetup.ssid.defaultValue;
+		document.wlanSetup.ssid.focus();
+		return false;
+	   }
+		if (includeSpace(document.wlanSetup.ssid.value)) {
+			alert('Invalid SSID.');
+			document.wlanSetup.ssid.focus();
+			return false;
+		}
+		if (checkString(document.wlanSetup.ssid.value) == 0) {
+			alert('Invalid SSID.');
+			document.wlanSetup.ssid.focus();
+			return false;
+		}
+	*/
+	  if(!checkSpecialChar(document.wlanSetup.ssid.value,1)){
+		alert('Invalid SSID.');
+		document.wlanSetup.ssid.focus();
+		return false;  	
+	  }
+
+	   if (document.wlanSetup.wlanDisabled.value != "ON") {
+		band = 0;
+		if (document.wlanSetup.band.selectedIndex == 0)
+			band = 1;
+		else if (document.wlanSetup.band.selectedIndex == 1)
+			band = 2;
+		else if (document.wlanSetup.band.selectedIndex == 2)
+			band = 3;
+		else
+			band = 4;
+
+		basicRate=0;
+		operRate=0;
+		if (band & 1) {
+			basicRate|=0xf;
+			operRate|=0xf;
+		}
+		if ( (band & 2) || (band & 4) ) {
+			operRate|=0xff0;
+			if (!(band & 1))
+				basicRate|=0xff0;
+		}
+
+		document.wlanSetup.basicrates.value = basicRate;
+		document.wlanSetup.operrates.value = operRate;
+	   }
+
+
+	   return true;
+	}
+
+	function disableWLAN()
+	{
+	  disableTextField(document.wlanSetup.band);
+	  disableTextField(document.wlanSetup.mode);
+	  disableTextField(document.wlanSetup.ssid);
+	  disableTextField(document.wlanSetup.chan);
+	  disableTextField(document.wlanSetup.txpower);
+	  disableButton(document.wlanSetup.showMac);
+	}
+
+	function enableWLAN()
+	{
+	  enableTextField(document.wlanSetup.band);
+	  enableTextField(document.wlanSetup.mode);
+	  enableTextField(document.wlanSetup.ssid);
+	  enableTextField(document.wlanSetup.chan);
+	  enableTextField(document.wlanSetup.txpower);
+	  enableButton(document.wlanSetup.showMac);
+	  enableButton(document.wlanSetup.save);
+	}
+
+	function updateIputState()
+	{
+	  if (document.wlanSetup.wlanDisabled.checked == true) {
+		document.wlanSetup.wlanDisabled.value="ON";
+		disableWLAN();
+	  } else {
+		document.wlanSetup.wlanDisabled.value="OFF";
+		enableWLAN();
+	  }
+	}
+
+	function showChannel5G()
+	{
+		document.wlanSetup.chan.length=0;
+
+		for (idx=0, chan=36; chan<=64; idx++, chan+=4) {
+			document.wlanSetup.chan.options[idx] = new Option(chan, chan, false, false);
+			if (chan == defaultChan)
+				document.wlanSetup.chan.selectedIndex = idx;
+		}
+		document.wlanSetup.chan.length = idx;
+	}
+
+
+	function showChannel2G()
+	{
+		start = 0;
+		end = 0;
+		if (regDomain==1 || regDomain==2) {
+			start = 1;
+			end = 11;
+		}
+		if (regDomain==3) {
+			start = 1;
+			end = 13;
+		}
+		if (regDomain==4) {
+			start = 10;
+			end = 11;
+		}
+		if (regDomain==5) {
+			start = 10;
+			end = 13;
+		}
+		if (regDomain==6) {
+			start = 1;
+			end = 14;
+		}
+		
+		document.wlanSetup.chan.length=0;
+		idx=0;
+		document.wlanSetup.chan.options[idx] = new Option("Auto", 0, false, false);
+		if (0 == defaultChan) {
+			document.wlanSetup.chan.selectedIndex = 0;
+		}
+		idx++;	
+		
+		for (chan=start; chan<=end; chan++, idx++) {
+			document.wlanSetup.chan.options[idx] = new Option(chan, chan, false, false);
+			if (chan == defaultChan)
+				document.wlanSetup.chan.selectedIndex = idx;
+		}
+		document.wlanSetup.chan.length = idx;
+	}
+
+	function updateChan()
+	{
+	/*
+	  if (document.wlanSetup.band.selectedIndex == 3)
+		 currentBand = 2;
+	  else
+	*/
+		 currentBand = 1;
+
+	  if (lastBand != currentBand) {
+		lastBand = currentBand;
+		if (currentBand == 2)
+			showChannel5G();
+		else
+			showChannel2G();
+	  }
+	}
+	</SCRIPT>
+</head>
+<body>
+	<div class="intro_main ">
+        <p class="intro_title">Wireless Basic Settings</p>
+        <p class="intro_content"> This page is used to configure the parameters for your wireless network .  </p>
+    </div>
+	<form action="form2WlanSetup.cgi" method=POST name="wlanSetup">
+	<div class="data_common data_common_notitle">
+		<table>
+			<tr>
+				<th>
+					<input type="checkbox" name="wlanDisabled" 
+					<VWS_SCREEN (char*) webShowWlanDISABLED[];>
+					ONCLICK=updateIputState()>&nbsp;&nbsp;Disable Wireless LAN Interface
+				</th>
+			</tr>	
+			<tr>
+				<th>Band:</th>
+				<td>
+					<select size=1 name=band onChange="updateChan()">
+						<option value=0>2.4 GHz (B)</option>
+						<option value=1>2.4 GHz (G)</option>
+						<option value=2>2.4 GHz (B+G)</option>	      		
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<th>Mode:</th>
+				<td>
+					<select size="1" name="mode">
+					<VWS_FUNCTION (void*)wlGetWlanMode();>
+					</select>
+				</td>
+			</tr>
+		</table>
+	</div>
+	<div class="data_common data_common_notitle">
+		<table>
+			<tr>
+				<th>SSID:</th>
+				<td>
+					<input type=text name=ssid size="25" maxlength="32" value=
+      					<VWS_SCREEN (char*) webShowWlanSSID[];>
+      					>
+				</td>
+			</tr>
+			<tr>
+				<th>Channel Number:</th>
+				<td>
+					<select size="1" name="chan"> </select>
+					<b>&nbsp; &nbsp;Current Channel:</b>
+					<VWS_SCREEN (char*) webShowCurrentChan[];> 
+				</td>
+				<SCRIPT>
+				<VWS_SCREEN (char*) webShowWlanDomChan[];>
+				updateChan();
+				</SCRIPT>
+			</tr>
+			<tr>
+				<th>Radio Power (Percent):</th>
+				<td>
+					<select size="1" name="txpower">      		
+						<option value="0">100%</option>
+						<option value="1">80%</option>
+						<option value="2">50%</option>      
+						<option value="3">25%</option>      		
+						<option value="4">10%</option>      		
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<th>Associated Clients:</th>
+				<td>
+					<input class="inner_btn" type="button" value="Show Active Clients" name="showMac" onClick="showMacClick('/wlstatbl.htm')">
+				</td>
+			</tr>
+		</table>
+	</div>
+	<div class="btn_ctl">
+		<input class="link_bg" type="submit" value="Apply Changes" name="save" onClick="return saveChanges()">&nbsp;&nbsp;
+		<input type="hidden" name="basicrates" value=0>
+		<input type="hidden" name="operrates" value=0>
+		<INPUT TYPE="hidden" NAME="submit.htm?wlbasic.htm" VALUE="Send">
+	</div>
+	<script>
+		<VWS_SCREEN (char*) webShowWlanBand[];>
+		<VWS_SCREEN (char*) webShowWlanTx_Power[];>
+		<VWS_SCREEN (char*) webShowWlanDISABLED2[];>
+		updateIputState();
+	</script>
+	</form>
+</body>
+</html>
+#endif

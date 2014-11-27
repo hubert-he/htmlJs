@@ -1,0 +1,314 @@
+<VWS_FUNCTION (void*)SendWebMetaStr();>
+<VWS_FUNCTION (void*)SendWebCssStr();>
+	<title>System Time Configuration </title>
+    <SCRIPT>
+        var mouths = {};
+        mouths['Jan'] = 0;
+        mouths['Feb'] = 1;
+        mouths['Mar'] = 2;
+        mouths['Apr'] = 3;
+        mouths['May'] = 4;
+        mouths['Jun'] = 5;
+        mouths['Jul'] = 6;
+        mouths['Aug'] = 7;
+        mouths['Sep'] = 8;
+        mouths['Oct'] = 9;
+        mouths['Nov'] = 10;
+        mouths['Dec'] = 11;
+        function ntpStartFunc(form, ntpstart) {
+            form.elements[0].value = ntpstart;
+            form.submit();
+        }
+        function checkTime() {
+            var year = document.time.year;
+            var month = document.time.month;
+            var day = document.time.day;
+            var hour = document.time.hour;
+            var min = document.time.min;
+            var sec = document.time.sec;
+            yearInt = parseInt(year.value);
+            montInt = mouths[month.value] + 1;
+            if (year.value == "") {
+                alert("year cannot be empty!");
+                year.value = year.defaultValue;
+                year.focus();
+                return false;
+            }
+            if (validateKey(year.value) == 0) {
+                alert("Invalid year value. It should be the decimal number (0-9).");
+                year.value = year.defaultValue;
+                year.focus();
+                return false;
+            }
+            if (!checkDigitRange(year.value, 1, 0, 9999)) {
+                alert("Invalid year . It should be 0-9999.");
+                year.value = year.defaultValue;
+                year.focus();
+                return false;
+            }
+            if (day.value == "") {
+                alert("day cannot be empty!");
+                day.value = day.defaultValue;
+                day.focus();
+                return false;
+            }
+            if (validateKey(day.value) == 0) {
+                alert("Invalid day value. It should be the decimal number (0-9).");
+                day.value = day.defaultValue;
+                day.focus();
+                return false;
+            }
+            if (!checkDigitRange(day.value, 1, 1, 31)) {
+                alert("Invalid day . It should be 1-31.");
+                day.value = day.defaultValue;
+                day.focus();
+                return false;
+            }
+            if ((montInt == 4) || (montInt == 6) || (montInt == 9) || (montInt == 11)) {
+                if (!checkDigitRange(day.value, 1, 1, 30)) {
+                    alert("Invalid date!please input a right date");
+                    day.value = day.defaultValue;
+                    day.focus();
+                    return false;
+                }
+            } else if (montInt == 2) {
+                if ((yearInt % 100 == 0 && yearInt % 400 == 0) || (yearInt % 100 != 0 && yearInt % 4 == 0)) {
+                    if (!checkDigitRange(day.value, 1, 1, 29)) {
+                        alert("Invalid date!please input a right date");
+                        day.value = day.defaultValue;
+                        day.focus();
+                        return false;
+                    }
+                } else {
+                    if (!checkDigitRange(day.value, 1, 1, 28)) {
+                        alert("Invalid date!please input a right date");
+                        day.value = day.defaultValue;
+                        day.focus();
+                        return false;
+                    }
+                }
+            }
+            if (hour.value == "") {
+                alert("hour cannot be empty!");
+                hour.value = hour.defaultValue;
+                hour.focus();
+                return false;
+            }
+            if (validateKey(hour.value) == 0) {
+                alert("Invalid hour value. It should be the decimal number (0-9).");
+                hour.value = hour.defaultValue;
+                hour.focus();
+                return false;
+            }
+            if (!checkDigitRange(hour.value, 1, 0, 23)) {
+                alert("Invalid hour . It should be 0-23.");
+                hour.value = hour.defaultValue;
+                hour.focus();
+                return false;
+            }
+            if (min.value == "") {
+                alert("min cannot be empty!");
+                min.value = min.defaultValue;
+                min.focus();
+                return false;
+            }
+            if (validateKey(min.value) == 0) {
+                alert("Invalid min value. It should be the decimal number (0-9).");
+                min.value = min.defaultValue;
+                min.focus();
+                return false;
+            }
+            if (!checkDigitRange(min.value, 1, 0, 59)) {
+                alert("Invalid min . It should be 0-59.");
+                min.value = min.defaultValue;
+                min.focus();
+                return false;
+            }
+            if (sec.value == "") {
+                alert("sec cannot be empty!");
+                sec.value = sec.defaultValue;
+                sec.focus();
+                return false;
+            }
+            if (validateKey(sec.value) == 0) {
+                alert("Invalid sec value. It should be the decimal number (0-9).");
+                sec.value = sec.defaultValue;
+                sec.focus();
+                return false;
+            }
+            if (!checkDigitRange(sec.value, 1, 0, 59)) {
+                alert("Invalid sec . It should be 0-59.");
+                sec.value = sec.defaultValue;
+                sec.focus();
+                return false;
+            }
+            return true;
+        }
+         function checkUrlChar(url)
+	{
+	var urlRegex=/^[a-zA-Z0-9]{1}[a-zA-Z0-9-.]{1,253}[a-zA-Z0-9]{1}$/;   
+	var ipRegex=/^([0-9]{1,3}\.{1}){3}[0-9]{1,3}$/;
+
+	if(isUnicastIpv6Address( url.value))
+		return true;
+		
+	else if(!ipRegex.exec(url.value)){
+		if (!urlRegex.exec(url.value))
+		{
+ 			alert("Invalid character,please input again!");
+ 			url.focus();
+ 			return false;		
+		}	
+	}else{
+		if( !checkIP(url))
+		{
+			return false;
+		}
+	}
+	
+	return true;	
+	}
+	
+        function saveChanges() 
+        {
+            if (document.ntp.ntpstate[1].checked) 
+            {
+		if (!checkUrlChar(document.ntp.ntpserver)) 
+                {
+			return false;
+                }
+                if(document.ntp.ntpserver2.value != "")
+ 		{
+ 			if(!checkUrlChar(document.ntp.ntpserver2))
+			{
+	 			return false;
+ 			}
+ 		}  	
+            }
+   
+            var intetval = document.ntp.ntpinterval;
+            if (intetval.value == "") {
+                alert("Interval cannot be empty!");
+                intetval.value = intetval.defaultValue;
+                intetval.focus();
+                return false;
+            }
+            if (validateKey(intetval.value) == 0) {
+                alert("Invalid intetval value. It should be the decimal number (0-9).");
+                intetval.value = intetval.defaultValue;
+                intetval.focus();
+                return false;
+            }
+            if (!checkDigitRange(intetval.value, 1, 1, 999)) {
+                alert("Invalid intetval . It should be 1-999.");
+                intetval.value = intetval.defaultValue;
+                intetval.focus();
+                return false;
+            }
+            return true;
+        }
+function checkState()
+{
+	if(document.ntp.ntpstate[1].checked){
+		//enable ntp
+		enableTextField(document.ntp.ntpserver);
+		enableTextField(document.ntp.ntpserver2);
+		enableTextField(document.ntp.ntpinterval);    
+		enableTextField(document.ntp.ntptimezone); 
+	} else {
+		disableTextField(document.ntp.ntpserver);
+		disableTextField(document.ntp.ntpserver2);
+		disableTextField(document.ntp.ntpinterval);    
+		disableTextField(document.ntp.ntptimezone); 
+	}
+}
+    </SCRIPT>
+</head>
+<body onload="checkState();">
+<form method=POST Action="form2systime.cgi" name="time">
+    <div class="intro_main ">
+        <p class="intro_title">System Time Configuration</p>
+        <p class="intro_content">This page is used to configure the system time and Network Time Protocol(NTP) server.
+            Here you can change the settings or view some information on the system time and NTP parameters. </p>
+    </div>
+    <div class="data_common data_common_notitle">
+        <table>
+            <tr>
+                <th width="20%">System Time:</th>
+                <td>
+                   <VWS_SCREEN (char*) xscrnSetSystemTime[];>
+                </td>
+            </tr>
+            <VWS_SCREEN (char*) xscrnSetDaylightSavingTime[];>
+        </table>
+    </div>
+    <div class="adsl clearfix">
+        <input class="link_bg" type="submit" value="Apply Changes" onClick="return checkTime()">
+        <input class="link_bg" type="RESET" name="reset" value="Reset">
+        <input type="hidden" name="submit.htm?time.htm" value="Send">
+    </div>
+</form>
+
+<form method=POST Action="form2ntp.cgi" name="ntp">
+    <div class="data_common data_common_notitle">
+        <table>
+            <tr>
+                <th colspan="2">NTP Configuration:</th>
+            </tr>
+            <tr>
+                <th width="20%">State:</th>
+                <td>
+                    <VWS_SCREEN (char*) setNtpState[];>
+                </td>
+            </tr>
+            <tr>
+                <th>Server:</th>
+                <td>
+                <VWS_SCREEN (char*) setNtpServer[];>
+                </td>
+            </tr>
+            <tr>
+                <th>Server2:</th>
+                <td>
+                <VWS_SCREEN (char*) setNtpServer2[];>
+                </td>
+            </tr>
+            <tr>
+                <th>Interval:</th>
+                <td>
+                    <VWS_SCREEN (char*) setNtpInterval[];>
+                </td>
+            </tr>
+            <tr>
+                <th>Time Zone:</th>
+                <td>
+                    <VWS_SCREEN (char*) xscrnTimeZone[];>
+            </tr>
+            <tr>
+                <th>GMT time:</th>
+                <td>
+                <VWS_SCREEN (char*) showNtpGmtTimeHttp[];>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="adsl clearfix">
+        <input class="link_bg" type="submit" onclick="return saveChanges()" value="Apply Changes">
+        <input class="link_bg" type="RESET" value="Reset" name="reset">
+        <input type="hidden" value="Send" name="submit.htm?time.htm">
+    </div>
+</form>
+<form method=POST Action="form2ntpstart.cgi">
+    <input type="hidden" name="ntpstart" value="start">
+    <div class="data_common data_common_notitle">
+        <table>
+            <tr>
+                <th width="20%">NTP Start:</th>
+                <td><input class="inner_btn" type="BUTTON" onclick="ntpStartFunc( this.form, '1');" value="Get GMT Time"></td>
+            </tr>
+        </table>
+    </div>
+    <INPUT TYPE="hidden" NAME="submit.htm?time.htm" VALUE="Send">
+</form>
+</body>
+</html>

@@ -1,0 +1,403 @@
+<VWS_FUNCTION (void*)SendWebMetaStr();>
+<VWS_FUNCTION (void*)SendWebCssStr();>
+	<title>Wi-Fi Protected Setup</title>
+	<style>
+	.on {display:on}
+	.off {display:none}
+	</style>
+	<script>
+	var isClient;
+	var isConfig;
+	<VWS_SCREEN (char*) webShowWlanWSC_INIT1[];>
+
+	var warn_msg1='QSS was disabled automatically because wireless mode setting could not be supported. ' +
+					'You need go to Wireless/Basic page to modify settings to enable QSS.';
+	var warn_msg2='QSS was disabled automatically because Radius Authentication could not be supported. ' +
+					'You need go to Wireless/Security page to modify settings to enable QSS.';
+	var warn_msg3="PIN number was generated. You have to click \'Apply Changes\' button to make change effectively.";
+	var warn_msg4='QSS was disabled automatically because WPS2.0 has some restrictions to enable WPS:<BR>' +
+					'1. Broadcast SSID must be enabled.(Setting is in Wireless/Advanced page)<br>' +
+					'2. The encryption of security must not be WEP or WPA-TKIP/WPA2-TKIP.(Setting is in Wireless/Security page)<br>' +
+					'3. If ACL mode is set to "Allow List", the list must not be empty.(Setting is in Wireless/Access Control page)';
+	var disable_all=0;
+
+	function triggerPBCClicked()
+	{
+		return true;
+	}
+
+	function triggerPINClicked()
+	{
+		return(saveChangesWPS(document.formWsc));	
+	}
+
+	function compute_pin_checksum(val)
+	{
+		var accum = 0;	
+		var code = parseInt(val)*10;
+
+		accum += 3 * (parseInt(code / 10000000) % 10); 
+		accum += 1 * (parseInt(code / 1000000) % 10); 
+		accum += 3 * (parseInt(code / 100000) % 10); 
+		accum += 1 * (parseInt(code / 10000) % 10);
+		accum += 3 * (parseInt(code / 1000) % 10);
+		accum += 1 * (parseInt(code / 100) % 10);
+		accum += 3 * (parseInt(code / 10) % 10); 
+		accum += 1 * (parseInt(code / 1) % 10);	
+		var digit = (parseInt(accum) % 10);
+		return ((10 - digit) % 10);
+	}
+
+	function genPinClicked()
+	{
+		var num_str="1";
+		var rand_no;
+		var num;
+
+		while (num_str.length != 7) {
+			rand_no = Math.random()*1000000000;	
+			num = parseInt(rand_no, 10);
+			num = num%10000000;
+			num_str = num.toString();
+		}
+		
+		num = num*10 + compute_pin_checksum(num);
+		num = parseInt(num, 10);	
+		document.formWsc.elements["localPin"].value = num; 
+		alert(warn_msg3);
+	}
+
+	function validate_pin_code(code)
+	{
+		var accum=0;
+
+		accum += 3 * (parseInt(code / 10000000) % 10); 
+		accum += 1 * (parseInt(code / 1000000) % 10); 
+		accum += 3 * (parseInt(code / 100000) % 10); 
+		accum += 1 * (parseInt(code / 10000) % 10);
+		accum += 3 * (parseInt(code / 1000) % 10);
+		accum += 1 * (parseInt(code / 100) % 10);
+		accum += 3 * (parseInt(code / 10) % 10); 
+		accum += 1 * (parseInt(code / 1) % 10);
+		return (0 == (accum % 10));	
+	}
+
+	function IgnoreChar(str1, ch)
+	{
+		var  ResultStr =  "" ;
+		var  Temp=str1.split(ch);
+		for (i = 0; i < Temp.length; i++){
+			ResultStr +=Temp[i];
+		}
+		return  ResultStr;
+	}
+
+	function check_pin_code(str)
+	{
+		var i;
+		var code_len;
+		var ch;
+			
+		code_len = str.length;
+
+		if (code_len != 8 && code_len != 4 && code_len != 9)
+			return 1;
+
+		if (code_len == 8 || code_len == 4) {
+		for (i=0; i<code_len; i++) {
+			if ((str.charAt(i) < '0') || (str.charAt(i) > '9'))
+				return 2;
+		}
+		} else {
+			for (i=0; i<4; i++) {
+				if ((str.charAt(i) < '0') || (str.charAt(i) > '9'))
+					return 2;
+			}
+			
+			ch = str.charAt(4);
+			if (ch != ' ' && ch != '-') {
+				return 2;
+			}
+			for (i=5; i<code_len; i++) {
+				if ((str.charAt(i) < '0') || (str.charAt(i) > '9'))
+					return 2;
+			}
+			document.formWsc.elements["peerPin"].value = IgnoreChar(str, ch);
+			str = document.formWsc.elements["peerPin"].value;
+			code_len = str.length;
+		}
+
+		if (code_len == 8) {
+			var code = parseInt(str, 10);
+			if (!validate_pin_code(code))
+				return 3;
+			else
+				return 0;
+		}
+		else
+			return 0;
+	}
+
+	function setPinClicked(form)
+	{
+		var ret;
+
+		ret = check_pin_code(form.elements["peerPin"].value);
+		if (ret == 1) {
+			alert('Invalid Enrollee PIN length! The device PIN is usually four or eight digits long.');
+			form.peerPin.focus();		
+			return false;
+		}
+		else if (ret == 2) {
+			alert('Invalid Enrollee PIN! Enrollee PIN must be numeric digits. For example:\n1. 1234\n2. 12345670\n3. 1234 5670\n4. 1234-5670');
+			form.peerPin.focus();		
+			return false;
+		}
+		else if (ret == 3) {
+			if ( !confirm('Checksum failed! Use PIN anyway? ') ) {
+				form.peerPin.focus();
+				return false;
+			}
+		}	
+		return true;
+	}
+
+
+	function checkWPSstate(form)
+	{
+		if (disable_all) {
+			disableCheckBox(form.elements["disableWPS"]);
+			disableButton(form.elements["save"]);
+			disableButton(form.elements["reset"]);  
+		}
+		if (disable_all || form.elements["disableWPS"].checked) {	 	
+			disableTextField(form.elements["localPin"]);	 	
+			disableTextField(form.elements["peerPin"]);
+			disableButton(form.elements["setPIN"]);
+			disableButton(form.elements["triggerPIN"]);	 	
+			disableButton(form.elements["triggerPBC"]);
+			disableButton(form.elements["genPIN"]);
+		}
+		else {
+			enableTextField(form.elements["localPin"]);
+			enableTextField(form.elements["peerPin"]);
+			enableButton(form.elements["setPIN"]);
+			enableButton(form.elements["genPIN"]);
+			enableButton(form.elements["triggerPIN"]);		
+			enableButton(form.elements["triggerPBC"]);
+		}
+		disableRadioGroup(form.elements["config"]);	 
+		return true;
+	}
+
+	function saveChangesWPS(form)
+	{
+		ret = check_pin_code(form.elements["localPin"].value);
+		if (ret == 1) {
+			alert('Invalid PIN length! The device PIN is usually four or eight digits long.');
+			form.localPin.focus();
+			return false;
+		}
+		else if (ret == 2) {
+			alert('Invalid PIN! The device PIN must be numeric digits.');
+			form.localPin.focus();		
+			return false;
+		}
+		else if (ret == 3) {
+			alert('Invalid PIN! Checksum error.');
+			form.localPin.focus();		
+			return false;
+		}  	
+		return true;
+	}
+
+	function updateState()
+	{
+	  if (document.formWsc.wlanDisabled.value == "ON") {
+		disableTextField(document.formWsc.disableWPS);
+		disableTextField(document.formWsc.localPin);
+		disableButton(document.formWsc.genPIN);
+		disableButton(document.formWsc.triggerPBC);
+		disableButton(document.formWsc.save);    
+		disableButton(document.formWsc.reset);        
+		disableTextField(document.formWsc.peerPin);    
+		disableButton(document.formWsc.setPIN);   
+	  }
+	}
+
+	</script>
+</head>
+<body>
+	<div class="intro_main ">
+        <p class="intro_title">Quick Secure Setup</p>
+        <p class="intro_content">This page allows you to change the setting for QSS (Quick Secure Setup). Using 
+ this feature could let your wireless client automically syncronize its setting and 
+ connect to the Access Point in a minute without any hassle.
+        </p>
+    </div>
+	<form action=form2Wsc.cgi method=POST name="formWsc">
+	<script>
+	<VWS_SCREEN (char*) webShowWlanWSC_WLANMODE[];>
+      
+	if (mode == 0 || mode == 3){
+	    disable_all = check_wps_enc(encrypt, enable1x, wpa_auth);
+	    if (disable_all == 0 && isWPSLimit == 1){
+	        disable_all = 4;
+	    }
+	}else{
+		disable_all = check_wps_wlanmode(mode, is_adhoc);
+	}
+	</script>
+	<div class="data_common data_common_notitle">
+        <table>
+            <tr>
+                <th>Enable:</th>
+                <td>
+                   <input type="checkbox" name="disableWPS" value="ON"  
+					<VWS_SCREEN (char*) webShowWlanWSC_DISABLED[];>
+					ONCLICK="checkWPSstate(document.formWsc)">&nbsp;&nbsp;Disable QSS
+                </td>
+            </tr>
+			<input type=hidden name="wlanDisabled" 
+				<VWS_SCREEN (char*) webShowWlanDISABLED[];>
+			>
+			<script>
+			  if (isClient) {
+				document.write("</table>\n");
+				document.write("<span id = \"hide_div\" class = \"off\">\n");
+				document.write("<table border=\"0\" width=500>\n");
+			  }
+			</script>
+			<tr>
+                <th>QSS Status:</th>
+                <td>
+                   <input type="radio" name="config" value=1 
+					<VWS_SCREEN (char*) webShowWlanWSC_CONF_ON[];>
+					>Configured&nbsp;&nbsp;
+					<input type="radio" name="config" value=0 
+					<VWS_SCREEN (char*) webShowWlanWSC_CONF_OFF[];>
+					>UnConfigured
+                </td>
+            </tr>
+			<script>
+			  if (isClient) {
+				document.write("</table>\n");
+				document.write("</span>\n");
+				document.write("<table border=\"0\" width=500>\n");
+			  }
+			</script>
+			<tr>
+                <th>Self-PIN Number:</th>
+                <td>
+                   <input type="text" name="localPin" size="12" maxlength="10" 
+					<VWS_SCREEN (char*) webShowWlanWSC_LOCAL_PIN[];>
+					>&nbsp;&nbsp;
+					<input type="button" value="Regenerate PIN" name="genPIN" onClick="return genPinClicked()">
+                </td>
+            </tr>
+			<script>
+			  if (!isClient) {
+				document.write("</table>\n");
+				document.write("<span id = \"hide_div\" class = \"off\">\n");
+				document.write("<table border=\"0\" width=500>\n");
+			  }
+			</script>
+			<tr>
+                <th>PIN Configuration:</th>
+                <td>
+                   <input type="submit" value="Start PIN" name="triggerPIN" onClick="return triggerPINClicked()">
+                </td>
+            </tr>
+			<script>
+			  if (!isClient) {
+				document.write("</table>\n");
+				document.write("</span>\n");
+				document.write("<table border=\"0\" width=500>\n");
+			  }
+			</script>
+			<tr>
+                <th>Push Button Configuration:</th>
+                <td>
+                   <input type="submit" value="Start PBC" name="triggerPBC" onClick="return triggerPBCClicked()">
+                </td>
+            </tr>
+        </table>
+    </div>
+	<div class="btn_ctl clearfix">
+		<input class="link_bg" type="submit" value="Apply Changes" name="save" onClick="return saveChangesWPS(document.formWsc)">
+		<input class="link_bg" type="reset" value="Reset" name="reset">
+    </div>
+	<script>
+		if (disable_all) {
+			 document.write("<tr><td colspan=\"2\" height=\"55\"><font size=2><em>");
+			if (disable_all == 1)     
+				document.write(warn_msg1);
+			else if (disable_all == 2)
+				document.write(warn_msg2);
+			else if (disable_all == 4)
+				document.write(warn_msg4);
+			document.write("</td></tr>"); 	   	
+		}
+	</script>   	
+	<script>
+			<VWS_SCREEN (char*) webShowWlanWSC_CONFIG[];>
+					
+		if (isClient || !isConfig)
+			document.write("<span id = \"hide_div\" class = \"off\">\n");
+	</script>
+	<div id="pptpstatus" class="column clearfix">
+        <div class="column_title">
+            <div class="column_title_left"></div>
+            <p>Current Key Info:</p>
+            <div class="column_title_right"></div>
+         </div>
+         <div class="data_common data_vertical">
+            <table>
+				<tr>
+					<th>Authentication</th>
+					<th>Encryption</th>
+					<th>Key</th>
+				</tr>
+				<tr>
+					<td>
+						<VWS_SCREEN (char*) webShowWlanWSC_AUTH[];>
+					</td>
+					<td>
+						<VWS_SCREEN (char*) webShowWlanWSC_ENC[];>
+					</td>
+					<td>
+						<VWS_SCREEN (char*) webShowWlanWSC_KEY[];>
+					</td>
+				</tr>
+            </table>   
+         </div>
+    </div>
+	<script>
+	  if (isClient || !isConfig) {
+		document.write("</span>\n");
+		document.write("<table border=\"0\" width=500>\n");
+	  }      
+	  if (isClient)
+		document.write("<span id = \"hide_div\" class = \"off\">\n");
+	</script>
+	<div class="data_common data_common_notitle">
+        <table>
+            <tr>
+                <th>Client PIN Number:</th>
+                <td>
+                   <input type="text" name="peerPin" size="12" maxlength="10" value="">
+					&nbsp;&nbsp;<input class="inner_btn" type="submit" value="Start PIN" name="setPIN" onClick="return setPinClicked(document.formWsc)">
+                </td>
+            </tr>
+			<INPUT TYPE="hidden" NAME="submit.htm?wlqss.htm" VALUE="Send">
+        </table>
+    </div>
+	<script>
+	  if (isClient)
+		document.write("</span>\n");
+	   checkWPSstate(document.formWsc);
+	   updateState();
+	</script>
+	</form>
+</body>
+</html>

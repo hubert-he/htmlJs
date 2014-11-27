@@ -1,0 +1,1059 @@
+<VWS_FUNCTION (void*)SendWebMetaStr();>
+<VWS_FUNCTION (void*)SendWebCssStr();>
+	<title>Vendor IP Range Set </title>
+
+#if defined(CONFIG_DHCP_OPT240)
+<SCRIPT>
+var pool_ipprefix;
+var selectflag=0;
+
+function postsetting_2(devname, devtype, startip, endip,gwip, option,optcode,optstr)
+{
+	document.ipRange.name.value = devname;
+	document.ipRange.sIp.value = startip;
+	document.ipRange.dIp.value = endip;
+	document.ipRange.gwIp.value = gwip;
+	document.ipRange.dhcpDeviceType.value=devtype;
+	
+	deviceTypeSelect();
+	
+	while(1){
+	    var option=option.replace("+"," ");
+	    for (var i=0; i<option.length; i++) {
+	      if ( option.charAt(i) == "+")
+	  		break;
+	    }
+	    if(i>=option.length)
+	      break;
+	}
+	document.ipRange.Opt60.value = option;
+	document.ipRange.reservedOption.value = optcode;
+	document.ipRange.OptStr.value = optstr;
+	selectflag=1;
+}
+function postsetting(devname, startip, endip, gwip, option)
+{
+	document.ipRange.name.value = devname;
+	document.ipRange.sIp.value = startip;
+	document.ipRange.dIp.value = endip;
+	document.ipRange.gwIp.value = gwip;
+
+	
+	while(1){
+	    var option=option.replace("+"," ");
+	    for (var i=0; i<option.length; i++) {
+	      if ( option.charAt(i) == "+")
+	  		break;
+	    }
+	    if(i>=option.length)
+	      break;
+	}
+	document.ipRange.Opt60.value = option;
+}
+
+function checkopchIP(ip)
+{
+	if (ip.value=="") {
+		alert("IP address cannot be empty! It should be filled with 4 digit numbers as xxx.xxx.xxx.xxx.");
+		ip.value = ip.defaultValue;
+		ip.focus();
+		return false;
+	}
+
+	var str=ip.value;
+	var count=0;
+	for (var i=0; i<str.length; i++) 
+	{
+		if ( (str.charAt(i) >= '0' && str.charAt(i) <= '9') )
+			continue;
+		if (str.charAt(i) == '.')
+		{
+			count++;
+			continue;
+		}
+		alert("Invalid IP address value. It should be the decimal number (0-9).");
+		ip.value = ip.defaultValue;
+		ip.focus();
+		return false;
+	}
+	if(count!=3)
+	{
+		alert("Invalid IP address. It should be filled with 4 digit numbers as xxx.xxx.xxx.xxx.");
+		ip.focus();
+		return false;
+	}
+	
+	if( IsLoopBackIP( ip.value)==1 ) {
+		alert("Invalid IP address value.");
+		ip.value = ip.defaultValue;	
+		ip.focus();
+		return false;
+	}
+	
+	if ( !checkDigitRange(ip.value,1,224,255) ) {
+		alert('Invalid IP address range in 1st digit. It should be 224-255.');
+		ip.value = ip.defaultValue;
+		ip.focus();
+		return false;
+	}
+	if ( !checkDigitRange(ip.value,2,0,255) ) {
+		alert('Invalid IP address range in 2nd digit. It should be 0-255.');
+		ip.value = ip.defaultValue;
+		ip.focus();
+		return false;
+	}
+	if ( !checkDigitRange(ip.value,3,0,255) ) {
+		alert('Invalid IP address range in 3rd digit. It should be 0-255.');
+		ip.value = ip.defaultValue;
+		ip.focus();
+		return false;
+	}
+	if ( !checkDigitRange(ip.value,4,1,254) ) {
+		alert('Invalid IP address range in 4th digit. It should be 1-254.');
+		ip.value = ip.defaultValue;
+		ip.focus();
+		return false;
+	}
+	
+	return true;
+}
+
+function checkSTBConf(){
+
+  if(!checkopchIP(document.ipRange.opchaddr)){
+  return false;
+  }
+  
+  var digit = getDigit(document.ipRange.opchport.value, 1);
+	if ( validateKey(document.ipRange.opchport.value) == 0 ||(digit > 65535 || digit < 0) ) {
+			alert("Invalid opch port value! You should set a value between 0-65535.");
+			document.ipRange.opchport.focus();
+			return false;
+	}
+	
+		if(document.ipRange.stbdns1.value==""){
+      alert("stb dns1 address cannot be empty! It should be filled with 4 digit numbers as xxx.xxx.xxx.xxx.");
+      document.ipRange.stbdns1.focus();
+      return false;
+		}
+
+	   if(!checkIP(document.ipRange.stbdns1)){
+	     return false;
+     }
+  
+  	if(document.ipRange.stbdns2.value!=""){
+	   if(!checkIP(document.ipRange.stbdns2)){
+	     return false;
+     }
+  }
+  
+  return true;
+}
+
+function checkInputIP(client)
+{
+	var pool_ip, mask,ipstart,ipend;
+	var i, mask_d, ip_d, pool_d,ipstart_d,ipend_d;
+	var pool_ip_d, client_d;
+	
+	pool_ip = document.ipRange.lan_ip.value;
+	mask = document.ipRange.lan_mask.value;
+	ipstart = document.ipRange.lan_dhcpRangeStart.value;
+	ipend = document.ipRange.lan_dhcpRangeEnd.value;
+	
+	for( i=1;i<5;i++ ) {
+		mask_d = getDigit(mask, i);
+		pool_ip_d = getDigit(pool_ip, i);
+		client_d = getDigit(client, i);
+		ipstart_d = getDigit(ipstart, i);
+		ipend_d = getDigit(ipend, i);
+
+		if( (pool_ip_d & mask_d) != (client_d & mask_d ) ) {
+			return false;
+		}
+	}
+
+	if( (ipstart_d > client_d) || (ipend_d < client_d) ) {
+			return false;
+	}
+		
+	return true;
+}
+
+function checkPoolRange()
+{
+  var ipstart,ipend;
+  ipstart = getDigit(document.ipRange.sIp.value, 4);
+  ipend = getDigit(document.ipRange.dIp.value, 4);
+  
+  if(ipstart > ipend){
+      alert("Invalid pool address range!\nEnding address should be greater than starting address.");
+      document.ipRange.sIp.focus();
+  		return false;
+  }
+
+	return true;
+}
+#if defined(CONFIG_DHCP_WITHOUT_CHECK_LANIP)
+function addClick() 
+{
+	ipstart = document.ipRange.lan_dhcpRangeStart.value;
+	ipend = document.ipRange.lan_dhcpRangeEnd.value;
+	
+	if (document.ipRange.name.value=="") {
+		alert("device name cannot be NULL!");
+		document.ipRange.name.focus();
+		return false;
+	}
+
+	if (!checkIP(document.ipRange.sIp)) {
+		document.ipRange.sIp.focus();
+		return false;
+	}
+
+	if (!checkIP(document.ipRange.dIp)) {
+		document.ipRange.dIp.focus();
+		return false;
+	}
+
+	if (document.ipRange.gwIp.value=="") {
+   	   	alert("Please input DHCP IP pool default gateway.");
+		document.ipRange.gwIp.focus();
+		return false;
+	}
+	if (!checkIP( document.ipRange.gwIp)) {
+		document.ipRange.gwIp.focus();
+		return false;
+	}
+	
+	if (document.ipRange.Opt60.value=="") {
+		alert("option60 cannot be NULL!");
+		document.ipRange.Opt60.focus();
+		return false;
+	}
+//ping_zhang:20100915 serving pool should be independed with default dhcp pool
+/*
+	if(!checkNetwork(ipstart, document.ipRange.sIp.value)) {
+		alert('Invalid Source range of IP Address. It should be in IP pool range.');
+		document.ipRange.sIp.focus();
+		return false;
+	}
+
+	if(!checkNetwork(document.ipRange.dIp.value,ipend)) {
+		alert('Invalid Destination range of IP Address. It should be in IP pool range.');
+		document.ipRange.dIp.focus();
+		return false;
+	}
+*/
+	if(!checkNetwork(document.ipRange.sIp.value, document.ipRange.dIp.value)) {
+		alert('Invalid IP range, endip should be larger than startip.');
+		document.ipRange.dIp.focus();
+		return false;
+	}
+
+  if(document.ipRange.dhcpDeviceType.selectedIndex==3){
+    if(!checkSTBConf()){
+      return false
+    }
+  }
+
+  if(!checkPoolRange()){
+    return false;
+  }
+	return true;
+}
+#else
+function checkpool(start,end)
+{
+	for(var i=1;i<4;i++)
+	{
+		if(getDigit(start, i) ==getDigit(end, i) ) {
+		     if(i!=4)
+		         continue;
+		     else
+		         return false;
+		}
+		else if(getDigit(start, i) <getDigit(end, i) )
+		     return true;
+		else
+		     return false;
+	}
+
+	return true;
+}
+function checkSubnet(ip, mask, client)
+{
+  ip_d = getDigit(ip, 4);
+  mask_d = getDigit(mask, 4);
+  if ( (ip_d & mask_d) != (client & mask_d ) )
+	return false;
+
+  return true;
+}
+function addClick() 
+{
+
+	if (document.ipRange.name.value=="") {
+		alert("device name cannot be NULL!");
+		document.ipRange.name.focus();
+		return false;
+	}
+
+	if (document.ipRange.sIp.value=="") {
+   	   	alert("Please input DHCP IP pool range.");
+		document.ipRange.sIp.focus();
+		return false;
+	}
+	if ( validateKey( document.ipRange.sIp.value ) == 0 ) {
+		alert("Invalid DHCP client start range. It should be the decimal number (0-9).");
+		document.ipRange.sIp.focus();
+		return false;
+	}
+	if ( !checkDigitRange(document.ipRange.sIp.value,1,1,254) ) {
+   	   	alert('Invalid DHCP client start range. It should be 1-254.');
+		document.ipRange.sIp.focus();
+		return false;
+	}
+	if ( !checkSubnet(document.ipRange.lan_ip.value,document.ipRange.lan_mask.value,document.ipRange.sIp.value)) {
+		alert('Invalid DHCP client start address!\nIt should be located in the same subnet of current IP address.');
+		document.ipRange.sIp.focus();
+		return false;
+	}
+	if (document.ipRange.dIp.value=="") {
+   	   	alert("Please input DHCP IP pool range.");
+		document.ipRange.dIp.focus();
+		return false;
+	}
+	if ( validateKey( document.ipRange.dIp.value ) == 0 ) {
+		alert("Invalid DHCP client end address range. It should be the decimal number (0-9).");
+		document.ipRange.dIp.focus();
+		return false;
+	}
+	if ( !checkDigitRange(document.ipRange.dIp.value,1,1,254) ) {
+   	   	alert('Invalid DHCP client end range. It should be 1-254.');
+		document.ipRange.dIp.focus();
+		return false;
+	}
+	if ( !checkSubnet(document.ipRange.lan_ip.value,document.ipRange.lan_mask.value,document.ipRange.dIp.value)) {
+		alert('Invalid DHCP client end address!\nIt should be located in the same subnet of current IP address.');
+		document.ipRange.dIp.focus();
+		return false;
+	}
+        if ( parseInt(document.ipRange.sIp.value, 10) >= parseInt(document.ipRange.dIp.value, 10) ) {
+		alert('Invalid DHCP client address range!\nEnding address should be greater than starting address.');
+		document.ipRange.sIp.focus();
+		return false;
+	}
+	
+	if (document.ipRange.gwIp.value=="") {
+   	   	alert("Please input DHCP IP pool default gateway.");
+		document.ipRange.gwIp.focus();
+		return false;
+	}
+	if (!checkIP( document.ipRange.gwIp)) {
+		document.ipRange.gwIp.focus();
+		return false;
+	}
+	
+	if (document.ipRange.Opt60.value=="") {
+		alert("option60 cannot be NULL!");
+		document.ipRange.Opt60.focus();
+		return false;
+	}
+//ping_zhang:20100915 serving pool should be independed with default dhcp pool
+/*
+	if ( !checkInputIP(document.ipRange.sIp.value ) ) {
+		alert('Invalid Source range of IP Address. It should be in IP pool range.');
+		document.ipRange.sIp.focus();
+		return false;
+	}
+
+	if ( !checkInputIP(document.ipRange.dIp.value ) ) {
+		alert('Invalid Destination range of IP Address. It should be in IP pool range.');
+		document.ipRange.dIp.focus();
+		return false;
+	}
+*/
+  if(document.ipRange.dhcpDeviceType.selectedIndex==3){
+    if(!checkSTBConf()){
+      return false
+    }
+  }
+
+  if(!checkPoolRange()){
+    return false;
+  }
+	return true;
+}
+function ShowIP(ipVal) {
+	document.write(getDigit(ipVal,1));
+	document.write('.');
+	document.write(getDigit(ipVal,2));
+	document.write('.');
+	document.write(getDigit(ipVal,3));
+	document.write('.');
+}
+#endif
+function modifyClick(){
+	if (selectflag==0) {
+		alert("select item cannot be NULL!");
+		return false;
+	}
+	
+  return addClick();
+  
+}
+
+function deviceTypeSelect(){
+	if(document.ipRange.dhcpDeviceType.selectedIndex==3) //STB
+	{
+		if (document.getElementById)  // DOM3 = IE5, NS6
+		{
+			document.getElementById('option240').style.display = 'block';
+			document.getElementById('option241').style.display = 'none';
+		}
+		else {
+			if (document.layers == false) // IE4
+			{
+				document.all.option240.style.display = 'block';
+				document.all.option241.style.display = 'none';
+			}
+		}
+	}
+	else if(document.ipRange.dhcpDeviceType.selectedIndex==5)//Unkown 
+	{
+		if (document.getElementById)  // DOM3 = IE5, NS6
+		{
+			document.getElementById('option240').style.display = 'none';
+			document.getElementById('option241').style.display = 'none';
+		}
+		else {
+			if (document.layers == false) // IE4
+			{
+				document.all.option240.style.display = 'none';
+				document.all.option241.style.display = 'none';
+			}
+		}
+	}
+	else //other device
+	{
+		if (document.getElementById)  // DOM3 = IE5, NS6
+		{
+			document.getElementById('option240').style.display = 'none';
+			document.getElementById('option241').style.display = 'block';
+		}
+		else {
+			if (document.layers == false) // IE4
+			{
+				document.all.option240.style.display = 'none';
+				document.all.option241.style.display = 'block';
+			}
+		}
+	}
+
+
+}
+
+</SCRIPT>
+</head>
+
+
+<body>
+<blockquote>
+<h2><font color="#0000FF">Device IP Range Table</font></h2>
+
+<table border=0 width="480" cellspacing=0 cellpadding=0>
+  <tr><font size=2>
+ This page is used to configure the IP address range based on device type.
+  </tr>
+  <tr><hr size=1 noshade align=top></tr>
+</table>
+
+<form action="formIpRange.cgi" method=POST name="ipRange">
+
+<input type="hidden" name="lan_ip" value=
+<VWS_SCREEN (char*) xscrnLanIPAddr[];>
+>
+<input type="hidden" name="lan_mask" value=
+<VWS_SCREEN (char*) xscrnLanSubnetMask[];>
+>
+<input type="hidden" name="lan_dhcpRangeStart" value=
+<VWS_SCREEN (char*) xscrnDhcpdHostStartIp[];>
+>
+<input type="hidden" name="lan_dhcpRangeEnd" value=
+<VWS_SCREEN (char*) xscrnDhcpdHostEndIp[];>
+>
+<input type="hidden" name="lan_dhcpSubnetMask" value=
+<VWS_SCREEN (char*) xscrnLanSubnetMask[];>
+>
+<input type="hidden" name="ltime" value=
+<VWS_SCREEN (char*) xscrnDhcpdLease[];>
+>
+
+<input type="hidden" name="dname" value=
+<VWS_SCREEN (char*) xscrnDhcpdDomain[];>
+>
+
+<input type="hidden" name="dhcpdSubnetMask60" value=
+<VWS_SCREEN (char*) xscrnDhcpdSubnetMask60[];>
+>
+<table class="flat" border="0" cellpadding="0" cellspacing="0" width=500>
+<tr>
+    <td width=30%><font size=2>device name:&nbsp;&nbsp;</td>
+    <td><input type="text" name="name" size="20" maxlength="20"></td>
+</tr>
+#if defined(CONFIG_DHCP_WITHOUT_CHECK_LANIP)
+    <td><font size=2>start address:&nbsp;&nbsp;</td>
+    <td><input type="text" name="sIp" size="20" maxlength="15"></td>
+</tr>
+<tr>
+    <td><font size=2>end address:&nbsp;&nbsp;</td>
+    <td><input type="text" name="dIp" size="20" maxlength="15"></td>
+</tr>
+#else
+    <td><font size=2>start address:&nbsp;&nbsp;</td>
+    <td><script>ShowIP(document.ipRange.lan_ip.value);</script><input type="text" name="sIp" size="3" maxlength="3"></td>
+</tr>
+<tr>
+    <td><font size=2>end address:&nbsp;&nbsp;</td>
+    <td><script>ShowIP(document.ipRange.lan_ip.value);</script><input type="text" name="dIp" size="3" maxlength="3"></td>
+</tr>
+#endif
+<VWS_SCREEN (char*) xscrnDhcpdSPDefaultGateway[];>
+<tr>
+    <td><font size=2>option60</td>
+    <td><input type="text" name="Opt60" size="20" maxlength="20"></td>
+</tr>
+<tr>
+    <td><font size=2>device type:</td>
+    <td><select size="1" name="dhcpDeviceType" onChange="deviceTypeSelect()">
+		<option selected value=0>PC</option>
+		<option value=1>Camera</option>
+		<option value=2>HGW</option>
+		<option value=3>STB</option>
+		<option value=4>Phone</option>
+		<option value=100>Unknown</option></select></td>
+</tr>
+</table>
+
+<div id="option241" style="display:block">
+<table border=0 width="500" cellspacing=0 cellpadding=0>
+	 <tr>
+		<td width=30%><font size=2>reserved option:&nbsp;&nbsp;</td>
+		<td><select size="1" name="reservedOption">
+			<option selected value=241>Option 241</option>
+			<option value=242>Option 242</option>
+			<option value=243>Option 243</option>
+			<option value=244>Option 244</option>
+			<option value=245>Option 245</option></select>
+		</td>
+	 </tr>
+	 <tr>
+		<td><font size=2>option string</td>
+		<td><input type="text" name="OptStr"  size="20" maxlength="100"></td>
+	 </tr>
+</table>
+</div>
+
+<div id="option240" style="display:none">
+<table border=0 width="500" cellspacing=0 cellpadding=0>
+	 <tr>
+		<td width=30%><font size=2>reserved option</td>
+		<td><input type="text" name="OptStr240"  size="20" maxlength="20" value="Option 240" readonly></td>
+	 </tr>
+	 <tr>
+		<hr size=1 noshade align=top>
+	 </tr>
+	 <tr>
+	 	<td><font size=2>DNS1:</td>
+	 	<td><input type="text" name="stbdns1" value=
+<VWS_SCREEN (char*) xscrnSTBDns1[];>
+></td>
+	 </tr>
+	 <tr>
+	 	<td><font size=2>DNS2:</td>
+	 	<td><input type="text" name="stbdns2" value=
+<VWS_SCREEN (char*) xscrnSTBDns2[];>
+></td>
+	 </tr>
+	 <tr>
+	 	<td><font size=2>OPCH Address:</td>
+	 	<td><input type="text" name="opchaddr"  value=
+<VWS_SCREEN (char*) xscrnSTBOpchAddr[];>
+></td>
+	 </tr>
+	 <tr>
+	 	<td><font size=2>OPCH Port:</td>
+	 	<td><input type="text" name="opchport"  value=
+<VWS_SCREEN (char*) xscrnSTBOpchPort[];>
+></td>
+	 </tr>
+</table>
+</div>
+<br>
+<input type="submit" value=" add " name="add" onClick="return addClick()">&nbsp;&nbsp;
+<input type="submit" value=" delete " name="del">&nbsp;&nbsp;
+<input type="submit" value=" modify " name="mod" onClick="return modifyClick()">&nbsp;&nbsp
+<input type="button" value=" Close " name="close" onClick="javascript: window.close();">
+
+<p>
+<tr><hr size=1 noshade align=top></tr>
+<table border=0 width="500" cellspacing=4 cellpadding=0>
+<tr><font size=2><b>IP Range Table:</b></font></tr>
+<!--<tr>
+   <td class="hd" width=5%>select</td>
+   <td class="hd" width=20%>device name</td>
+   <td class="hd" width=20%>start address</td>
+   <td class="hd" width=20%>end address</td>
+   <td class="hd" width=30%>option60</td>
+</tr>
+-->
+<tr><font size=1>
+	<td align=center width="5%%" bgcolor="#808080">Select</td>
+	<td align=center width="20%%" bgcolor="#808080">device name</td>
+	<td align=center width="20%%" bgcolor="#808080">device type</td>
+	<td align=center width="20%%" bgcolor="#808080">start address</td>
+	<td align=center width="20%%" bgcolor="#808080">end address</td>
+	<td align=center width="20%%" bgcolor="#808080">default gateway</td>
+	<td align=center width="30%%" bgcolor="#808080">option60</td>
+  <td align=center width="40%%" bgcolor="#808080" colspan="2">reserved option</td></font>
+</tr>
+    <VWS_FUNCTION (void*)showVendorClassTable();>
+</table>
+<INPUT TYPE="hidden" NAME="submit.htm?dhcpvendortbl.htm" VALUE="Send">
+
+</form>
+</blockquote>
+</body>
+
+</html>
+#else
+	<SCRIPT>
+	var pool_ipprefix;
+
+	function checkInputIP(client)
+	{
+		var pool_ip, mask,ipstart,ipend;
+		var i, mask_d, ip_d, pool_d,ipstart_d,ipend_d;
+		var pool_ip_d, client_d;
+		
+		pool_ip = document.ipRange.lan_ip.value;
+		mask = document.ipRange.lan_mask.value;
+		ipstart = document.ipRange.lan_dhcpRangeStart.value;
+		ipend = document.ipRange.lan_dhcpRangeEnd.value;
+		
+		for( i=1;i<5;i++ ) {
+			mask_d = getDigit(mask, i);
+			pool_ip_d = getDigit(pool_ip, i);
+			client_d = getDigit(client, i);
+			ipstart_d = getDigit(ipstart, i);
+			ipend_d = getDigit(ipend, i);
+
+			if( (pool_ip_d & mask_d) != (client_d & mask_d ) ) {
+				return false;
+			}
+		}
+
+		if( (ipstart_d > client_d) || (ipend_d < client_d) ) {
+				return false;
+		}
+			
+		return true;
+	}
+
+#if defined(CONFIG_DHCP_WITHOUT_CHECK_LANIP)
+	
+function postsetting(devname, startip, endip, gwip, option)
+	{
+		document.ipRange.name.value = devname;
+		document.ipRange.sIp.value = startip;
+		document.ipRange.dIp.value = endip;
+	        document.ipRange.gwIp.value = gwip;
+		while(1){
+		    var option=option.replace("+"," ");
+		    for (var i=0; i<option.length; i++) {
+		      if ( option.charAt(i) == "+")
+		  		break;
+		    }
+		    if(i>=option.length)
+		      break;
+		}
+		document.ipRange.Opt60.value = option;
+	}
+function addClick() 
+	{
+		ipstart = document.ipRange.lan_dhcpRangeStart.value;
+		ipend = document.ipRange.lan_dhcpRangeEnd.value;
+
+		if (document.ipRange.name.value=="") {
+			alert("device name cannot be NULL!");
+			document.ipRange.name.focus();
+			return false;
+		}
+
+		if (!checkIP(document.ipRange.sIp)) {
+			document.ipRange.sIp.focus();
+			return false;
+		}
+
+		if (!checkIP(document.ipRange.dIp)) {
+			document.ipRange.dIp.focus();
+			return false;
+		}
+		
+		if (document.ipRange.gwIp.value=="") {
+	   	   	alert("Please input DHCP IP pool default gateway.");
+			document.ipRange.gwIp.focus();
+			return false;
+		}
+		if (!checkIP( document.ipRange.gwIp)) {
+			document.ipRange.gwIp.focus();
+			return false;
+		}
+		
+		if (document.ipRange.Opt60.value=="") {
+			alert("option60 cannot be NULL!");
+			document.ipRange.Opt60.focus();
+			return false;
+		}
+	//ping_zhang:20100915 serving pool should be independed with default dhcp pool
+	/*
+		if(!checkNetwork(ipstart, document.ipRange.sIp.value)) {
+			alert('Invalid Source range of IP Address. It should be in IP pool range.');
+			document.ipRange.sIp.focus();
+			return false;
+		}
+
+		if(!checkNetwork(document.ipRange.dIp.value,ipend)) {
+			alert('Invalid Destination range of IP Address. It should be in IP pool range.');
+			document.ipRange.dIp.focus();
+			return false;
+		}
+	*/
+		if(!checkNetwork(document.ipRange.sIp.value, document.ipRange.dIp.value)) {
+			alert('Invalid IP range, endip should be larger than startip.');
+			document.ipRange.dIp.focus();
+			return false;
+		}
+		return true;
+	}
+	</SCRIPT>
+</head>
+
+<body>
+	<div class="intro_main ">
+        	<p class="intro_title">Device IP Range Table</p>
+        	<p class="intro_content">This page is used to configure the IP address range based on device type.</p>
+	</div>
+	<form action="formIpRange.cgi" method=POST name="ipRange">
+	<div class="data_common data_common_notitle">	
+		<input type="hidden" name="lan_ip" value=
+		<VWS_SCREEN (char*) xscrnLanIPAddr[];>
+		>
+		<input type="hidden" name="lan_mask" value=
+		<VWS_SCREEN (char*) xscrnLanSubnetMask[];>
+		>
+		<input type="hidden" name="lan_dhcpRangeStart" value=
+		<VWS_SCREEN (char*) xscrnDhcpdHostStartIp[];>
+		>
+		<input type="hidden" name="lan_dhcpRangeEnd" value=
+		<VWS_SCREEN (char*) xscrnDhcpdHostEndIp[];>
+		>
+		<input type="hidden" name="lan_dhcpSubnetMask" value=
+		<VWS_SCREEN (char*) xscrnLanSubnetMask[];>
+		>
+		<input type="hidden" name="ltime" value=
+		<VWS_SCREEN (char*) xscrnDhcpdLease[];>
+		>
+
+		<input type="hidden" name="dname" value=
+		<VWS_SCREEN (char*) xscrnDhcpdDomain[];>
+		>
+		<input type="hidden" name="dhcpdSubnetMask60" value=
+		<VWS_SCREEN (char*) xscrnDhcpdSubnetMask60[];>
+		>
+		<table>
+			<tr>
+				<th width=30%><font size=2>device name:&nbsp;&nbsp;</th>
+				<td><input type="text" name="name" size="20" maxlength="20"></td>
+			</tr>
+			<tr>
+				<th><font size=2>start address:&nbsp;&nbsp;</th>
+				<td><input type="text" name="sIp" size="20" maxlength="15"></td>
+			</tr>
+			<tr>
+				<th><font size=2>end address:&nbsp;&nbsp;</th>
+				<td><input type="text" name="dIp" size="20" maxlength="15"></td>
+			</tr>
+			<VWS_SCREEN (char*) xscrnDhcpdSPDefaultGateway[];>
+			<tr>
+				<td><font size=2>option60</td>
+				<td><input type="text" name="Opt60" size="20" maxlength="20"></td>
+			</tr>
+		</table>
+	</div>
+	<br>   
+	<div class="adsl clearfix">
+        	<div class="btn_ctls">
+			<input class="link_bg" type="submit" value=" add " name="add" onClick="return addClick()">&nbsp;&nbsp;
+			<input class="link_bg" type="submit" value=" delete " name="del">&nbsp;&nbsp;
+			<input class="link_bg" type="submit" value=" modify " name="mod" onClick="return addClick()">&nbsp;&nbsp 
+			<input class="link_bg" type="button" value=" Close " name="close" onClick="javascript: window.close();">
+		</div>
+	</div>
+	<div class="column">
+	        <div class="column_title">
+	            <div class="column_title_left"></div>
+	            <p>IP Range Table:</p>
+	            <div class="column_title_right"></div>
+	        </div>
+	        <div class="data_common data_vertical">
+	            <table>
+	                <tr>
+	                    <th>select:</th>
+	                    <th>device name:</th>
+	                    <th>start address:</th>
+	                    <th>end address:</th>
+	                    <th>default gateway:</th>
+	                    <th>option60:</th>
+	                </tr>
+	                <VWS_FUNCTION (void*)showVendorClassTable();>
+	            </table>
+	        </div>
+	</div>
+	<INPUT TYPE="hidden" NAME="submit.htm?dhcpvendortbl_withoutcheck.htm" VALUE="Send">
+	</form>
+</body>
+</html>
+#else
+<SCRIPT>
+function postsetting(devname, startip, endip, gwip, option)
+{
+	document.ipRange.name.value = devname;
+	document.ipRange.sIp.value = getDigit(startip,4);
+	document.ipRange.dIp.value = getDigit(endip,4);
+        document.ipRange.gwIp.value = gwip;
+	while(1){
+	    var option=option.replace("+"," ");
+	    for (var i=0; i<option.length; i++) {
+	      if ( option.charAt(i) == "+")
+	  		break;
+	    }
+	    if(i>=option.length)
+	      break;
+	}
+	document.ipRange.Opt60.value = option;
+}
+function checkpool(start,end)
+{
+	for(var i=1;i<4;i++)
+	{
+		if(getDigit(start, i) ==getDigit(end, i) ) {
+		     if(i!=4)
+		         continue;
+		     else
+		         return false;
+		}
+		else if(getDigit(start, i) <getDigit(end, i) )
+		     return true;
+		else
+		     return false;
+	}
+
+	return true;
+}
+function checkSubnet(ip, mask, client)
+{
+  ip_d = getDigit(ip, 4);
+  mask_d = getDigit(mask, 4);
+  if ( (ip_d & mask_d) != (client & mask_d ) )
+	return false;
+
+  return true;
+}
+function addClick() 
+{
+
+	if (document.ipRange.name.value=="") {
+		alert("device name cannot be NULL!");
+		document.ipRange.name.focus();
+		return false;
+	}
+
+	if (document.ipRange.sIp.value=="") {
+   	   	alert("Please input DHCP IP pool range.");
+		document.ipRange.sIp.focus();
+		return false;
+	}
+	if ( validateKey( document.ipRange.sIp.value ) == 0 ) {
+		alert("Invalid DHCP client start range. It should be the decimal number (0-9).");
+		document.ipRange.sIp.focus();
+		return false;
+	}
+	if ( !checkDigitRange(document.ipRange.sIp.value,1,1,254) ) {
+   	   	alert('Invalid DHCP client start range. It should be 1-254.');
+		document.ipRange.sIp.focus();
+		return false;
+	}
+	if ( !checkSubnet(document.ipRange.lan_ip.value,document.ipRange.lan_mask.value,document.ipRange.sIp.value)) {
+		alert('Invalid DHCP client start address!\nIt should be located in the same subnet of current IP address.');
+		document.ipRange.sIp.focus();
+		return false;
+	}
+	if (document.ipRange.dIp.value=="") {
+   	   	alert("Please input DHCP IP pool range.");
+		document.ipRange.dIp.focus();
+		return false;
+	}
+	if ( validateKey( document.ipRange.dIp.value ) == 0 ) {
+		alert("Invalid DHCP client end address range. It should be the decimal number (0-9).");
+		document.ipRange.dIp.focus();
+		return false;
+	}
+	if ( !checkDigitRange(document.ipRange.dIp.value,1,1,254) ) {
+   	   	alert('Invalid DHCP client end range. It should be 1-254.');
+		document.ipRange.dIp.focus();
+		return false;
+	}
+	if ( !checkSubnet(document.ipRange.lan_ip.value,document.ipRange.lan_mask.value,document.ipRange.dIp.value)) {
+		alert('Invalid DHCP client end address!\nIt should be located in the same subnet of current IP address.');
+		document.ipRange.dIp.focus();
+		return false;
+	}
+        if ( parseInt(document.ipRange.sIp.value, 10) >= parseInt(document.ipRange.dIp.value, 10) ) {
+		alert('Invalid DHCP client address range!\nEnding address should be greater than starting address.');
+		document.ipRange.sIp.focus();
+		return false;
+	}
+	
+	if (document.ipRange.Opt60.value=="") {
+		alert("option60 cannot be NULL!");
+		document.ipRange.Opt60.focus();
+		return false;
+	}
+//ping_zhang:20100915 serving pool should be independed with default dhcp pool
+/* 
+	if ( !checkInputIP(document.ipRange.sIp.value ) ) {
+		alert('Invalid Source range of IP Address. It should be in IP pool range.');
+		document.ipRange.sIp.focus();
+		return false;
+	}
+
+	if ( !checkInputIP(document.ipRange.dIp.value ) ) {
+		alert('Invalid Destination range of IP Address. It should be in IP pool range.');
+		document.ipRange.dIp.focus();
+		return false;
+	}
+*/
+	return true;
+}
+
+function ShowIP(ipVal) {
+	document.write(getDigit(ipVal,1));
+	document.write('.');
+	document.write(getDigit(ipVal,2));
+	document.write('.');
+	document.write(getDigit(ipVal,3));
+	document.write('.');
+}
+	
+</SCRIPT>
+</head>
+
+
+<body>
+<blockquote>
+<h2><font color="#0000FF">Device IP Range Table</font></h2>
+
+<table border=0 width="480" cellspacing=0 cellpadding=0>
+  <tr><font size=2>
+ This page is used to configure the IP address range based on device type.
+  </tr>
+  <tr><hr size=1 noshade align=top></tr>
+</table>
+
+<form action="formIpRange.cgi" method=POST name="ipRange">
+
+<input type="hidden" name="lan_ip" value=
+<VWS_SCREEN (char*) xscrnLanIPAddr[];>
+>
+<input type="hidden" name="lan_mask" value=
+<VWS_SCREEN (char*) xscrnLanSubnetMask[];>
+>
+<input type="hidden" name="lan_dhcpRangeStart" value=
+<VWS_SCREEN (char*) xscrnDhcpdHostStartIp[];>
+>
+<input type="hidden" name="lan_dhcpRangeEnd" value=
+<VWS_SCREEN (char*) xscrnDhcpdHostEndIp[];>
+>
+<input type="hidden" name="lan_dhcpSubnetMask" value=
+<VWS_SCREEN (char*) xscrnLanSubnetMask[];>
+>
+<input type="hidden" name="ltime" value=
+<VWS_SCREEN (char*) xscrnDhcpdLease[];>
+>
+
+<input type="hidden" name="dname" value=
+<VWS_SCREEN (char*) xscrnDhcpdDomain[];>
+>
+
+<input type="hidden" name="dhcpdSubnetMask60" value=
+<VWS_SCREEN (char*) xscrnDhcpdSubnetMask60[];>
+>
+
+<table class="flat" border="0" cellpadding="0" cellspacing="0" width=500>
+<tr>
+    <td width=30%><font size=2>device name:&nbsp;&nbsp;</td>
+    <td><input type="text" name="name" size="20" maxlength="20"></td>
+</tr>
+    <td><font size=2>start address:&nbsp;&nbsp;</td>
+    <td><script>ShowIP(document.ipRange.lan_ip.value);</script><input type="text" name="sIp" size="3" maxlength="3"></td>
+</tr>
+<tr>
+    <td><font size=2>end address:&nbsp;&nbsp;</td>
+    <td><script>ShowIP(document.ipRange.lan_ip.value);</script><input type="text" name="dIp" size="3" maxlength="3"></td>
+</tr>
+<VWS_SCREEN (char*) xscrnDhcpdSPDefaultGateway[];>
+<tr>
+    <td><font size=2>option60</td>
+    <td><input type="text" name="Opt60" size="20" maxlength="20"></td>
+</tr>
+</table>
+<br>
+<input type="submit" value="add" name="add" onClick="return addClick()">&nbsp;&nbsp;
+<input type="submit" value="delete" name="del">&nbsp;&nbsp;
+<input type="submit" value="modify" name="mod" onClick="return addClick()">&nbsp;&nbsp
+<VWS_COMMENTS> <input type="hidden" value="/dhcpvendortbl.htm" name="submit-url"></VWS_COMMENTS> 
+<input type="button" value=" Close " name="close" onClick="javascript: window.close();">
+
+<p>
+<tr><hr size=1 noshade align=top></tr>
+<table border=0 width="500" cellspacing=4 cellpadding=0>
+<tr><font size=2><b>IP Range Table:</b></font></tr>
+<!--<tr>
+   <td class="hd" width=5%>select</td>
+   <td class="hd" width=20%>device name</td>
+   <td class="hd" width=20%>start address</td>
+   <td class="hd" width=20%>end address</td>
+   <td class="hd" width=30%>option60</td>
+</tr>
+-->
+<tr><font size=2>
+	<td align=center width="5%%" bgcolor="#808080">Select</td>
+	<td align=center width="20%%" bgcolor="#808080">device name</td>
+	<td align=center width="20%%" bgcolor="#808080">start address</td>
+	<td align=center width="20%%" bgcolor="#808080">end address</td>
+	<td align=center width="20%%" bgcolor="#808080">default gateway</td>
+	<td align=center width="30%%" bgcolor="#808080">option60</td></font>
+</tr>
+    <VWS_FUNCTION (void*)showVendorClassTable();>
+</table>
+<INPUT TYPE="hidden" NAME="submit.htm?dhcpvendortbl.htm" VALUE="Send">
+
+</form>
+</blockquote>
+</body>
+
+</html>
+#endif
+#endif

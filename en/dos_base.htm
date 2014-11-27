@@ -1,0 +1,398 @@
+<VWS_FUNCTION (void*)SendWebMetaStr();>
+<VWS_FUNCTION (void*)SendWebCssStr();>
+	<title>DoS Setting </title>
+    <script>
+    var dosEnabled=0 ;
+    var appClick=0;
+    function  setDosEnabled() {
+
+    }
+
+    function dosEnabledClick(){
+    	if(document.DosCfg.dosEnabled.checked){
+    		enableTextField(document.DosCfg.sysfloodSYN);
+    		enableTextField(document.DosCfg.sysfloodFIN);
+    		enableTextField(document.DosCfg.sysfloodUDP);
+    		enableTextField(document.DosCfg.sysfloodICMP);
+    		enableTextField(document.DosCfg.sysfloodSYNcount);
+    		enableTextField(document.DosCfg.sysfloodFINcount);
+    		enableTextField(document.DosCfg.sysfloodUDPcount);
+    		enableTextField(document.DosCfg.sysfloodICMPcount);
+    		enableTextField(document.DosCfg.ipfloodSYN);
+    		enableTextField(document.DosCfg.ipfloodFIN);
+    		enableTextField(document.DosCfg.ipfloodUDP);
+    		enableTextField(document.DosCfg.ipfloodICMP);
+    		enableTextField(document.DosCfg.ipfloodSYNcount);
+    		enableTextField(document.DosCfg.ipfloodFINcount);
+    		enableTextField(document.DosCfg.ipfloodUDPcount);
+    		enableTextField(document.DosCfg.ipfloodICMPcount);
+    		enableTextField(document.DosCfg.TCPUDPPortScan);
+    		enableTextField(document.DosCfg.portscanSensi);
+    		enableTextField(document.DosCfg.ICMPSmurfEnabled);
+    		enableTextField(document.DosCfg.IPLandEnabled);
+    		enableTextField(document.DosCfg.IPSpoofEnabled);
+    		enableTextField(document.DosCfg.IPTearDropEnabled);
+    		enableTextField(document.DosCfg.PingOfDeathEnabled);
+    		enableTextField(document.DosCfg.TCPScanEnabled);
+    		enableTextField(document.DosCfg.TCPSynWithDataEnabled);
+    		enableTextField(document.DosCfg.UDPBombEnabled);
+    		enableTextField(document.DosCfg.UDPEchoChargenEnabled);
+    		enableTextField(document.DosCfg.sourceIPblock);
+    		enableTextField(document.DosCfg.IPblockTime);
+    	}
+    	else{
+    /*		document.DosCfg.sysfloodSYN.checked=0;
+    		document.DosCfg.sysfloodFIN.checked=0;
+    		document.DosCfg.sysfloodUDP.checked=0;
+    		document.DosCfg.sysfloodICMP.checked=0;
+    		document.DosCfg.ipfloodSYN.checked=0;
+    		document.DosCfg.ipfloodFIN.checked=0;
+    		document.DosCfg.ipfloodUDP.checked=0;
+    		document.DosCfg.ipfloodICMP.checked=0;
+    		document.DosCfg.TCPUDPPortScan.checked=0;
+    		document.DosCfg.ICMPSmurfEnabled.checked=0;
+    		document.DosCfg.IPLandEnabled.checked=0;
+    		document.DosCfg.IPSpoofEnabled.checked=0;
+    		document.DosCfg.IPTearDropEnabled.checked=0;
+    		document.DosCfg.PingOfDeathEnabled.checked=0;
+    		document.DosCfg.TCPScanEnabled.checked=0;
+    		document.DosCfg.TCPSynWithDataEnabled.checked=0;
+    		document.DosCfg.UDPBombEnabled.checked=0;
+    		document.DosCfg.UDPEchoChargenEnabled.checked=0;
+    		document.DosCfg.sourceIPblock.checked=0;
+    */
+    		disableTextField(document.DosCfg.sysfloodSYN);
+    		disableTextField(document.DosCfg.sysfloodFIN);
+    		disableTextField(document.DosCfg.sysfloodUDP);
+    		disableTextField(document.DosCfg.sysfloodICMP);
+    		disableTextField(document.DosCfg.sysfloodSYNcount);
+    		disableTextField(document.DosCfg.sysfloodFINcount);
+    		disableTextField(document.DosCfg.sysfloodUDPcount);
+    		disableTextField(document.DosCfg.sysfloodICMPcount);
+    		disableTextField(document.DosCfg.ipfloodSYN);
+    		disableTextField(document.DosCfg.ipfloodFIN);
+    		disableTextField(document.DosCfg.ipfloodUDP);
+    		disableTextField(document.DosCfg.ipfloodICMP);
+    		disableTextField(document.DosCfg.ipfloodSYNcount);
+    		disableTextField(document.DosCfg.ipfloodFINcount);
+    		disableTextField(document.DosCfg.ipfloodUDPcount);
+    		disableTextField(document.DosCfg.ipfloodICMPcount);
+    		disableTextField(document.DosCfg.TCPUDPPortScan);
+    		disableTextField(document.DosCfg.portscanSensi);
+    		disableTextField(document.DosCfg.ICMPSmurfEnabled);
+    		disableTextField(document.DosCfg.IPLandEnabled);
+    		disableTextField(document.DosCfg.IPSpoofEnabled);
+    		disableTextField(document.DosCfg.IPTearDropEnabled);
+    		disableTextField(document.DosCfg.PingOfDeathEnabled);
+    		disableTextField(document.DosCfg.TCPScanEnabled);
+    		disableTextField(document.DosCfg.TCPSynWithDataEnabled);
+    		disableTextField(document.DosCfg.UDPBombEnabled);
+    		disableTextField(document.DosCfg.UDPEchoChargenEnabled);
+    		disableTextField(document.DosCfg.sourceIPblock);
+    		disableTextField(document.DosCfg.IPblockTime);
+    	}
+    }
+
+    function SelectAll(){
+    	if(document.DosCfg.dosEnabled.checked){
+    		document.DosCfg.sysfloodSYN.checked=1;
+    		document.DosCfg.sysfloodFIN.checked=1;
+    		document.DosCfg.sysfloodUDP.checked=1;
+    		document.DosCfg.sysfloodICMP.checked=1;
+    		document.DosCfg.ipfloodSYN.checked=1;
+    		document.DosCfg.ipfloodFIN.checked=1;
+    		document.DosCfg.ipfloodUDP.checked=1;
+    		document.DosCfg.ipfloodICMP.checked=1;
+    		document.DosCfg.TCPUDPPortScan.checked=1;
+    		document.DosCfg.ICMPSmurfEnabled.checked=1;
+    		document.DosCfg.IPLandEnabled.checked=1;
+    		document.DosCfg.IPSpoofEnabled.checked=1;
+    		document.DosCfg.IPTearDropEnabled.checked=1;
+    		document.DosCfg.PingOfDeathEnabled.checked=1;
+    		document.DosCfg.TCPScanEnabled.checked=1;
+    		document.DosCfg.TCPSynWithDataEnabled.checked=1;
+    		document.DosCfg.UDPBombEnabled.checked=1;
+    		document.DosCfg.UDPEchoChargenEnabled.checked=1;
+    	}
+    }
+
+    function ClearAll(){
+    	if(document.DosCfg.dosEnabled.checked){
+    		document.DosCfg.sysfloodSYN.checked=0;
+    		document.DosCfg.sysfloodFIN.checked=0;
+    		document.DosCfg.sysfloodUDP.checked=0;
+    		document.DosCfg.sysfloodICMP.checked=0;
+    		document.DosCfg.ipfloodSYN.checked=0;
+    		document.DosCfg.ipfloodFIN.checked=0;
+    		document.DosCfg.ipfloodUDP.checked=0;
+    		document.DosCfg.ipfloodICMP.checked=0;
+    		document.DosCfg.TCPUDPPortScan.checked=0;
+    		document.DosCfg.ICMPSmurfEnabled.checked=0;
+    		document.DosCfg.IPLandEnabled.checked=0;
+    		document.DosCfg.IPSpoofEnabled.checked=0;
+    		document.DosCfg.IPTearDropEnabled.checked=0;
+    		document.DosCfg.PingOfDeathEnabled.checked=0;
+    		document.DosCfg.TCPScanEnabled.checked=0;
+    		document.DosCfg.TCPSynWithDataEnabled.checked=0;
+    		document.DosCfg.UDPBombEnabled.checked=0;
+    		document.DosCfg.UDPEchoChargenEnabled.checked=0;
+    	}
+    }
+    function checkPS(num)
+    {
+    	if (num.value=="") {
+    		alert("It cannot be empty!");
+    		num.value = num.defaultValue;
+    		num.focus();
+    		return false;
+    	}
+    	if ( validateKey( num.value ) == 0 ) {
+    		alert("Invalid value. It should be the decimal number (0-9).");
+    		num.value = num.defaultValue;
+    		num.focus();
+    		return false;
+    	}
+    	return true;
+    }
+    function saveChanges()
+    {
+     	if(document.DosCfg.sysfloodSYN.checked)
+    	{
+    		if(!checkPS(document.DosCfg.sysfloodSYNcount))
+    		{
+    			return false;
+    		}
+    	}
+    	if(document.DosCfg.sysfloodFIN.checked)
+    	{
+    		if(!checkPS(document.DosCfg.sysfloodFINcount))
+    		{
+    			return false;
+    		}
+    	}
+    	if(document.DosCfg.sysfloodUDP.checked)
+    	{
+    		if(!checkPS(document.DosCfg.sysfloodUDPcount))
+    		{
+    			return false;
+    		}
+    	}
+    	if(document.DosCfg.sysfloodICMP.checked)
+    	{
+    		if(!checkPS(document.DosCfg.sysfloodICMPcount))
+    		{
+    			return false;
+    		}
+    	}
+    	if(document.DosCfg.ipfloodSYN.checked)
+    	{
+    		if(!checkPS(document.DosCfg.ipfloodSYNcount))
+    		{
+    			return false;
+    		}
+    	}
+    	if(document.DosCfg.ipfloodFIN.checked)
+    	{
+    		if(!checkPS(document.DosCfg.ipfloodFINcount))
+    		{
+    			return false;
+    		}
+    	}
+    	if(document.DosCfg.ipfloodUDP.checked)
+    	{
+    		if(!checkPS(document.DosCfg.ipfloodUDPcount))
+    		{
+    			return false;
+    		}
+    	}
+    	if(document.DosCfg.ipfloodICMP.checked)
+    	{
+    		if(!checkPS(document.DosCfg.ipfloodICMPcount))
+    		{
+    			return false;
+    		}
+    	}
+
+    	if(appClick==0)
+    	{
+    		appClick=1;
+    	}
+    	else
+    	{
+    		alert("The request is in process, please wait a few seconds!");
+    		return false;
+    	}
+
+      return true;
+    }
+    </script>
+</head>
+<body>
+    <div class="intro_main ">
+        <p class="intro_title">DoS Setting</p>
+        <p class="intro_content">
+            A "denial-of-service" (DoS) attack is characterized by an explicit attempt by hackers to prevent legitimate users of a service from using that service.
+        </p>
+    </div>
+<form action="form2DosCfg.cgi" method=POST name="DosCfg">
+    <div class="data_common data_common_notitle">
+        <table>
+            <tr>
+                <th><input type="checkbox" onclick="dosEnabledClick()" value="ON" name="dosEnabled"  
+                <VWS_SCREEN (char*) xscrndosEnabled[];>
+                > Enable DoS Prevention</th>
+            </tr>
+        </table>
+    </div>
+    <div class="data_common data_common_notitle" style="
+    <VWS_FUNCTION (void*)SendDivHiddenStyle();>
+    ">
+        <table>
+            <tr>
+                <th><input type="checkbox" name="sysfloodSYN" value="ON"
+				<VWS_SCREEN (char*) xscrnsysfloodSYN[];>
+				> Whole System Flood: SYN </th>
+                <th><input type="text" maxlength="4" size="6" name="sysfloodSYNcount" value=
+				 <VWS_SCREEN (char*) xscrnsysfloodSYNcount[];>
+				 > Packets/Second</th>
+            </tr>
+            <tr>
+                <th><input type="checkbox" value="ON" name="sysfloodFIN"
+				<VWS_SCREEN (char*) xscrnsysfloodFIN[];>
+				>Whole System Flood: FIN  </th>
+                <th><input type="text" maxlength="4" size="6" name="sysfloodFINcount" value=
+				<VWS_SCREEN (char*) xscrnsysfloodFINcount[];>
+				> Packets/Second</th>
+            </tr>
+            <tr>
+                <th><input type="checkbox" value="ON" name="sysfloodUDP"
+				<VWS_SCREEN (char*) xscrnsysfloodUDP[];>
+				> Whole System Flood: UDP  </th>
+                <th><input type="text" maxlength="4" size="6" name="sysfloodUDPcount" value=
+				<VWS_SCREEN (char*) xscrnsysfloodUDPcount[];>
+				> Packets/Second</th>
+            </tr>
+            <tr>
+                <th><input type="checkbox" value="ON" name="sysfloodICMP"
+				<VWS_SCREEN (char*) xscrnsysfloodICMP[];>
+				> Whole System Flood: ICMP  </th>
+                <th><input type="text" maxlength="4" size="6" name="sysfloodICMPcount" value=
+				<VWS_SCREEN (char*) xscrnsysfloodICMPcount[];>
+				> Packets/Second</th>
+            </tr>
+            <tr>
+                <th><input type="checkbox" value="ON" name="ipfloodSYN"
+				<VWS_SCREEN (char*) xscrnipfloodSYN[];>
+				> Per-Source IP Flood: SYN  </th>
+                <th><input type="text" maxlength="4" size="6" name="ipfloodSYNcount" value=
+				<VWS_SCREEN (char*) xscrnipfloodSYNcount[];> 
+				> Packets/Second</th>
+            </tr>
+            <tr>
+                <th><input type="checkbox" value="ON" name="ipfloodFIN"
+				<VWS_SCREEN (char*) xscrnipfloodFIN[];>
+				> Per-Source IP Flood: FIN  </th>
+                <th><input type="text" maxlength="4" size="6" name="ipfloodFINcount" value=
+				<VWS_SCREEN (char*) xscrnipfloodFINcount[];>
+				> Packets/Second</th>
+            </tr>
+            <tr>
+                <th><input type="checkbox" value="ON" name="ipfloodUDP"
+				<VWS_SCREEN (char*) xscrnipfloodUDP[];>
+				> Per-Source IP Flood: UDP  </th>
+                <th><input type="text" maxlength="4" size="6" name="ipfloodUDPcount" value=
+				<VWS_SCREEN (char*) xscrnipfloodUDPcount[];>
+				> Packets/Second</th>
+            </tr>
+            <tr>
+                <th><input type="checkbox" value="ON" name="ipfloodICMP"
+				<VWS_SCREEN (char*) xscrnipfloodICMP[];>
+				> Per-Source IP Flood: ICMP  </th>
+                <th><input type="text" maxlength="4" size="6" name="ipfloodICMPcount" value=
+				<VWS_SCREEN (char*) xscrnipfloodICMPcount[];>
+				> Packets/Second</th>
+            </tr>
+            <tr>
+                <th><input type="checkbox" value="ON" name="TCPUDPPortScan"
+				<VWS_SCREEN (char*) xscrnTCPUDPPortScan[];>
+				> TCP/UDP PortScan  </th>
+                <th>
+                    <select name="portscanSensi">
+                    <VWS_SCREEN (char*) xscrnportscanSensi[];>
+                    </select>
+                    Sensitivity
+                </th>
+            </tr>
+            <tr>
+                <th colspan="2"><input type="checkbox" value="ON" name="ICMPSmurfEnabled"
+				<VWS_SCREEN (char*) xscrnICMPSmurf[];>
+				> ICMP Smurf  </th>
+            </tr>
+            <tr>
+                <th colspan="2"><input type="checkbox" value="ON" name="IPLandEnabled"
+				<VWS_SCREEN (char*) xscrnIPLand[];>
+				> IP Land  </th>
+            </tr>
+            <tr>
+                <th colspan="2"><input type="checkbox" value="ON" name="IPSpoofEnabled"
+				<VWS_SCREEN (char*) xscrnIPSpoof[];>
+				> IP Spoof </th>
+            </tr>
+            <tr>
+                <th colspan="2"><input type="checkbox" value="ON" name="IPTearDropEnabled"
+				<VWS_SCREEN (char*) xscrnIPTearDrop[];>
+				> IP TearDrop  </th>
+            </tr>
+            <tr>
+                <th colspan="2"><input type="checkbox" value="ON" name="PingOfDeathEnabled"
+				<VWS_SCREEN (char*) xscrnPingOfDeath[];>
+				> PingOfDeath  </th>
+            </tr>
+            <tr>
+                <th colspan="2"><input type="checkbox" value="ON" name="TCPScanEnabled"
+				<VWS_SCREEN (char*) xscrnTCPScan[];>
+				> TCP Scan  </th>
+            </tr>
+            <tr>
+                <th colspan="2"><input type="checkbox" value="ON" name="TCPSynWithDataEnabled"
+				<VWS_SCREEN (char*) xscrnTCPSynWithData[];>
+				> TCP SynWithData  </th>
+            </tr>
+            <tr>
+                <th colspan="2"><input type="checkbox" value="ON" name="UDPBombEnabled"
+				<VWS_SCREEN (char*) xscrnUDPBomb[];>
+				> UDP Bomb </th>
+            </tr>
+            <tr>
+                <th colspan="2"><input type="checkbox" value="ON" name="UDPEchoChargenEnabled"
+				<VWS_SCREEN (char*) xscrnUDPEchoChargen[];>
+				> UDP EchoChargen </th>
+            </tr>
+        </table>
+    </div>
+    <div class="btn_ctl clearfix">
+        <input class="link_bg" type="button" onclick="SelectAll()" name="selectAll" value=" Select ALL ">
+        <input class="link_bg" type="button" onclick="ClearAll()" name="clearAll" value=" Clear ALL ">
+    </div>
+    <div class="data_common data_common_notitle">
+        <table>
+            <tr>
+                <th width="50%"><input type="checkbox" value="ON" name="sourceIPblock"  
+                <VWS_SCREEN (char*) xscrnsourceIPblock[];>
+                > Enable Source IP Blocking </th>
+                <th><input type="text" maxlength="3" size="4" name="IPblockTime" value=
+                <VWS_SCREEN (char*) xscrnIPblockTime[];>
+                > Block time (sec)</th>
+            </tr>
+        </table>
+    </div>
+    <div class="btn_ctl clearfix">
+       <input type="hidden" value="Send" name="submit.htm?dos.htm">
+	   <input class="link_bg"  type="submit" onclick="return saveChanges()" name="save" value="Apply Changes">
+    </div>
+    <script>
+        dosEnabledClick();
+    </script>
+</form>
+</body>
+</html>

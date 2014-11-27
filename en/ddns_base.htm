@@ -1,0 +1,258 @@
+<VWS_FUNCTION (void*)SendWebMetaStr();>
+<VWS_FUNCTION (void*)SendWebCssStr();>
+<title>Routing Configuration </title>
+    <SCRIPT>
+        function checkTextStr(str) {
+            for (var i = 0; i < str.length; i++) {
+                if (str.charAt(i) == '%' || str.charAt(i) == '&' || str.charAt(i) == '\\' || str.charAt(i) == '?' || str.charAt(i) == '"')
+                    return false;
+            }
+            return true;
+        }
+        function addClick() {
+            if (document.ddns.hostname.value == "") {
+                alert("Please enter hostname for this account!");
+                document.ddns.hostname.focus();
+                return false;
+            }
+            if (!checkTextStr(document.ddns.hostname.value)) {
+                alert("Invalid value in hostname!");
+                document.ddns.hostname.focus();
+                return false;
+            }
+
+            if (document.ddns.ddnsProv.value == "0" || document.ddns.ddnsProv.value == "2") {
+                if (document.ddns.username.value == "") {
+                    alert("Please enter username for this account!");
+                    document.ddns.username.focus();
+                    return false;
+                }
+                if (!checkTextStr(document.ddns.username.value)) {
+                    alert("Invalid value in username!");
+                    document.ddns.username.focus();
+                    return false;
+                }
+                if (document.ddns.password.value == "") {
+                    alert("Please enter password for this account!");
+                    document.ddns.password.focus();
+                    return false;
+                }
+                if (!checkTextStr(document.ddns.password.value)) {
+                    alert("Invalid value in password!");
+                    document.ddns.password.focus();
+                    return false;
+                }
+            }
+
+            if (document.ddns.ddnsProv.value == "1") {
+                if (document.ddns.email.value == "") {
+                    alert("Please enter email for this account!");
+                    document.ddns.email.focus();
+                    return false;
+                }
+                if (!checkTextStr(document.ddns.email.value)) {
+                    alert("Invalid value in email!");
+                    document.ddns.email.focus();
+                    return false;
+                }
+
+                if (document.ddns.key.value == "") {
+                    alert("Please enter key for this account!");
+                    document.ddns.key.focus();
+                    return false;
+                }
+                if (!checkTextStr(document.ddns.key.value)) {
+                    alert("Invalid value in key!");
+                    document.ddns.key.focus();
+                    return false;
+                }
+            }
+
+             if (document.ddns.ddnsProv.value == "3") {
+                if (document.ddns.noipemail.value == "") {
+                    alert("Please enter email for this account!");
+                    document.ddns.noipemail.focus();
+                    return false;
+                }
+                if (!checkTextStr(document.ddns.noipemail.value)) {
+                    alert("Invalid value in email!");
+                    document.ddns.noipemail.focus();
+                    return false;
+                }
+
+                if (document.ddns.noippassword.value == "") {
+                    alert("Please enter password for this account!");
+                    document.ddns.noippassword.focus();
+                    return false;
+                }
+                if (!checkTextStr(document.ddns.noippassword.value)) {
+                    alert("Invalid value in password!");
+                    document.ddns.noippassword.focus();
+                    return false;
+                }
+            }
+
+
+            return true;
+        }
+
+
+        function updateState() {
+            if (document.ddns.ddnsProv.value == "0") {
+                enableTextField(document.ddns.username);
+                enableTextField(document.ddns.password);
+                disableTextField(document.ddns.email);
+                disableTextField(document.ddns.key);
+                disableTextField(document.ddns.noipemail);
+                disableTextField(document.ddns.noippassword);
+            } else if (document.ddns.ddnsProv.value == "2") {
+                enableTextField(document.ddns.username);
+                enableTextField(document.ddns.password);
+                disableTextField(document.ddns.email);
+                disableTextField(document.ddns.key);
+                disableTextField(document.ddns.noipemail);
+                disableTextField(document.ddns.noippassword);
+            }
+            else if (document.ddns.ddnsProv.value == "3") {
+                disableTextField(document.ddns.username);
+                disableTextField(document.ddns.password);
+                disableTextField(document.ddns.email);
+                disableTextField(document.ddns.key);
+                enableTextField(document.ddns.noipemail);
+                enableTextField(document.ddns.noippassword);
+            }
+            else {
+                enableTextField(document.ddns.email);
+                enableTextField(document.ddns.key);
+                disableTextField(document.ddns.username);
+                disableTextField(document.ddns.password);
+		  		disableTextField(document.ddns.noipemail);
+                disableTextField(document.ddns.noippassword);
+            }
+        }
+
+        function postDdns(provider, hostname, username, password, ifname) {
+
+        }	
+    </SCRIPT>
+</head>
+<body id="adsl">
+<form action="form2Ddns.cgi" method=POST name="ddns">
+    <div class="intro_main ">
+        <p class="intro_title">Dynamic DNS Configuration</p>
+        <p class="intro_content">This page is used to configure the Dynamic DNS address from DynDNS.org or TZO. Here you can Add/Remove to configure Dynamic DNS. </p>
+    </div>
+    <div class="data_common data_common_notitle">
+        <table>
+            <tr>
+                <th width="30%">DDNS provider:</th>
+                <td>     
+                    <select onchange="updateState()" name="ddnsProv" size="1">
+	                    <option value="0" selected="">DynDNS.org</option>
+	                    <option value="1">TZO</option>
+	                    <VWS_SCREEN (char*) PhDNSOption[];>
+	                    <VWS_SCREEN (char*) NoIPDDNSOption[];>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <th>Hostname:</th>
+                <td>
+                    <input type="text" maxlength="34" size="35" name="hostname">
+                </td>
+            </tr>
+            <tr>
+                <th>Interface:</th>
+                <td>
+                    <select name="interface">
+                    <VWS_SCREEN (char*) Waniflist[];>
+                    <option value="100">----</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <th>Enable:</th>
+                <td>
+                    <input type="checkbox" checked="" name="enable">
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="data_common data_common_notitle">
+        <table>
+            <tr>
+                <th colspan="2">DynDns Settings:</th>
+            </tr>
+            <tr>
+                <th width="30%">Username:</th>
+                <td><input type="text" maxlength="34" size="35" name="username"></td>
+            </tr>
+            <tr>
+                <th>Password:</th>
+                <td><input type="password" maxlength="34" size="35" name="password"></td>
+            </tr>
+        </table>
+    </div>
+    <div class="data_common data_common_notitle">
+        <table>
+            <tr>
+                <th colspan="2">TZO Settings:</th>
+            </tr>
+            <tr>
+                <th width="30%">Email:</th>
+                <td><input type="text" maxlength="34" size="35" name="email"></td>
+            </tr>
+            <tr>
+                <th>Key:</th>
+                <td><input type="text" maxlength="34" size="35" name="key"></td>
+            </tr>
+        </table>
+    </div>
+    <VWS_SCREEN (char*) NoIPDDNSSetting[];>
+            <table>
+            <tr>
+                <th colspan="2">NO-IP Settings:</th>
+            </tr>
+            <tr>
+                <th width="30%">Email:</th>
+                <td><input type="text" maxlength="50" size="35" name="noipemail"></td>
+            </tr>
+            <tr>
+                <th>Password:</th>
+                <td><input type="text" maxlength="34" size="35" name="noippassword"></td>
+            </tr>
+        </table>
+    </div>
+    <div class="btn_ctl clearfix">
+	    <input class="link_bg" type="submit" onclick="return addClick()" name="addacc" value="Add">
+		<input class="link_bg" type="submit" name="delacc" value="Remove">
+    </div>
+    <div class="column">
+        <div class="column_title">
+            <div class="column_title_left"></div>
+            <p>Dynamic DDNS Table:</p>
+            <div class="column_title_right"></div>
+        </div>
+        <div class="data_common data_vertical">
+            <table>
+                <tr>
+                    <th>Select</th>
+                    <th>State</th>
+                    <th>Service</th>
+                    <th>Hostname</th>
+                    <th>Username</th>
+                    <th>Interface</th>
+                </tr>
+                <tr>
+                <VWS_FUNCTION (void*)showDdnsTable();>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <input type="hidden" name="submit.htm?ddns.htm" value="Send"> 
+    <script>     
+   		 updateState();
+	</script>  
+    </form>
+</body>
+</html>

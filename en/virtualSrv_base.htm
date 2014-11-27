@@ -1,0 +1,386 @@
+<VWS_FUNCTION (void*)SendWebMetaStr();>
+<VWS_FUNCTION (void*)SendWebCssStr();>
+	<title>Status - Modify</title>
+	<SCRIPT>
+	var retPort=/^([0-9]|[:]){1,15}$/;
+	var retNum=/^[0-9]{1,15}$/;
+
+	function portInfo(startPort, endPort, srvName)
+	{
+	    this.startPort = startPort;
+	    this.endPort = endPort;
+	    this.srvName = srvName;
+	}
+	function serverType(name,protocol,port)
+	{
+	    this.name=name;
+	    this.protocol=protocol;
+	    this.port=port;
+	}
+	var servertypes = new Array();
+	servertypes[0]=new serverType("AUTH",6,113);
+	servertypes[1]=new serverType("DNS",17,53);
+	servertypes[2]=new serverType("FTP",6,21);
+	servertypes[3]=new serverType("IPSEC",17,500);
+	servertypes[4]=new serverType("POP3",6,110);
+	servertypes[5]=new serverType("PPTP",6,1723);
+	servertypes[6]=new serverType("SMTP",6,25);
+	servertypes[7]=new serverType("SSH",6,22);
+	servertypes[8]=new serverType("TELNET",6,23);
+	servertypes[9]=new serverType("TFTP",17,69);
+	servertypes[10]=new serverType("WEB",6,80);
+
+	function cbClick() {
+	    with ( document.addVrtSrv ) {
+		    var idx = srvname.selectedIndex;	
+		    for( var i=0;i<servertypes.length;i++)
+		    {
+		      if(srvname.options[idx].value == servertypes[i].name)
+			    {
+				    inprt.value = servertypes[i].port;
+				    srvprt.value = servertypes[i].port;
+				    if(servertypes[i].protocol==6) protocol.selectedIndex = 0;
+				    if(servertypes[i].protocol==17)protocol.selectedIndex = 1;
+				    break;
+			    }
+		    }		
+	    }
+	}
+
+	function checkOpenPort(startport, endport)
+	{
+	    var openedPort = new Array();
+	    var rmtaccPort = new Array();
+	    <VWS_FUNCTION (void*)showGWOpendPort();>
+
+	    for( var i=0; i<openedPort.length; i++ )
+	    {
+		    if( ((startport>=openedPort[i].startPort) && (startport<=openedPort[i].endPort)) ||
+			    ((endport>=openedPort[i].startPort) && (endport<=openedPort[i].endPort)) ||
+			    ((startport<=openedPort[i].startPort) && (endport>=openedPort[i].endPort)) )
+		    {
+			    alert("The port that you assign has been occupied by  "+openedPort[i].srvName+"("+openedPort[i].startPort+"-"+
+				    openedPort[i].endPort+"),please reinput !");
+			    return false;
+		    }
+	    }
+	    for ( var i=0; i<rmtaccPort.length; i++)
+	    {
+		    if ((startport<=rmtaccPort[i].startPort) && (endport>=rmtaccPort[i].endPort))
+		    {
+			    alert("Sorry,the inputed port  has been occupied by remote access.please input one other port!");
+			    return false;
+		    }
+	    }
+
+	    return true;
+	}
+
+	var curTblNum=0;
+	<VWS_FUNCTION (void*)showVrtSrvTableNum();>
+
+	function btnApply() {
+
+	    //check if the virtual server table is full
+	    if(curTblNum >= 60){
+		    alert("The virtual server table is full!");
+		    return false;
+	    }
+
+	    with ( document.addVrtSrv ) {		
+	    //add by ramen 20090609 to check server name
+	         if(radiosrv[1].checked){
+	     	    if(!checkSpecialChar(txtsrvname.value,1))
+	     	       {
+	     	   	    alert("Invalid characters,please reinput!");
+	     	   	    return false;
+	     	       }
+		
+	         }
+	    //end by ramen
+
+		    //add at 20090805 to check wan ip
+		    if(wansetting.selectedIndex==1){
+			    if(!checkIP(fromwanip))
+				    return false;
+		    }
+		
+		    if ( inprt.value == '' || !retPort.test(inprt.value) ) {
+			    msg = 'The WAN port' + inprt.value + ' is invalid.';	
+			    alert(msg);
+			    return false;
+		    }
+
+		    if ( srvprt.value == '' || !retPort.test(srvprt.value) ) {
+			    msg = 'The LAN Open port' + srvprt.value + 'is invalid.';
+			    alert(msg);
+			    return false;
+			    }
+		
+		    var inrangevalue = inprt.value;
+		    var invalue = inrangevalue.split(':');
+		    var startPort;
+		    var endPort;
+		    var wanOpenPortRange=0;
+		    var wanOpenPortRangeInterval=0;
+		    if(inrangevalue.match("[:]") == null)
+		    {
+			    startPort=parseInt(invalue[0]);
+			    endPort=parseInt(invalue[0]);
+		    }
+		    else
+		    {
+			    startPort=parseInt(invalue[0]);
+			    endPort=parseInt(invalue[1]);
+			    wanOpenPortRange=1;
+			    wanOpenPortRangeInterval=endPort-startPort;
+		    }
+		    if (startPort > endPort || startPort<1 || endPort>65535)
+		    {
+			    msg = 'Invalid WAN port!';
+			    alert(msg);
+			    return false;
+		    }
+		    //if ( !checkOpenPort(startPort, endPort) ) {
+		    //	inprt.focus();
+		    //	return false;
+		    //}
+	//add by ramen to support lan port range
+		    inrangevalue=srvprt.value;
+		    invalue = inrangevalue.split(':');
+		    if(inrangevalue.match("[:]") == null)
+		    {
+			    startPort=parseInt(invalue[0]);
+			    endPort=parseInt(invalue[0]);
+		    }
+		    else
+		    {
+		        if(!wanOpenPortRange)
+			         {
+							    msg = 'Invalid LAN Open port range!';
+							    alert(msg);
+							    return false;
+				     }
+			    startPort=parseInt(invalue[0]);
+			    endPort=parseInt(invalue[1]);
+
+		    }
+
+		    if (startPort > endPort || startPort<1 || endPort>65535)
+		    {
+			    msg = 'Invalid LAN Open port!';
+			    alert(msg);
+			    return false;
+		    }
+		    if((endPort-startPort)&&(wanOpenPortRangeInterval!=(endPort-startPort))){
+		       msg="The interval of lan&wan port should be equal!";
+		       alert(msg);
+		       return false;
+		    }
+
+		    if (!checkIP(srvaddr))
+			    return false;
+		    if(srvaddr.value==
+		    <VWS_FUNCTION (void*)LanItfIp();>
+		    )
+		    {
+		    alert("It's modem's IP.please input an valid IP from LAN");
+		    srvaddr.focus();
+		    return false;
+		    }
+		    /*
+		    if (srvname.value != '21' && srvport==21)
+		    {
+			    msg = '21端口用于ftp服务器，请选择另外的端口.';
+			    alert(msg);
+			    return false;
+		    }
+		    if (srvname.value!='23' && srvport==23)
+		    {
+			    msg = '23端口用于telnet服务器，请选择另外的端口.';
+			    alert(msg);
+			    return false;
+		    }
+		    if (srvname.value!='80' && srvport==80)
+		    {
+			    msg = '80端口用于web服务器，请选择另外的端口.';
+			    alert(msg);
+			    return false;
+		    }
+
+
+		    if ( srvprt.value == '80' ) {
+	         msg = '因虚拟服务主机端口 80 被指定, 原 DSL &nbsp网页服务器所使用的';
+	         msg += '端口将自动更改为 8080';
+	         alert(msg);
+		    } else if ( srvprt.value == '23' ) {
+		            msg = '因虚拟服务主机端口 23 被指定, 原 DSL &nbsp Telnet 服务器所使用的';
+	                        msg += '端口将自动更改为 2323';
+			    alert(msg);
+		    }
+	    */		
+	    }
+	}
+	function wansettingchange()
+	{
+
+	   if(document.addVrtSrv.wansetting.selectedIndex==0)//interface
+	    {
+	    document.getElementById ("wanitfselectid").style.display="";
+	    document.getElementById ("fromwanipid").style.display="none";
+	    document.addVrtSrv.wanIpOrItf.value="itf";
+
+	    } else if(document.addVrtSrv.wansetting.selectedIndex==1)//ip address
+	    {
+	    document.getElementById ("wanitfselectid").style.display="none";
+	    document.getElementById ("fromwanipid").style.display="";
+	     document.addVrtSrv.wanIpOrItf.value="ip";
+	    }
+
+	}
+	function onLoad()
+	{
+	  if(document.addVrtSrv.wansetting.selectedIndex==1)//ip address
+		    {
+		      document.getElementById("fromwanipid").style.display="";
+	      document.getElementById("wanitfselectid").style.display="none";
+		    }
+	}
+	</script>
+</head>
+<body>
+    <form action="form2AddVrtsrv.cgi" method=POST name="addVrtSrv">
+    <div class="intro_main ">
+        <p class="intro_title">Virtual Server</p>
+        <p class="intro_content">This page allows you to config virtual server,so others can access the server through the Gateway. </p>
+    </div>
+    <div class="data_common data_common_notitle">
+        <table>
+            <tr>
+                <th colspan="2">Service Type:</th>
+            </tr>
+            <tr>
+                <th width="35%"><input type="radio" checked value="0" name="radiosrv">   Usual Service Name:  </th>
+                <td>
+                    <select size="1" name="srvname" onChange='cbClick()'>
+                    <option selected value="AUTH">AUTH</option>
+                    <option value="DNS">DNS</option>
+                    <option value="FTP">FTP</option>
+                    <option value="IPSEC">IPSEC</option>
+                    <option value="POP3">POP3</option>
+                    <option value="PPTP">PPTP</option>
+                    <option value="SMTP">SMTP</option>
+                    <option value="SSH">SSH</option>
+                    <option value="TELNET">TELNET</option>
+                    <option value="TFTP">TFTP</option>
+                    <option value="WEB">WEB</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <th><input type="radio" value="1" name="radiosrv"> User-defined Service Name:</th>
+                <td><input type="text" maxlength="15" name="txtsrvname" size="15"></td>
+            </tr>
+            <tr>
+                <th>Protocol:</th>
+                <td>
+                    <select style="width:200" size="1" name="protocol">
+                    <option value="0">TCP</option>
+                    <option value="1">UDP</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <th>WAN Setting:</th>
+                <td>
+                    <select onchange="wansettingchange();" style="width:200" size="1" name="wansetting">
+                    <option value="0">Interface</option>
+                    <option value="1">Ip Address</option>
+                    </select>
+                </td>
+            </tr>
+			<tr id="fromwanipid" style="display:none">
+				<th>WAN IP Address:</th>
+				<td><input type='text' size="15" name="fromwanip" maxlength="15"><font size=2></td>
+			</tr>
+			<tr id="wanitfselectid" >
+                <th>WAN Interface:</th>
+                <td>
+                    <select style="width:200" size="1" name="fromwanitf">
+                        <VWS_SCREEN (char*) xscrnNaptWanRouterPvcWithPPPOE[];>
+                        <option value="any">any</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <th>WAN Port:</th>
+                <td><input type="text" name="inprt" size="15">&nbsp;&nbsp;(ex. 5001:5010)</td>
+            </tr>
+            <tr>
+                <th>LAN Open Port:</th>
+                <td><input type="text" name="srvprt" size="15"></td>
+            </tr>
+            <tr>
+                <th>LAN Ip Address:</th>
+                <td><input type="text" maxlength="15" name="srvaddr" size="15"></td>
+            </tr>
+        </table>
+    </div>
+	<div class="btn_ctl">
+        <INPUT TYPE="hidden" NAME="wanIpOrItf" VALUE="itf">
+        <INPUT TYPE="hidden" NAME="submit.htm?virtualSrv.htm" VALUE="Send">
+        <input class="link_bg" type="submit" name="save" onClick="return btnApply();" value="Apply Changes">
+    </form>
+    <form method=POST Action="form2naptitfdel.cgi">
+    <INPUT TYPE="HIDDEN" NAME="actiontype" VALUE="" >
+    <INPUT TYPE="HIDDEN" NAME="natitfcmd" VALUE="" >
+    <INPUT TYPE="HIDDEN" NAME="state" VALUE="" >
+    <INPUT TYPE="HIDDEN" NAME="itf1" VALUE="" >
+    <INPUT TYPE="HIDDEN" NAME="itf2" VALUE="" >
+    <INPUT TYPE="HIDDEN" NAME="wanport" VALUE="" >
+    <INPUT TYPE="HIDDEN" NAME="instnum" VALUE="" >
+    <div class="column">
+        <div class="column_title">
+            <div class="column_title_left"></div>
+            <p>Current Virtual Server Forwarding Table:</p>
+            <div class="column_title_right"></div>
+        </div>
+        <div class="data_common data_vertical">
+            <table>
+                <tr>
+                    <th>ServerName</th>
+                    <th>Protocol</th>
+                    <th>Local IP Address</th>
+                    <th>Local Port </th>
+                    <th>WAN IP Address</th>
+                    <th>WAN Port</th>
+                    <th>State</th>
+                    <th>Action</th>
+                </tr>
+                <VWS_FUNCTION (void*)showVrtSrvTable();>
+            </table>
+        </div>
+        <INPUT TYPE="HIDDEN" NAME="submit.htm?virtualSrv.htm" VALUE="Send" >
+    </div>
+    </form>
+    <script language="JavaScript">
+        function natItfActionFunc(form, actiontype, natitfcmd, state, itf1, itf2, wanport, instnum) {
+            form.elements[0].value = actiontype;
+            form.elements[1].value = natitfcmd;
+            form.elements[2].value = state;
+            form.elements[3].value = itf1;
+            form.elements[4].value = itf2;
+            form.elements[5].value = wanport;
+            form.elements[6].value = instnum;
+            form.submit();
+        }
+    </script>
+    <script>
+        document.addVrtSrv.inprt.value = servertypes[0].port;
+        document.addVrtSrv.srvprt.value = servertypes[0].port;
+        if (servertypes[0].protocol == 6) document.addVrtSrv.protocol.selectedIndex = 0;
+        if (servertypes[0].protocol == 17) document.addVrtSrv.protocol.selectedIndex = 1;
+	
+    </script>
+</body>
+</html>

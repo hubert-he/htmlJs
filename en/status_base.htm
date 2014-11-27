@@ -1,0 +1,370 @@
+<VWS_FUNCTION (void*)SendWebMetaStr();>
+<VWS_FUNCTION (void*)SendWebCssStr();>
+<title>ADSL Router Status</title>
+    <script>
+#ifdef CONFIG_VEND_NETCORE
+<VWS_FUNCTION (void*)showIsWizardProcessState();>
+#endif
+        function modifyClick(url) 
+        {
+            var wide = 600;
+            var high = 400;
+            if (document.all)
+                var xMax = screen.width, yMax = screen.height;
+            else if (document.layers)
+                var xMax = window.outerWidth, yMax = window.outerHeight;
+            else
+                var xMax = 640, yMax = 480;
+            var xOffset = (xMax - wide) / 2;
+            var yOffset = (yMax - high) / 3;
+
+            var settings = 'width=' + wide + ',height=' + high + ',screenX=' + xOffset + ',screenY=' + yOffset + ',top=' + yOffset + ',left=' + xOffset + ', resizable=yes, toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes';
+
+            window.open(url, 'Status_Modify', settings);
+        }
+
+        function submitPPPoe(form, pppoenum, connect) 
+        {
+            form.pppoenum.value = pppoenum;
+            form.connect.value = connect;
+            form.submit();
+        }
+	function onload()
+	{
+#ifdef CONFIG_VEND_NETCORE
+		if(isWizardProcess== 1)
+			top.document.location.reload();
+#endif
+	}
+    </script>
+</head>
+<body id="device_info" onload="onload();">
+    <div class="intro_main ">
+        <p class="intro_title">Status</p>
+        <p class="intro_content">This page shows the current status and some basic settings of the device.</p>
+    </div>
+    <div class="column">
+        <div class="column_title">
+            <div class="column_title_left"></div>
+            <p>System</p>
+            <div class="column_title_right"></div>
+        </div>
+        <div class="data_common">
+            <table>
+                <tr style="
+  <VWS_FUNCTION (void*)SendRowHiddenStyle();>
+  ">
+                    <th width="30%">Alias Name</th>
+                    <td>
+                    	<VWS_SCREEN (char*) xscrnModel0[];>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Uptime</th>
+                    <td>
+                    	<VWS_SCREEN (char*) xscrnSysUpTime[];>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Date/Time</th>
+                    <td>
+                    	<VWS_SCREEN (char*) showNtpLocalTimeHttp[];>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Firmware Version</th>
+                    <td>
+                    	<VWS_SCREEN (char*)  xscrnAppVersion[];>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Built Date</th>
+                    <td>
+                    	<VWS_SCREEN (char*) xscrnAppBuilddate[];>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Serial Number</th>
+                    <td>
+                    	<VWS_SCREEN (char*) xscrnSerialNo[];>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+#if defined(CONFIG_ADSLUP)
+    <div class="column">
+        <div class="column_title">
+            <div class="column_title_left"></div>
+            <p>DSL</p>
+            <div class="column_title_right"></div>
+        </div>
+
+        <div class="data_common">
+            <table>
+                <tr>
+                    <th width="30%">Operational Status</th>
+                    <td>
+                    	<VWS_SCREEN (char*) xscrnShowAdslMode[];>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Upstream Speed</th>
+                    <td>
+                    	<VWS_SCREEN (char*) xscrnAdslUp[];>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Downstream Speed</th>
+                    <td>
+                    	<VWS_SCREEN (char*) xscrnAdslDown[];>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+#endif	
+#ifdef CONFIG_CWMP_WEBSTATS
+    <div class="column">
+        <div class="column_title">
+            <div class="column_title_left"></div>
+            <p>CWMP Status</p>
+            <div class="column_title_right"></div>
+        </div>
+        <div class="data_common">
+            <table>
+                <tr>
+                    <th width="30%">Inform Status</th>
+                    <td>
+                   	<VWS_SCREEN (char*)setCwmpInformStatus[];>
+                   </td>
+                </tr>
+                <tr>
+                    <th>Connecion Request Status</th>
+                    <td>
+                    	<VWS_SCREEN (char*)setCwmpConnreqStatus[];>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+#endif
+    <div class="column">
+        <div class="column_title">
+            <div class="column_title_left"></div>
+            <p>LAN Configuration</p>
+            <div class="column_title_right"></div>
+        </div>
+        <div class="data_common">
+            <table>
+                <tr>
+                    <th width="30%">IP Address</th>
+                    <td>
+                    	<VWS_SCREEN (char*)xscrnLanIPAddr[];>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Subnet Mask</th>
+                    <td>
+                    	<VWS_SCREEN (char*)xscrnLanSubnetMask[];>
+                    </td>
+                </tr>
+#if defined(CONFIG_IPV6)
+                <tr>
+                    <th>IPV6 Address</th>
+                    <td>
+                    	<VWS_SCREEN (char*)xscrnLanIPv6Addr[];>
+                    </td>
+                </tr>
+#endif
+                <tr>
+                    <th>DHCP Server</th>
+                    <td>
+                    	<VWS_SCREEN (char*)xscrnShowDhcpSServer[];>
+                    </td>
+                </tr>
+                <tr>
+                    <th>MAC Address</th>
+                    <td>
+                   	<VWS_SCREEN (char*)xscrnMacAddress[];>
+                   </td>
+                </tr>
+            </table>
+        </div>
+
+    </div>
+    
+#if !defined(CONFIG_DNS_BIND_PVC_SUPPORT)
+    <div class="column">
+        <div class="column_title">
+            <div class="column_title_left"></div>
+            <p>DNS Status</p>
+            <div class="column_title_right"></div>
+        </div>
+        <div class="data_common">
+            <table>
+                <tr>
+                    <th width="30%">DNS Mode</th>
+                    <td>
+                    	<VWS_SCREEN (char*)xscrnShowDnsMode[];>
+                    </td>
+                </tr>
+                <tr>
+                    <th>DNS Servers</th>
+                    <td>
+                    	<VWS_SCREEN (char*)xscrnShowDnsServers[];>
+                    </td>
+                </tr>
+#if defined(CONFIG_IPV6)				
+                <tr>
+                    <th>IPv6 DNS Mode</th>
+                    <td>
+                    	<VWS_SCREEN (char*)xscrnShowDns6Mode[];>
+                    </td>
+                </tr>
+                <tr>
+                    <th>IPv6 DNS Servers</th>
+                    <td>
+                    	<VWS_SCREEN (char*)xscrnShowDns6Servers[];>
+			</td>
+                </tr>
+#endif				
+            </table>
+        </div>
+    </div>
+#endif
+    <form action="form2WebRefresh.cgi" method=POST name="status">
+    <INPUT TYPE="HIDDEN" NAME="pppoenum" VALUE="" >
+    <INPUT TYPE="HIDDEN" NAME="connect" VALUE="" >
+#if defined(CONFIG_ADSLUP)	
+    <div class="column">
+        <div class="column_title">
+            <div class="column_title_left"></div>
+            <p>ADSL WAN Interfaces</p>
+            <div class="column_title_right"></div>
+        </div>
+        <div class="data_common data_vertical">
+            <table>
+                <tr>
+                    <th>Interface</th>
+                    <th>VPI/VCI</th>
+                    <th>Encap</th>
+#if defined(CONFIG_CUC_WAN_FORCWMP)
+			<th>AppMode</th>
+#else
+                    <th>Droute</th>
+#endif
+                    <th>Protocol</th>
+                    <th>IP Address</th>
+#ifdef CONFIG_DNS_BIND_PVC_SUPPORT
+			<th>DNS</th>
+#endif
+                    <th>Gateway</th>
+                    <th>Status</th>
+                </tr>
+                <tr>
+                    <VWS_FUNCTION (void*)showAdslStateTable();>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+#if defined(CONFIG_IPV6) 
+	<div class="column">
+        <div class="column_title">
+            <div class="column_title_left"></div>
+            <p>ADSL WAN IPV6 Configuration</p>
+            <div class="column_title_right"></div>
+        </div>
+        <div class="data_common data_vertical">
+            <table>
+                <tr>
+                    <th>Interface</th>
+                    <th>VPI/VCI</th>
+                    <th>Encap</th>
+#if defined(CONFIG_CUC_WAN_FORCWMP)
+		      <th>AppMode</th>
+#endif 
+                    <th>Protocol</th>
+                    <th>IPv6 Address</th>
+#ifdef CONFIG_DNS_BIND_PVC_SUPPORT
+			<th>DNS</th>
+#endif
+			<th>Prefix</th>
+                    <th>Gateway</th>
+                    <th>Droute</th>
+                    <th>Status</th>
+                </tr>
+                <tr>
+                    <VWS_FUNCTION (void*)showAdslStateTableV6();>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+#endif
+#endif
+#if defined(CONFIG_MULTI_ETHUP)	
+	    <div class="column">
+        <div class="column_title">
+            <div class="column_title_left"></div>
+            <p>Ethernet WAN Interfaces</p>
+            <div class="column_title_right"></div>
+        </div>
+        <div class="data_common data_vertical">
+            <table>
+                <tr>
+                    <th>Interface</th>
+                    <th>Droute</th>
+                    <th>Protocol</th>
+                    <th>IP Address</th>
+                    <th>Gateway</th>
+                    <th>Status</th>
+                </tr>
+                <tr>
+                    <VWS_FUNCTION (void*)showEthWanStateTable();>
+                </tr>
+            </table>
+        </div>
+    </div>
+#if defined(CONFIG_IPV6)
+	<div class="column">
+        <div class="column_title">
+            <div class="column_title_left"></div>
+            <p>Ethernet WAN IPV6 Configuration</p>
+            <div class="column_title_right"></div>
+        </div>
+        <div class="data_common data_vertical">
+            <table>
+                <tr>
+                    <th>Interface</th>
+                    <th>Protocol</th>
+                    <th>IPv6 Address</th>
+                    <th>Gateway</th>
+                    <th>Droute</th>
+                    <th>Status</th>
+                </tr>
+                <tr>
+                    <VWS_FUNCTION (void*)showEthWanStateTableV6();>
+                </tr>
+            </table>
+        </div>
+    </div>
+#endif
+#endif	
+#ifdef CONFIG_IPV6_STF
+	<VWS_FUNCTION (void*)showIpv6STF();>	
+#endif
+#ifdef CONFIG_IPV6_DSLITE
+	<VWS_FUNCTION (void*)showIpv6DsLite();>
+#endif
+    <div class="btn_ctl">
+        <input class="link_bg" type="submit" name="refresh" value="Refresh">
+        <input type="hidden" name="submit.htm?status.htm" value="Send">
+    </div>
+    </form>
+	<br><br><br>
+</body>
+</html>
+
+

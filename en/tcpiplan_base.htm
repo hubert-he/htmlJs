@@ -1,0 +1,453 @@
+<VWS_FUNCTION (void*)SendWebMetaStr();>
+<VWS_FUNCTION (void*)SendWebCssStr();>
+	<title>LAN Interface Setup </title>
+	<script>
+        selected = 0;
+
+	function resetClick()
+	{
+            document.tcpip.reset;
+        }
+
+	function saveChanges()
+	{
+            if (!checkIP(document.tcpip.ip))
+                return false;
+            if (!checkMaskSpecial(document.tcpip.mask))
+                return false;
+            if (document.tcpip.enable_ip2.checked) {
+                if (!checkIP(document.tcpip.ip2))
+                    return false;
+                if (!checkMaskSpecial(document.tcpip.mask2))
+                    return false;
+                if (!Lan1NeqLan2(document.tcpip.ip, document.tcpip.mask, document.tcpip.ip2, document.tcpip.mask2)) {
+                    alert("The first IP and the second IP must belong to the different subnet!");
+                    document.tcpip.ip2.focus();
+                    return false;
+                }
+            }
+        }
+        var warningstr = "Allowed MAC address Table should not empty when enabled on interface(s)!"
+        function macAcChanges() {
+            if (document.delmacac.curTblNum.value == '0') {
+                if (document.macac.lan1.checked == true)
+                    alert(warningstr);
+                else if (document.macac.lan2.checked == true)
+                    alert(warningstr);
+                else if (document.macac.lan3.checked == true)
+                    alert(warningstr);
+                else if (document.macac.lan4.checked == true)
+                    alert(warningstr);
+                else if (document.macac.wlan.checked == true)
+                    alert(warningstr);
+                else {
+                    return true;
+                }
+                return false;
+            }
+        }
+        function macAcDelFunc(form, dstmacaddr) {
+            form.MacEntryDel.value = dstmacaddr;
+            form.submit();
+        }
+#if defined(CONFIG_LAN_LINKMODE_WEB)
+        function postEntry(port, linkmode) {
+            document.linkmode.linkmode.value = linkmode;
+            document.linkmode.lanport.value = port;
+
+            selected = 1;
+        }
+
+        function modifyClick() {
+            if (!selected) {
+                alert("Please select an entry to modify!");
+                return false;
+            }
+        }
+#endif
+	</script>
+</head>
+#if defined(CONFIG_LAN_MAC_ADDRESS_CONTROL)
+#if defined(CONFIG_LAN_LINKMODE_WEB)
+<body>
+    <form action="form2lansetup.cgi" method=POST name="tcpip">
+    <div class="intro_main ">
+        <p class="intro_title">LAN Interface Setup</p>
+        <p class="intro_content">This page is used to configure the LAN interface of your ADSL Router. Here you may change the setting for IP addresss, subnet mask, etc.. </p>
+    </div>
+    <div class="data_common data_common_notitle">
+        <table>
+            <tr>
+                <th width="30%">Interface Name:</th>
+                <td>Ethernet1</td>
+            </tr>
+            <tr>
+                 <th>IP Address:</th>
+                 <td><input name="ip" type="text" size="40" value=
+                 <VWS_SCREEN (char*) xscrnLanIPAddr[];>
+                 /></td>
+            </tr>
+            <tr>
+                <th> Subnet Mask:</th>
+                <td><input name="mask" type="text" size="40" value=
+                <VWS_SCREEN (char*) xscrnLanSubnetMask[];>
+                /></td>
+            </tr>
+        </table>
+        <VWS_FUNCTION (void*)lansetting();>
+        <script>
+        <VWS_FUNCTION   (void*)laninitpage();>
+        </script>
+    </div>
+    <div class="btn_ctl">
+        <input class="link_bg" type="submit" onClick="return saveChanges()" value="Apply Changes">
+    </div>
+    <input type="hidden" value="Send" name="submit.htm?tcpiplan.htm">
+    </form>
+    <form action="form2lanlinkmode.cgi" method=POST name="linkmode">
+    <div class="data_common data_common_notitle">
+        <table>
+            <tr>
+                <th width="30%">LAN Port:</th>
+                <td>
+                    <select name="lanport" size="1" >
+                    <VWS_FUNCTION  (void*)showLanPortTable(); >
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <th>Link Speed/Duplex Mode:</th>
+                <td>
+                    <select name="linkmode" size="1">
+                    <VWS_FUNCTION  (void*)showLinkModeTable(); >
+                    </select>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="btn_ctl">
+	<input class="link_bg" type="submit" name="modify" onClick="return modifyClick()" value="Modify">
+    </div>
+
+    <div class="column">
+        <div class="column_title">
+            <div class="column_title_left"></div>
+            <p>ETHERNET Status Table:</p>
+            <div class="column_title_right"></div>
+        </div>
+        <div class="data_common data_vertical">
+            <table>
+                <tr>
+                    <th width="33%">Select</th>
+                    <th width="33%">Port</th>
+                    <th>Link Mode</th>
+                </tr>
+                <VWS_FUNCTION  (void*)showLanLinkModeTable(); >
+            </table>
+            <input type="hidden" value="Send" name="submit.htm?tcpiplan.htm">
+        </div>
+    </div>
+    </form>
+    <div class="data_common data_common_notitle">
+        <table>
+            <form action="form2macac.cgi" method=POST name="macac">
+            <tr>
+                <th width="30%">MAC Address Control:</th>
+                <td>
+                    <VWS_FUNCTION (void*)ShowMacAddrControlInterface();>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <input class="inner_btn" type="submit" value="Apply Changes" onClick="return macAcChanges()">   
+                </td>
+                <td></td>
+            </tr>
+            <input type="hidden" value="Send" name="submit.htm?tcpiplan.htm">
+            </form>
+            <form action="form2macacadd.cgi" method=POST name="macacadd">
+            <tr>
+                 <th>New MAC Address:</th>
+                 <td>
+                    <input type="text" name=newmac size=17 maxlength=17 >
+                    <input class="inner_btn" type="submit" value="Add" onClick="return checkMac(document.macacadd.newmac)">
+                 </td>
+            </tr>
+            <input type="hidden" value="Send" name="submit.htm?tcpiplan.htm">
+            </form>
+        </table>
+    </div>
+    <form action="form2macacDel.cgi" method=POST name="delmacac">
+    <div class="column clearfix">
+        <div class="column_title">
+            <div class="column_title_left"></div>
+            <p> Current Allowed MAC Address Table:</p>
+            <div class="column_title_right"></div>
+         </div>
+         <div class="data_common data_vertical">
+            <table>
+                 <tr>
+                     <th width="50%">MAC Addr</th>
+                     <th>Action</th>
+                 </tr>
+                 <VWS_FUNCTION (void*)ShowAllowedMacAddrTable();>
+            </table>
+            <input type="hidden" name="MacEntryDel" value ="0"> 
+            <input type="hidden" name="curTblNum" value=
+            <VWS_FUNCTION (void*)ShowEntriesNumInMacAllowList();>
+            >
+            <input type="hidden" value="Send" name="submit.htm?tcpiplan.htm">
+         </div>
+    </div>
+    </form>
+</body>
+</html>
+#else
+<body>
+    <div class="intro_main ">
+        <p class="intro_title">LAN Interface Setup</p>
+        <p class="intro_content">This page is used to configure the LAN interface of your ADSL Router. Here you may change the setting for IP addresss, subnet mask, etc.. </p>
+    </div>
+<form action="form2lansetup.cgi" method=POST name="tcpip">
+<div class="data_common data_common_notitle">
+	<table>
+		<tr>
+			<th width="30%">Interface Name:</th>
+                <td>Ethernet1</td>
+		</tr>
+		<tr>
+			<th>IP Address:</th>
+			<VWS_COMMENTS> <td><input type="text" name="ip" size="15" maxlength="15" value=192.168.1.254></td></VWS_COMMENTS>
+			<td><input type="text" name="ip" size="15" maxlength="15" value="
+			<VWS_SCREEN (char*) xscrnLanIPAddr[];>
+			"></td>
+		</tr>
+		<tr>
+			<th>Subnet Mask:</th>
+			<VWS_COMMENTS> <td><input type="text" name="mask" size="15" maxlength="15" value="255.255.255.0"></td></VWS_COMMENTS>
+			<td><input type="text" name="mask" size="15" maxlength="15" value="
+			<VWS_SCREEN (char*) xscrnLanSubnetMask[];>
+			"></td>
+		</tr>
+	</table>
+</div>
+<VWS_FUNCTION (void*)lansetting();>  
+
+<script>
+<VWS_FUNCTION   (void*)laninitpage();>
+</script>
+<div class="btn_ctl">
+	<VWS_COMMENTS> <input class="link_bg" type="submit" value="Apply Changes" name="submit.htm?tcpiplan.htm" onClick="return saveChanges()"></VWS_COMMENTS>
+	<input class="link_bg" type="submit" value="Apply Changes" onClick="return saveChanges()">
+	<VWS_COMMENTS> <input class="link_bg" type="reset" value="Undo" name="reset" onClick="resetClick()"></VWS_COMMENTS>
+	<VWS_COMMENTS> <input class="link_bg" type="hidden" value="/tcpiplan.asp" name="submit-url"></VWS_COMMENTS>
+	<input class="link_bg" type="hidden" value="Send" name="submit.htm?tcpiplan.htm">	
+</div>
+</form>
+<form action="form2macac.cgi" method=POST name="macac">
+<div class="data_common data_common_notitle">
+	<table>
+		<tr>
+			<th width="30%">MAC Address Control:</th>
+			<th>
+			<VWS_FUNCTION (void*)ShowMacAddrControlInterface();>
+			</th>
+		</tr>
+		<tr>
+			<td colspan="2"><input class="inner_btn" type="submit" value="Apply Changes" onClick="return macAcChanges()">
+			</td>
+		</tr>
+	</table>
+</div>
+<input type="hidden" value="Send" name="submit.htm?tcpiplan.htm">
+</form>
+<form action="form2macacadd.cgi" method=POST name="macacadd">
+<div class="data_common data_common_notitle">
+	<table>
+		<tr>
+			<th width=30%>New MAC Address:</th>
+			<td>
+				<input type="text" name=newmac size=17 maxlength=17 >
+				<input class="inner_btn" type="submit" value="Add" onClick="return checkMac(document.macacadd.newmac)">
+			</td>
+		</tr>
+	</table>
+</div>
+<input type="hidden" value="Send" name="submit.htm?tcpiplan.htm">
+</form>
+
+
+<form action="form2macacDel.cgi" method=POST name="delmacac">
+<div class="column">
+	<div class="column_title">
+		<div class="column_title_left"></div>
+		<p>Current Allowed MAC Address Table:</p>
+		<div class="column_title_right"></div>
+	</div>
+	<div class="data_common data_vertical">
+		<table>
+			<tr>
+				<th width="50%">MAC Addr</th>
+				<th>Action</th>
+			</tr>
+			<VWS_FUNCTION (void*)ShowAllowedMacAddrTable();>	
+		</table>
+	</div>
+	<input type="hidden" name="MacEntryDel" value ="0"> 
+	<input type="hidden" name="curTblNum" value=
+	<VWS_FUNCTION (void*)ShowEntriesNumInMacAllowList();>
+	>
+	<input type="hidden" value="Send" name="submit.htm?tcpiplan.htm">
+</div>
+</form>
+
+</blockquote>
+</body>
+</html>
+#endif
+#else
+#if defined(CONFIG_LAN_LINKMODE_WEB)
+<body>
+    <div class="intro_main ">
+        <p class="intro_title">LAN Interface Setup</p>
+        <p class="intro_content">     This page is used to configure the LAN interface of your ADSL Router.
+    Here you may change the setting for IP addresss, subnet mask, etc..</p>
+    </div>
+<form action="form2lansetup.cgi" method=POST name="tcpip">
+<div class="data_common data_common_notitle">
+	<table>
+		<tr>
+			<th width="30%">Interface Name:</th>
+			<VWS_COMMENTS>   <th>br0</th>  </VWS_COMMENTS>
+			<th>Ethernet1</th>
+		</tr>
+		<tr>
+			<th width="30%">IP Address:</th>
+			<VWS_COMMENTS>    <td><input type="text" name="ip" size="15" maxlength="15" value=192.168.1.254></td></VWS_COMMENTS>
+			<td width="70%"><input type="text" name="ip" size="15" maxlength="15" value="
+			<VWS_SCREEN (char*) xscrnLanIPAddr[];>
+			"></td>
+		</tr>
+		<tr>
+			<th width="30%">Subnet Mask:</th>
+			<VWS_COMMENTS>      <td width="70%"><input type="text" name="mask" size="15" maxlength="15" value="255.255.255.0"></td></VWS_COMMENTS>
+			<td><input type="text" name="mask" size="15" maxlength="15" value="
+			<VWS_SCREEN (char*) xscrnLanSubnetMask[];>
+			"></td>
+		</tr>
+	</table>
+</div>
+<VWS_FUNCTION (void*)lansetting();>
+
+<script>
+<VWS_FUNCTION   (void*)laninitpage();>
+</script>
+<div class="btn_ctl">
+	<VWS_COMMENTS>      <input class="link_bg" type="submit" value="Apply Changes" name="submit.htm?tcpiplan.htm" onClick="return saveChanges()"></VWS_COMMENTS>
+    <input class="link_bg" type="submit" value="Apply Changes" onClick="return saveChanges()">
+	<VWS_COMMENTS>   <input class="link_bg" type="reset" value="Undo" name="reset" onClick="resetClick()"></VWS_COMMENTS>
+	<VWS_COMMENTS>      <input class="link_bg" type="hidden" value="/tcpiplan.asp" name="submit-url"></VWS_COMMENTS>
+    <input class="link_bg" type="hidden" value="Send" name="submit.htm?tcpiplan.htm">	
+</div>
+</form>
+
+
+
+<form action="form2lanlinkmode.cgi" method=POST name="linkmode">
+<div class="data_common data_common_notitle">
+	<table>
+		<tr>
+			<th width="30%">LAN Port:</th>
+			<td>
+			<select size="1" name="lanport">
+			<VWS_FUNCTION  (void*)showLanPortTable(); >
+			</select>
+			</td>
+		</tr>
+
+		<tr>
+			<th width="30%">Link Speed/Duplex Mode:</th>
+			<td width="40%">
+			<select size="1" name="linkmode">
+			<VWS_FUNCTION  (void*)showLinkModeTable(); >
+			</select>
+			</td> 
+		</tr>
+	</table> 
+ </div>
+ <div class="btn_ctl">
+	<input class="link_bg" type="submit" value="Modify" name="modify" onClick="return modifyClick()" >
+ </div>
+<div class="column">
+	<div class="column_title">
+		<div class="column_title_left"></div>
+		<p>ETHERNET Status Table:</p>
+		<div class="column_title_right"></div>
+	</div>
+	<div class="data_common data_vertical">
+		<table>
+			<tr>
+				<th width="30%">Select</th>
+				<th>Port</th>
+				<th>Link Mode</th>
+			</tr>
+			<VWS_FUNCTION  (void*)showLanLinkModeTable(); >
+		</table>
+	</div>
+</div>
+<input type="hidden" value="Send" name="submit.htm?tcpiplan.htm">
+</form>
+</body>
+</html>
+#else
+
+<body>
+    <div class="intro_main ">
+        <p class="intro_title">LAN Interface Setup</p>
+        <p class="intro_content">This page is used to configure the LAN interface of your ADSL Router.
+		Here you may change the setting for IP addresss, subnet mask, etc..</p>
+    </div>
+<form action="form2lansetup.cgi" method=POST name="tcpip">
+<div class="data_common data_common_notitle">
+	<table>
+		<tr>
+			<th width="30%">Interface Name:</th>
+			<VWS_COMMENTS>      <th width="40%">br0</th></VWS_COMMENTS>
+			<td width="40%"><b>Ethernet1</b></td>
+		</tr>
+		<tr>
+			<th>IP Address:</th>
+			<VWS_COMMENTS>      <td width="70%"><input type="text" name="ip" size="15" maxlength="15" value=192.168.1.254></td></VWS_COMMENTS>
+			<td><input type="text" name="ip" size="15" maxlength="15" value="
+			<VWS_SCREEN (char*) xscrnLanIPAddr[];>
+			"></td>
+		</tr>
+		<tr>
+			<th>Subnet Mask:</th>
+			<VWS_COMMENTS> <td><input type="text" name="mask" size="15" maxlength="15" value="255.255.255.0"></td></VWS_COMMENTS>
+			<td><input type="text" name="mask" size="15" maxlength="15" value="
+			<VWS_SCREEN (char*) xscrnLanSubnetMask[];>
+			"></td>
+		</tr>
+	</table>
+</div>
+<VWS_FUNCTION (void*)lansetting();>
+  
+<script>
+<VWS_FUNCTION   (void*)laninitpage();>
+</script>
+<div class="btn_ctl">
+	<VWS_COMMENTS>      <input class="link_bg" type="submit" value="Apply Changes" name="submit.htm?tcpiplan.htm" onClick="return saveChanges()"></VWS_COMMENTS>
+	<input class="link_bg" type="submit" value="Apply Changes" onClick="return saveChanges()">
+	<VWS_COMMENTS>   <input class="link_bg" type="reset" value="Undo" name="reset" onClick="resetClick()"></VWS_COMMENTS>
+	<VWS_COMMENTS>      <input class="link_bg" type="hidden" value="/tcpiplan.asp" name="submit-url"></VWS_COMMENTS>
+	<input class="link_bg" type="hidden" value="Send" name="submit.htm?tcpiplan.htm">
+</div>
+</form>
+
+</blockquote>
+</body>
+
+</html>
+#endif
+#endif

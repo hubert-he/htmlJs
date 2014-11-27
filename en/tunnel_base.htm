@@ -1,0 +1,349 @@
+<VWS_FUNCTION (void*)SendWebMetaStr();>
+<VWS_FUNCTION (void*)SendWebCssStr();>
+<title>Tunnel Configuration</title>
+</head>
+    	<script>
+ var ip6flag;
+ var ip4flag;
+<VWS_FUNCTION (void*)Ipv6connectionflag();>
+<VWS_FUNCTION (void*)Ipv4connectionflag();>
+#ifdef CONFIG_IPV6_STF    	
+        function addClickstf() {
+            with (document.formStfTunnel) {
+                if (enablestf.checked == true) {
+                    if(ip6flag){
+				alert("Please make sure there is only ipv4 wan connection!");
+				return false;
+                    }
+                    if (interfacestf.value == "") {
+                        alert("Prefix select a wan interface!");
+                        return false;
+                    }
+                    if (modestf.value == "0") {//6to4
+                        if (relayip.value) {
+                            if (!checkIP(relayip)) {
+                                return false;
+                            }
+                        }else{
+				alert("Relay ip can't be empty!");
+				return false;
+                        }
+                    }
+#ifdef CONFIG_IPV6_6RD
+                    else { //6rd
+                        if (mode6rd.value == "1") {//manual
+                            if (prefix_6rd.value == "") {
+                                alert("Prefix can not be empty!");
+                                return false;
+                            }
+                            if (prefixlen_6rd.value == "") {
+                                alert("Prefix length can not be empty!");
+                                return false;
+                            }
+                            if (masklen_6rd.value == "") {
+                                alert("Mask length can not be empty!");
+                                return false;
+                            }
+                            if (relayip_6rd.value == "") {
+                                alert("Relay ip can not be empty!");
+                                return false;
+                            }
+                            if (!isUnicastIpv6Address(prefix_6rd.value)) {
+                                alert("Please input valid ipv6 address!");
+                                return false;
+                            }
+                            prefixlen = parseInt(prefixlen_6rd.value, 10);
+                            if (prefixlen <= 0 || prefixlen > 64) {
+                                alert("Prefix length should be between 1 and 64!");
+                                return false;
+                            }
+                            masklen = parseInt(masklen_6rd.value, 10);
+                            if (masklen < 0 || masklen > 32) {
+                                alert("Mask length should be between 0 and 32!");
+                                return false;
+                            }
+                            if (!checkIP(relayip_6rd)) {
+                                return false;
+                            }
+                        }
+
+                    }
+#endif
+                }
+            }
+            return true;
+        }
+#endif
+#ifdef CONFIG_IPV6_DSLITE
+        function addClickds() {
+            with (document.formDsliteTunnel) {
+                if (enabledslite.checked == true) {
+                    if(ip4flag){
+				alert("Please make sure there is only ipv6 wan connection!");
+				return false;
+                    }
+                     if (interfaceds.value == "") {
+                            alert("Please select WAN interface!");
+                            return false;
+                        }
+                    if(modedslite.value=="1"){
+				if(AFTRaddr.value==""){
+					alert("AFTR value can't be empty!\n");
+					return false;
+				}
+                    }
+                }
+            }
+            return true;
+        }
+#endif
+        function initTunnel() {
+#ifdef CONFIG_IPV6_STF
+            enableChange();
+#endif
+#ifdef CONFIG_IPV6_DSLITE
+            enabledsChange();
+#endif
+        }
+#ifdef CONFIG_IPV6_STF
+        function enableChange() {
+            with (document.formStfTunnel) {
+                if (enablestf.checked == false) {
+                    interfacestf.disabled = true;
+                    modestf.disabled = true;
+                    if (document.getElementById("config6to4"))
+                        document.getElementById("config6to4").style.display = "none";
+#ifdef CONFIG_IPV6_6RD
+                    if (document.getElementById("config6rd"))
+                        document.getElementById("config6rd").style.display = "none";
+#endif
+                } else {
+                    interfacestf.disabled = false;
+                    modestf.disabled = false;
+
+                    modeChange();
+                }
+            }
+
+        }
+
+        function modeChange() {
+            with (document.formStfTunnel) {
+                if (modestf.value == "0") {
+                    if (document.getElementById("config6to4"))
+                        document.getElementById("config6to4").style.display = "";
+#ifdef CONFIG_IPV6_6RD
+                    if (document.getElementById("config6rd"))
+                        document.getElementById("config6rd").style.display = "none";
+#endif
+                } else {
+                    if (document.getElementById("config6to4"))
+                        document.getElementById("config6to4").style.display = "none";
+#ifdef CONFIG_IPV6_6RD 
+                    if (document.getElementById("config6rd"))
+                        document.getElementById("config6rd").style.display = "";
+                    mode6rdChange();
+#endif
+                }
+            }
+
+        }
+#ifdef CONFIG_IPV6_6RD        
+        function mode6rdChange() {
+            with (document.formStfTunnel) {
+                if (mode6rd.value == "0") {
+                    if (document.getElementById("relay6rd"))
+                        document.getElementById("relay6rd").style.display = "none";
+                    if (document.getElementById("prefix6rd"))
+                        document.getElementById("prefix6rd").style.display = "none";
+                    if (document.getElementById("masklen6rd"))
+                        document.getElementById("masklen6rd").style.display = "none";
+                } else {
+                    if (document.getElementById("relay6rd"))
+                        document.getElementById("relay6rd").style.display = "";
+                    if (document.getElementById("prefix6rd"))
+                        document.getElementById("prefix6rd").style.display = "";
+                    if (document.getElementById("masklen6rd"))
+                        document.getElementById("masklen6rd").style.display = "";
+                }
+            }
+        }
+#endif
+#endif
+#ifdef CONFIG_IPV6_DSLITE
+        function dsmodeChange() {
+            with (document.formDsliteTunnel) {
+                if (modedslite.value == "0") {
+                    if (document.getElementById("configdsaddr"))
+                        document.getElementById("configdsaddr").style.display = "none";
+                } else {
+                    if (document.getElementById("configdsaddr"))
+                        document.getElementById("configdsaddr").style.display = "";
+                }
+            }
+
+        }
+
+        function enabledsChange() {
+            with (document.formDsliteTunnel) {
+                if (enabledslite.checked == false) {
+                    modedslite.disabled = true;
+                    interfaceds.disabled = true;
+                    if (document.getElementById("configdsaddr"))
+                        document.getElementById("configdsaddr").style.display = "none";
+                } else {
+                    modedslite.disabled = false;
+		      interfaceds.disabled = false;
+                    dsmodeChange();
+                }
+            }
+
+        }
+#endif
+	</script>
+</head>
+<body>
+	<div class="intro_main ">
+		<p class="intro_title">Tunnel Configuration</p>
+		<p class="intro_content"> This page is used to configure v6inv4 tunnel or v4inv6 tunnel.</p>
+	</div>
+#ifdef CONFIG_IPV6_STF
+	<form action="form2stf.cgi" method=POST name="formStfTunnel">
+	<div class="data_common data_common_notitle">
+	<table>
+            <tr>
+                <th colspan="2">V6inV4 Tunnel:</th>
+            </tr>
+            <tr>
+                <th width="30%">Enable:</th>
+                <td>
+                    <input type="checkbox" onclick="enableChange()" name="enablestf"  
+                    <VWS_SCREEN (char*) xscrnstfEnabled[];> 
+                    onClick="enableChange()">
+                </td>
+            </tr>
+            <tr>
+                <th>Interface:</th>
+                <td>
+                    <VWS_SCREEN (char*) xscrnstfInterface[];>
+                    (Only support IPv4 Wan Interface)
+                </td>
+            </tr>
+            <tr>
+                <th>Mode:</th>
+                <td>
+                    <select onchange="modeChange()" width="30" name="modestf">
+                    <VWS_SCREEN (char*) xscrnstfMode[];>
+                    </select>
+                </td>
+            </tr>
+	</table>
+	</div>
+    	<div  class="data_common data_common_notitle" id="config6to4" style="display:none" >
+		<table>
+		<tr>
+		  <th width="30%">Relay Router:</th>
+		  <td><INPUT TYPE="TEXT" NAME="relayip" SIZE="15" MAXLENGTH="15"  VALUE = 
+		  <VWS_SCREEN (char*) xscrn6to4Relay[];> 
+		  ></td>
+		</tr>
+		</table>
+    	</div>
+#ifdef CONFIG_IPV6_6RD
+    	<div  class="data_common data_common_notitle" id="config6rd" style="display:none">
+		<table>
+		<tr>
+			<th width="30%">6rd Mode:</th>
+			<td>
+			<SELECT NAME="mode6rd" WIDTH=30 onChange="mode6rdChange()">
+			<VWS_SCREEN (char*) xscrn6rdMode[];>
+			</SELECT>
+			</td>
+		</tr>
+		<tr id="prefix6rd" style="display:none">
+		  <th>6rd Prefix:</th>
+		  <td><INPUT TYPE="TEXT" NAME="prefix_6rd" SIZE="32" MAXLENGTH="64" VALUE = 
+		  <VWS_SCREEN (char*) xscrn6rdPrefix[];>
+		  > / <input type='text' size="5" name="prefixlen_6rd" VALUE = 
+		  <VWS_SCREEN (char*) xscrn6rdPrefixlen[];>
+		  ></td>
+		</tr>
+		<tr id="masklen6rd" style="display:none">
+		  <th>6rd Ipv4 Mask Length:</th>
+		  <td><INPUT TYPE="TEXT" NAME="masklen_6rd" SIZE="5" MAXLENGTH="5" VALUE = 
+		  <VWS_SCREEN (char*) xscrn6rdMasklen[];> 
+		  ></td>
+		 </tr>
+		<tr id="relay6rd" style="display:none">
+		  <th>Relay Router:</th>
+		  <td><INPUT TYPE="TEXT" NAME="relayip_6rd" SIZE="15" MAXLENGTH="15" VALUE = 
+		  <VWS_SCREEN (char*) xscrn6rdRelay[];>
+		  ></td>
+		</tr>
+		</table>
+	</div>
+#endif
+	<div class="btn_ctl">
+	        <input class="link_bg" type="submit" onClick="return addClickstf()" value="Apply Changes">
+	        <input type="hidden" name="submit.htm?tunnel.htm" VALUE="Send">
+	</div>
+	</form>
+#endif
+	<br>
+#ifdef CONFIG_IPV6_DSLITE
+	<form action="form2dslite.cgi" method=POST name="formDsliteTunnel">
+	<div class="data_common data_common_notitle" id="dslite" style="display:block">
+		<table>
+			<tr>
+				<th colspan="2">DS-Lite Tunnel:</th>
+			</tr>
+			<tr>
+				<th width="30%">Enable:</th>
+				<td>
+					<input type="checkbox" name="enabledslite"
+					<VWS_SCREEN (char*) xscrndsEnabled[];> 
+					onClick="enabledsChange()">
+				</td>
+			</tr>
+			<tr>
+				<th>Interface:</th>
+				<td>
+					<VWS_SCREEN (char*) xscrndsInterface[];>
+					(Only support IPv6 Wan Interface)
+				</td>
+			</tr>
+			<tr>
+				<th>Mode:</th>
+				<td>
+					<SELECT NAME="modedslite" WIDTH=30 onChange="dsmodeChange()">
+						<VWS_SCREEN (char*) xscrndsMode[];>
+					</SELECT>
+				</td>
+			</tr>
+		</table>
+	</div>
+	<div class="data_common data_common_notitle" id="configdsaddr" style="display:none">
+		<table>
+			<tr>
+				<th width="30%">AFTR Name Or Address:</th>
+				<td>
+					<INPUT TYPE="TEXT" NAME="AFTRaddr" SIZE="20" MAXLENGTH="64"  
+					<VWS_SCREEN (char*) xscrndsAFTRName[];> 
+					>
+				</td>
+			</tr>
+		</table>
+	</div>
+	<div class="btn_ctl">
+		<input class="link_bg" type="submit" value="Apply Changes" onClick="return addClickds()">&nbsp;&nbsp;
+		<input type="hidden" name="submit.htm?tunnel.htm" VALUE="Send">
+	</div>
+     </form>
+#endif
+     <script language="JavaScript">
+	initTunnel();
+	</script>
+</body>
+</html>
+
+

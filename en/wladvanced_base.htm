@@ -1,0 +1,486 @@
+<VWS_FUNCTION (void*)SendWebMetaStr();>
+<VWS_FUNCTION (void*)SendWebCssStr();>
+	<title>Wireless Advanced Setting</title>
+#if defined(WLAN_11N)
+<SCRIPT language="JavaScript">
+	<VWS_FUNCTION (void*)SendItemHiddenStyle();>
+	</SCRIPT>
+    <SCRIPT>
+    var band;
+#else
+	<SCRIPT>
+#endif
+	function validateNum(str)
+	{
+	  for (var i=0; i<str.length; i++) {
+		if ( !(str.charAt(i) >='0' && str.charAt(i) <= '9')) {
+			alert("Invalid value. It should be in decimal number (0-9).");
+			return false;
+		}
+	  }
+	  return true;
+	}
+	function saveChanges()
+	{
+	  if ( validateNum(document.advanceSetup.fragThreshold.value) == 0 ) {
+		document.advanceSetup.fragThreshold.focus();
+		return false;
+	  }
+	  num = parseInt(document.advanceSetup.fragThreshold.value);
+	  if (document.advanceSetup.fragThreshold.value == "" || num < 256 || num > 2346) {
+		alert('Invalid value of Fragment Threshold. Input value should be between 256-2346 in decimal.');
+		document.advanceSetup.fragThreshold.focus();
+		return false;
+	  }
+
+	  if ( validateNum(document.advanceSetup.rtsThreshold.value) == 0 ) {
+		document.advanceSetup.rtsThreshold.focus();
+		return false;
+	  }
+	  num = parseInt(document.advanceSetup.rtsThreshold.value);
+	  if (document.advanceSetup.rtsThreshold.value=="" || num > 2347) {
+		alert('Invalid value of RTS Threshold. Input value should be between 0-2347 in decimal.');
+		document.advanceSetup.rtsThreshold.focus();
+		return false;
+	  }
+
+	  if ( validateNum(document.advanceSetup.beaconInterval.value) == 0 ) {
+		document.advanceSetup.beaconInterval.focus();
+		return false;
+	  }
+	  num = parseInt(document.advanceSetup.beaconInterval.value);
+	  if (document.advanceSetup.beaconInterval.value=="" || num < 20 || num > 1024) {
+		alert('Invalid value of Beacon Interval. Input value should be between 20-1024 in decimal.');
+		document.advanceSetup.beaconInterval.focus();
+		return false;
+
+	  }
+	  num = parseInt(document.advanceSetup.dtimInterval.value);
+	  if (document.advanceSetup.dtimInterval.value=="" || num < 1 || num > 255) {
+		alert('Invalid value of DTIM. Input value should be between 1-255 in decimal.');
+		document.advanceSetup.dtimInterval.focus();
+		return false;
+
+	  }
+
+	  if (document.advanceSetup.checkWPS2.value == 1){
+		if (document.advanceSetup.hiddenSSID[1].checked == 1){
+		  if (confirm("If 'Broadcast SSID' is disable, the WPS would be disabled.\nDo you sure?") == 0){
+			return false;
+		  }
+		}
+	  }
+
+	  return true;
+	}
+
+	function disableRadioGroup (radioArrOrButton)
+	{
+	  if (radioArrOrButton.type && radioArrOrButton.type == "radio") {
+		var radioButton = radioArrOrButton;
+		var radioArray = radioButton.form[radioButton.name];
+	  }
+	  else
+		var radioArray = radioArrOrButton;
+		radioArray.disabled = true;
+		for (var b = 0; b < radioArray.length; b++) {
+		if (radioArray[b].checked) {
+			radioArray.checkedElement = radioArray[b];
+			break;
+		}
+	  }
+	  for (var b = 0; b < radioArray.length; b++) {
+		radioArray[b].disabled = true;
+		radioArray[b].checkedElement = radioArray.checkedElement;
+	  }
+	}
+
+	function enableRadioGroup (radioArrOrButton)
+	{
+	  if (radioArrOrButton.type && radioArrOrButton.type == "radio") {
+		var radioButton = radioArrOrButton;
+		var radioArray = radioButton.form[radioButton.name];
+	  }
+	  else
+		var radioArray = radioArrOrButton;
+
+	  radioArray.disabled = false;
+	  radioArray.checkedElement = null;
+	  for (var b = 0; b < radioArray.length; b++) {
+		radioArray[b].disabled = false;
+		radioArray[b].checkedElement = null;
+	  }
+	}
+#if defined(WLAN_11N)
+function updateState() {
+            if (document.advanceSetup.wlanDisabled.value == "ON") {
+                disableRadioGroup(document.advanceSetup.authType);
+                disableTextField(document.advanceSetup.fragThreshold);
+                disableTextField(document.advanceSetup.rtsThreshold);
+                disableTextField(document.advanceSetup.beaconInterval);
+                disableTextField(document.advanceSetup.dtimInterval);
+                disableTextField(document.advanceSetup.txRate);
+                disableRadioGroup(document.advanceSetup.preamble);
+                disableRadioGroup(document.advanceSetup.hiddenSSID);
+                disableRadioGroup(document.advanceSetup.block);
+                disableRadioGroup(document.advanceSetup.BlockEth2Wir);
+                disableRadioGroup(document.advanceSetup.mc2uc);
+                disableRadioGroup(document.advanceSetup.aggregation);
+                disableRadioGroup(document.advanceSetup.shortGI);
+                disableButton(document.advanceSetup.save);
+            }
+
+            if (band & 8) {
+                if (skipItem == '0')
+                    document.getElementById("advSetup").rows[11].style.display = "";
+                document.getElementById("advSetup").rows[12].style.display = "";
+            }
+            else {
+                if (skipItem == '0')
+                    document.getElementById("advSetup").rows[11].style.display = "none";
+                document.getElementById("advSetup").rows[12].style.display = "none";
+            }
+        }
+    </SCRIPT>
+</head>
+<body>
+	<div class="intro_main ">
+		<p class="intro_title">Wireless Advanced Settings</p>
+		<p class="intro_content">These settings are only for more technically advanced users who have a sufficient knowledge about wireless LAN. These settings should not be changed unless you know what effect the changes will have on your Access Point. </p>
+	</div>
+	<form action="form2AdvanceSetup.cgi" method=POST name="advanceSetup">
+	<input type=hidden name="wlanDisabled" 
+	<VWS_SCREEN (char*) webShowWlanDISABLED[];>
+	>
+	<div class="data_common data_common_notitle">
+        <table id="advSetup">
+			<tr>
+				<th width="30%">Authentication Type:</th>
+				<td>
+					<input type="radio" value="0" name="authType">
+					Open System&nbsp;&nbsp;
+					<input type="radio" value="1" name="authType">
+					Shared Key&nbsp;&nbsp;
+					<input type="radio" value="2" name="authType">
+					Auto
+				</td>
+			</tr>
+            <tr>
+				<th>Fragment Threshold:</th>
+				<td><input type="text" maxlength="4" size="10" name="fragThreshold" 
+					<VWS_SCREEN (char*) webShowWlanFragThreshold[];>
+					>(256-2346)
+				</td>
+            </tr>
+            <tr>
+				<th>RTS Threshold:</th>
+                <td><input type="text" maxlength="4" size="10" name="rtsThreshold" 
+	                	<VWS_SCREEN (char*) webShowWlanRtsThreshold[];>
+	                	>(0-2347)
+                </td>
+			</tr>
+			<tr>
+                	<th>Beacon Interval:</th>
+                	<td><input type="text" maxlength="4" size="10" name="beaconInterval" 
+                		<VWS_SCREEN (char*) webShowWlanBeaconInterval[];>
+                		>(20-1024 ms)
+                	</td>
+			</tr>
+			<tr>
+                	<th>DTIM Interval:</th>
+                	<td><input type="text" maxlength="3" size="10" name="dtimInterval" 
+                		<VWS_SCREEN (char*) webShowWlanDTIM_PERIOD[];>
+                		>(1-255)
+                	</td>
+			</tr>
+			<tr style="
+			<VWS_FUNCTION (void*)SendDivHiddenStyle();>
+			">
+                <th>Data Rate:</th>
+				<td><select name="txRate" size="1">
+                		<SCRIPT>
+				<VWS_SCREEN (char*) webShowWlanAdvanInit1[];>
+		                rate_mask = [15,1,1,1,1,2,2,2,2,2,2,2,2,4,4,4,4,4,4,4,4,8,8,8,8,8,8,8,8];
+		                rate_name =["Auto","1M","2M","5.5M","11M","6M","9M","12M","18M","24M","36M","48M","54M", "MCS0", "MCS1",
+		                "MCS2", "MCS3", "MCS4", "MCS5", "MCS6", "MCS7", "MCS8", "MCS9", "MCS10", "MCS11", "MCS12", "MCS13", "MCS14", "MCS15"];
+		                mask=0;
+		                if (auto)
+		                    txrate=0;
+			            if (band & 1)
+				            mask |= 1;
+			            if ((band&2) || (band&4))
+				            mask |= 2;
+			            if (band & 8) {
+				            if (rf_num == 2)
+					            mask |= 12;	
+				            else
+					            mask |= 4;
+			            }
+			            defidx=0;
+			            for (idx=0, i=0; i<=28; i++) {
+				            if (rate_mask[i] & mask) {
+					            if (i == 0)
+						            rate = 0;
+					            else
+						            rate = (1 << (i-1));
+					            if (txrate == rate)
+						            defidx = idx;
+					            document.write('<option value="' + i + '">' + rate_name[i] + '\n');
+					            idx++;
+				            }
+			            }
+			            document.advanceSetup.txRate.selectedIndex=defidx;
+		                </SCRIPT>
+                		</select>
+                </td>
+			</tr>
+			<tr>
+                <th>Preamble Type:</th>
+                	<td><input type="radio" value="0" name="preamble">
+                	Long Preamble&nbsp;&nbsp;
+				<input type="radio" value="1" name="preamble">
+                	Short Preamble
+                </td>
+            </tr>
+			<tr>
+                <th>Broadcast SSID:</th>
+                <td><input type="radio" value="0" name="hiddenSSID">
+                	Enabled&nbsp;&nbsp;
+                		<input type="radio" value="1" name="hiddenSSID">
+                	Disabled
+                </td>
+			</tr>
+			<tr style="
+			<VWS_FUNCTION (void*)SendDivHiddenStyle();>
+			">
+                <th>Relay Blocking:</th>
+                <td><input type="radio" value="0" name="block">
+				Enabled&nbsp;&nbsp;
+                		<input type="radio" value="1" name="block">
+                		Disabled
+                </td>
+			</tr>
+			<tr style="
+			<VWS_FUNCTION (void*)SendDivHiddenStyle();>
+			">
+                <th>Ethernet to Wireless Blocking:</th>
+                <td>
+					<input type="radio" value="1" name="BlockEth2Wir">
+                	Enabled&nbsp;&nbsp;
+					<input type="radio" value="0" name="BlockEth2Wir">
+                	Disabled
+				</td>
+			</tr>
+			<tr style="
+			<VWS_FUNCTION (void*)SendDivHiddenStyle();>
+			">
+                <th>Wifi Multicast to Unicast:</th>
+                <td><input type="radio" value="1" name="mc2uc">
+                	Enabled&nbsp;&nbsp;
+                		<input type="radio" value="0" name="mc2uc">
+                	Disabled
+                </td>
+			</tr>
+			<tr style="
+			<VWS_FUNCTION (void*)SendDivHiddenStyle();>
+			">
+                <th>Aggregation:</th>
+                <td><input type="radio" value="1" name="aggregation">
+				Enabled&nbsp;&nbsp;
+                		<input type="radio" value="0" name="aggregation">
+                		Disabled
+                </td>
+			</tr>
+			<tr>
+				<th>Short GI:</th>
+                <td><input type="radio" value="1" name="shortGI">
+	                	Enabled&nbsp;&nbsp;
+	                	<input type="radio" value="0" name="shortGI">
+	                	Disabled
+                </td>
+			</tr>
+		</table>
+	</div>
+	<div class="adsl clearfix">
+        <VWS_SCREEN (char*) webShowWPS2Check[];>
+        <div class="btn_ctls">
+			<input class="link_bg" type="submit" value="Apply Changes" name="save" onClick="return saveChanges()">
+			<INPUT TYPE="hidden" NAME="submit.htm?wladvanced.htm" VALUE="Send">
+        </div>
+	</div>
+	<script>
+  	<VWS_SCREEN (char*) webShowWlanAdvanInit2[];>
+	updateState();
+	</script>
+	</form>
+</body>
+</html>
+#else
+	function updateState()
+	{
+	  if (document.advanceSetup.wlanDisabled.value == "ON") {
+		disableRadioGroup(document.advanceSetup.authType);
+		disableTextField(document.advanceSetup.fragThreshold);
+		disableTextField(document.advanceSetup.rtsThreshold);
+		disableTextField(document.advanceSetup.beaconInterval);
+		disableTextField(document.advanceSetup.dtimInterval);
+		disableTextField(document.advanceSetup.txRate);
+		disableRadioGroup(document.advanceSetup.preamble);
+		disableRadioGroup(document.advanceSetup.hiddenSSID);
+		disableRadioGroup(document.advanceSetup.block);
+		disableRadioGroup(document.advanceSetup.BlockEth2Wir);
+		disableRadioGroup(document.advanceSetup.mc2uc);
+		disableRadioGroup(document.advanceSetup.wmm);
+		disableButton(document.advanceSetup.save);
+	  }
+	}
+
+	</SCRIPT>
+<body>
+	<div class="intro_main ">
+		<p class="intro_title">Wireless Advanced Settings</p>
+		<p class="intro_content">These settings are only for more technically advanced users who have a sufficient
+			knowledge about wireless LAN. These settings should not be changed unless you know
+			what effect the changes will have on your Access Point. </p>
+	</div>
+	<form action="form2AdvanceSetup.cgi" method=POST name="advanceSetup">
+	<input type=hidden name="wlanDisabled" 
+	<VWS_SCREEN (char*) webShowWlanDISABLED[];>
+	>
+	<div class="data_common data_common_notitle">
+		<table>
+			<tr>
+				<th>Authentication Type:</th>
+				<td>
+					<input type="radio" name="authType" value=0 >Open System&nbsp;&nbsp;
+					<input type="radio" name="authType" value=1 >Shared Key&nbsp;&nbsp;
+					<input type="radio" name="authType" value=2 >Auto
+				</td>
+			</tr>
+			<tr>
+				<th>Fragment Threshold:</th>
+				<td>
+					<input type="text" name="fragThreshold" size="10" maxlength="4" 
+					<VWS_SCREEN (char*) webShowWlanFragThreshold[];>
+					>(256-2346)
+				</td>
+			</tr>
+			<tr>
+				<th>RTS Threshold:</th>
+				<td>
+					<input type="text" name="rtsThreshold" size="10" maxlength="4" 
+					<VWS_SCREEN (char*) webShowWlanRtsThreshold[];>
+					>(0-2347)
+				</td>
+			</tr>
+			<tr>
+				<th>Beacon Interval:</th>
+				<td>
+					<input type="text" name="beaconInterval" size="10" maxlength="4" 
+					<VWS_SCREEN (char*) webShowWlanBeaconInterval[];>
+					>(20-1024 ms)
+				</td>
+			</tr>
+			<tr>
+				<th>DTIM Interval:</th>
+				<td>
+					<input type="text" name="dtimInterval" size="10" maxlength="3" 
+					<VWS_SCREEN (char*) webShowWlanDTIM_PERIOD[];>
+					>(1-255)
+				</td>
+			</tr>
+			<tr>
+				<th>Data Rate:</th>
+				<td>
+					<select size="1" name="txRate">
+					<SCRIPT>
+						<VWS_SCREEN (char*) webShowWlanAdvanInit1[];>
+
+					rate_mask = [3,1,1,1,1,2,2,2,2,2,2,2,2];
+					rate_name =["Auto","1M","2M","5.5M","11M","6M","9M","12M","18M","24M","36M","48M","54M"];
+					mask=0;
+					if (auto)
+						txrate=0;
+					if (band & 1)
+						mask |= 1;
+					if ((band&2) || (band&4))
+						mask |= 2;
+					defidx=0;
+					for (idx=0, i=0; i<=12; i++) {
+						if (rate_mask[i] & mask) {
+							if (i == 0)
+								rate = 0;
+							else
+								rate = (1 << (i-1));
+							if (txrate == rate)
+								defidx = idx;
+							document.write('<option value="' + i + '">' + rate_name[i] + '\n');
+							idx++;
+						}
+					}
+					document.advanceSetup.txRate.selectedIndex=defidx;
+
+					</SCRIPT>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<th>Preamble Type:</th>
+				<td>
+					<input type="radio" name="preamble" value=0>Long Preamble&nbsp;&nbsp;
+					<input type="radio" name="preamble" value=1>Short Preamble
+				</td>
+			</tr>
+			<tr>
+				<th>Broadcast SSID:</th>
+				<td>
+					<input type="radio" name="hiddenSSID" value=0>Enabled&nbsp;&nbsp;
+					<input type="radio" name="hiddenSSID" value=1>Disabled
+				</td>
+			</tr>
+			<tr>
+				<th>Relay Blocking:</th>
+				<td>
+					<input type="radio" name=block value=1>Enabled&nbsp;&nbsp;
+					<input type="radio" name=block value=0>Disabled
+				</td>
+			</tr>
+			<tr>
+				<th>Ethernet to Wireless Blocking:</th>
+				<td>
+					<input type="radio" name=BlockEth2Wir value=1>Enabled&nbsp;&nbsp;
+					<input type="radio" name=BlockEth2Wir value=0>Disabled
+				</td>
+			</tr>
+			<tr>
+				<th>Wifi Multicast to Unicast:</th>
+				<td>
+					<input type="radio" name=mc2uc value=1>Enabled&nbsp;&nbsp;
+					<input type="radio" name=mc2uc value=0>Disabled
+				</td>
+			</tr>
+			<tr>
+				<th>WMM:</th>
+				<td>
+					<input type="radio" name=wmm value=1>Enabled&nbsp;&nbsp;
+					<input type="radio" name=wmm value=0>Disabled
+				</td>
+			</tr>	    
+		</table>
+	</div>
+	<div class="adsl clearfix">
+        <VWS_SCREEN (char*) webShowWPS2Check[];>
+        <div class="btn_ctls">
+			<input class="link_bg" type="submit" value="Apply Changes" name="save" onClick="return saveChanges()">&nbsp;&nbsp;
+			<INPUT TYPE="hidden" NAME="submit.htm?wladvanced.htm" VALUE="Send">
+        </div>
+	</div>
+	<script>
+  	<VWS_SCREEN (char*) webShowWlanAdvanInit2[];>
+
+	updateState();
+	</script>
+	</form>
+</body>
+</html>
+#endif

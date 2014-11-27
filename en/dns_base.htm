@@ -1,0 +1,310 @@
+<VWS_FUNCTION (void*)SendWebMetaStr();>
+<VWS_FUNCTION (void*)SendWebCssStr();>
+	<title>DNS Configuration </title>
+    <SCRIPT>
+        function autoDNSclicked() {
+            document.dns.dns1.disabled = true;
+            document.dns.dns2.disabled = true;
+            document.dns.dns3.disabled = true;
+        }
+
+        function manualDNSclicked() {
+            document.dns.dns1.disabled = false;
+            document.dns.dns2.disabled = false;
+            document.dns.dns3.disabled = false;
+        }
+
+        function getDigit(str, num) {
+            i = 1;
+            if (num != 1) {
+                while (i != num && str.length != 0) {
+                    if (str.charAt(0) == '.') {
+                        i++;
+                    }
+                    str = str.substring(1);
+                }
+                if (i != num)
+                    return -1;
+            }
+            for (i = 0; i < str.length; i++) {
+                if (str.charAt(i) == '.') {
+                    str = str.substring(0, i);
+                    break;
+                }
+            }
+            if (str.length == 0)
+                return -1;
+            d = parseInt(str, 10);
+            return d;
+        }
+
+        function validateKey(str) {
+            for (var i = 0; i < str.length; i++) {
+                if ((str.charAt(i) >= '0' && str.charAt(i) <= '9') ||
+    		(str.charAt(i) == '.'))
+                    continue;
+                return 0;
+            }
+            return 1;
+        }
+
+        function checkDigitRange(str, num, min, max) {
+            d = getDigit(str, num);
+            if (d > max || d < min)
+                return false;
+            return true;
+        }
+
+        function saveClick() {
+            if (document.dns.dnsMode[0].checked) {
+                return true;
+            }
+
+            if (document.dns.dns1.value == "") {
+                alert("Enter DNS value !");
+                document.dns.dns1.focus();
+                return false;
+            }
+
+            if (validateKey(document.dns.dns1.value) == 0) {
+                alert("Invalid DNS 1 value.");
+                document.dns.dns1.focus();
+                return false;
+            }
+
+            var dns1_str = document.dns.dns1.value;
+            var dns1_count = 0;
+            for (var dns1_i = 0; dns1_i < dns1_str.length; dns1_i++) {
+                if (dns1_str.charAt(dns1_i) == '.') {
+                    dns1_count++;
+                }
+            }
+            if (dns1_count != 3) {
+                alert("Invalid DNS 1.");
+                document.dns.dns1.focus();
+                return false;
+            }
+
+            if (!checkDigitRange(document.dns.dns1.value, 1, 0, 223)) {
+                alert('Invalid DNS 1 range in 1st digit. It should be 0-223.');
+                document.dns.dns1.focus();
+                return false;
+            }
+            if (getDigit(document.dns.dns1.value, 1) == 127) {
+                alert('Invalid DNS 1 range in 1st digit. It should not be 127.xxx.xxx.xxx.');
+                document.dns.dns1.focus();
+                return false;
+            }
+            if (!checkDigitRange(document.dns.dns1.value, 2, 0, 255)) {
+                alert('Invalid DNS 1 range in 2nd digit. It should be 0-255.');
+                document.dns.dns1.focus();
+                return false;
+            }
+            if (!checkDigitRange(document.dns.dns1.value, 3, 0, 255)) {
+                alert('Invalid DNS 1 range in 3rd digit. It should be 0-255.');
+                document.dns.dns1.focus();
+                return false;
+            }
+            if (!checkDigitRange(document.dns.dns1.value, 4, 1, 254)) {
+                alert('Invalid DNS 1 range in 4th digit. It should be 1-254.');
+                document.dns.dns1.focus();
+                return false;
+            }
+
+            if (document.dns.dns2.value == "") {
+                if (document.dns.dns3.value == "")
+                    return true;
+                else {
+                    alert("Please input the DNS2 IP");
+                    document.dns.dns2.focus();
+                    return false;
+                }
+            }
+            if (validateKey(document.dns.dns2.value) == 0) {
+                alert("Invalid DNS 2 value.");
+                document.dns.dns2.focus();
+                return false;
+            }
+
+            var dns2_str = document.dns.dns2.value;
+            var dns2_count = 0;
+            for (var dns2_i = 0; dns2_i < dns2_str.length; dns2_i++) {
+                if (dns2_str.charAt(dns2_i) == '.') {
+                    dns2_count++;
+                }
+            }
+            if (dns2_count != 3) {
+                alert("Invalid DNS 2.");
+                document.dns.dns2.focus();
+                return false;
+            }
+
+            if (!checkDigitRange(document.dns.dns2.value, 1, 0, 223)) {
+                alert('Invalid DNS 2 range in 1st digit. It should be 0-223.');
+                document.dns.dns2.focus();
+                return false;
+            }
+            if (getDigit(document.dns.dns2.value, 1) == 127) {
+                alert('Invalid DNS 2 range in 1st digit. It should not be 127.xxx.xxx.xxx.');
+                document.dns.dns2.focus();
+                return false;
+            }
+            if (!checkDigitRange(document.dns.dns2.value, 2, 0, 255)) {
+                alert('Invalid DNS 2 range in 2nd digit. It should be 0-255.');
+                document.dns.dns2.focus();
+                return false;
+            }
+            if (!checkDigitRange(document.dns.dns2.value, 3, 0, 255)) {
+                alert('Invalid DNS 2 range in 3rd digit. It should be 0-255.');
+                document.dns.dns2.focus();
+                return false;
+            }
+            if (!checkDigitRange(document.dns.dns2.value, 4, 1, 254)) {
+                alert('Invalid DNS 2 range in 4th digit. It should be 1-254.');
+                document.dns.dns2.focus();
+                return false;
+            }
+            if (document.dns.dns1.value != "" && document.dns.dns2.value != "") {
+                if (document.dns.dns1.value == document.dns.dns2.value) {
+                    alert("The DNS1 IP is equal to DNS2 IP!");
+                    return false;
+                }
+            }
+            if (document.dns.dns3.value == "") {
+                return true;
+            }
+            if (validateKey(document.dns.dns3.value) == 0) {
+                alert("Invalid DNS 3 value.");
+                document.dns.dns3.focus();
+                return false;
+            }
+
+            var dns3_str = document.dns.dns3.value;
+            var dns3_count = 0;
+            for (var dns3_i = 0; dns3_i < dns3_str.length; dns3_i++) {
+                if (dns3_str.charAt(dns3_i) == '.') {
+                    dns3_count++;
+                }
+            }
+            if (dns3_count != 3) {
+                alert("Invalid DNS 3.");
+                document.dns.dns3.focus();
+                return false;
+            }
+
+            if (!checkDigitRange(document.dns.dns3.value, 1, 0, 223)) {
+                alert('Invalid DNS 3 range in 1st digit. It should be 0-223.');
+                document.dns.dns3.focus();
+                return false;
+            }
+            if (getDigit(document.dns.dns3.value, 1) == 127) {
+                alert('Invalid DNS 3 range in 1st digit. It should not be 127.xxx.xxx.xxx.');
+                document.dns.dns3.focus();
+                return false;
+            }
+            if (!checkDigitRange(document.dns.dns3.value, 2, 0, 255)) {
+                alert('Invalid DNS 3 range in 2nd digit. It should be 0-255.');
+                document.dns.dns3.focus();
+                return false;
+            }
+            if (!checkDigitRange(document.dns.dns3.value, 3, 0, 255)) {
+                alert('Invalid DNS 3 range in 3rd digit. It should be 0-255.');
+                document.dns.dns1.focus();
+                return false;
+            }
+            if (!checkDigitRange(document.dns.dns3.value, 4, 1, 254)) {
+                alert('Invalid DNS 3 range in 4th digit. It should be 1-254.');
+                document.dns.dns1.focus();
+                return false;
+            }
+
+            if (document.dns.dns1.value != "" && document.dns.dns3.value != "") {
+                if (document.dns.dns1.value == document.dns.dns3.value) {
+                    alert("The DNS1 IP is equal to DNS3 IP!");
+                    return false;
+                }
+            }
+            if (document.dns.dns2.value != "" && document.dns.dns3.value != "") {
+                if (document.dns.dns2.value == document.dns.dns3.value) {
+                    alert("The DNS2 IP is equal to DNS3 IP!");
+                    return false;
+                }
+            }
+
+            return true;
+        }
+        function resetClick() {
+            if (initAutoDns)
+                autoDNSclicked();
+            else
+                manualDNSclicked();
+        }
+    </SCRIPT>
+</head>
+<body>
+    <div class="intro_main ">
+        <p class="intro_title">DNS Configuration</p>
+        <p class="intro_content">This page is used to configure the DNS server ip addresses for DNS Relay. </p>
+    </div>
+    
+    <form action="form2Dns.cgi" method=POST name="dns">
+    
+    <div class="data_common data_common_notitle">
+        <table>
+            <tr>
+		      <th colspan="3">
+				    <input type="radio" value="0" name="dnsMode" 
+				<VWS_FUNCTION (void*)httpDNSIsAuto();>
+				     onClick="autoDNSclicked()">Attain DNS Automatically
+		      </th>
+            </tr>
+            <tr>
+				<th colspan="3">
+							<input type="radio" value="1" name="dnsMode" 
+					<VWS_FUNCTION (void*)httpDNSIsManual();>
+							 onClick="manualDNSclicked()">Set DNS Manually
+		        </th>
+            </tr>
+            <tr>
+                <th>DNS 1:</th>
+                <td>
+                	<input type="text" maxlength="15" size="18" name="dns1" value=
+                	<VWS_SCREEN (char*) xscrnSetNameServerIP1[];>
+                	>
+                </td>
+            </tr>
+            <tr>
+                <th>DNS 2:</th>
+                <td>
+                    <input type="text" maxlength="15" size="18" name="dns2" value=
+                    <VWS_SCREEN (char*) xscrnSetNameServerIP2[];>
+                    >
+                </td>
+            </tr>
+            <tr>
+                <th>DNS 3:</th>
+                <td>
+                    <input type="text" maxlength="15" size="18" name="dns3" value=
+                    <VWS_SCREEN (char*) xscrnSetNameServerIP3[];>
+                    >
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="btn_ctl clearfix">
+	  <input type="hidden" name="submit.htm?dns.htm" value="Send"> 
+	  <input class="link_bg" type="submit" value="Apply Changes" name="save" onClick="return saveClick()">  
+	  <input class="link_bg" type="reset" value="Reset Selected" name="reset" onClick="return resetClick()">
+    </div>   
+    <script>
+        initAutoDns = document.dns.dnsMode[0].checked;
+        if (document.dns.dnsMode[0].checked)
+            autoDNSclicked();
+        if (document.dns.dns2.value == "0.0.0.0")
+            document.dns.dns2.value = "";
+        if (document.dns.dns3.value == "0.0.0.0")
+            document.dns.dns3.value = "";
+    </script>
+    </form>
+</body>
+</html>

@@ -1,0 +1,278 @@
+<VWS_FUNCTION (void*)SendWebMetaStr();>
+<VWS_FUNCTION (void*)SendWebCssStr();>
+#if defined(CONFIG_ADD_USER)
+	<title>User Account configuration</title>
+    <SCRIPT>
+        selected = 0;
+        var username_tmp;
+        function includeSpace(str) {
+            for (var i = 0; i < str.length; i++) {
+                if (str.charAt(i) == ' ') {
+                    return true;
+                }
+            }
+            return false;
+        }
+        function includeSpecialKey(str) {
+            for (var i = 0; i < str.length; i++) {
+                if ((str.charAt(i) == ' ') || (str.charAt(i) == '%')
+	|| ( str.charAt(i)== '\\' ) || ( str.charAt(i)== '\'' )  	
+                        || (str.charAt(i) == '?')
+                        || (str.charAt(i) == '&') || (str.charAt(i) == '"')) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        function saveChanges() {
+            if (document.userconfig.username.value.length > 0 &&
+                    document.userconfig.newpass.value.length == 0) {
+                alert('Password cannot be empty. Please try it again.');
+                document.userconfig.newpass.focus();
+                return false;
+            }
+            if (document.userconfig.newpass.value != document.userconfig.confpass.value) {
+                alert('Password is not matched. Please type the same password between \'new\' and \'confirmed\' box.');
+                document.userconfig.newpass.focus();
+                return false;
+            }
+            if (includeSpecialKey(document.userconfig.username.value)) {
+                alert('Invalid username,Please try it again.');
+                document.userconfig.username.focus();
+                return false;
+            }
+            if (includeSpecialKey(document.userconfig.newpass.value)) {
+                alert('Invalid password,Please try it again.');
+                document.userconfig.newpass.focus();
+                return false;
+            }
+            return true;
+        }
+        function modifyClick() {
+            if (!selected) {
+                alert("Please select an entry to modify!");
+                return false;
+            }
+            if (document.userconfig.username.value != username_tmp) {
+                alert('Added user name can not be modified, need to add a new user');
+                return false;
+            }
+            if (document.userconfig.oldpass.value != document.userconfig.hiddenpass.value) {
+                alert('Incorrect old password. Please try it again.');
+                document.userconfig.oldpass.focus();
+                return false;
+            }
+            return saveChanges();
+        }
+        function delClick(sysuser, consuser) {
+            if (!selected) {
+                alert("Please select an entry to delete!");
+                return false;
+            }
+            if (document.userconfig.username.value == sysuser) {
+                alert("Can't delete!");
+                return false;
+            }
+            if (document.userconfig.username.value == consuser) {
+                alert("Can't delete!");
+                return false;
+            }
+            return true;
+        }
+        function postEntry(user, priv, pass) {
+            document.userconfig.privilege.value = priv;
+            if (user == "admin" || user == "user")
+                document.userconfig.privilege.disabled = true;
+            else
+                document.userconfig.privilege.disabled = false;
+            document.userconfig.oldpass.disabled = false;
+            document.userconfig.username.value = user;
+            username_tmp = user;
+            document.userconfig.hiddenpass.value = pass;
+            selected = 1;
+        }
+        function disablePriv() {
+            document.userconfig.privilege.value = 0;
+            document.userconfig.privilege.disabled = true;
+        }
+        function resetConfig() {
+            document.userconfig.privilege.value = 0;
+            document.userconfig.privilege.disabled = false;
+            document.userconfig.oldpass.disabled = true;
+        }
+        function checkAction() {
+            if (!selected)
+                document.userconfig.oldpass.disabled = true;
+        }
+    </SCRIPT>
+</head>
+<body>
+<form action="form2userconfig.cgi" method=POST name="userconfig">
+    <div class="intro_main ">
+        <p class="intro_title">User Account Configuration</p>
+        <p class="intro_content">This page is used to add user account to access the web server of ADSL Router. Empty
+            user name or password is not allowed. </p>
+    </div>
+    <div class="data_common data_common_notitle">
+        <table>
+            <tr>
+                <th>User Name:</th>
+                <td><input type="text" maxlength="29" size="20" name="username"></td>
+            </tr>
+            <tr>
+                <th>Privilege:</th>
+                <td>
+                    <select name="privilege" size="1">
+                    <VWS_FUNCTION  (void*)showPrivilegeTable(); >
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <th>Old Password:</th>
+                <td><input type="password" maxlength="29" size="20" name="oldpass" disabled=""></td>
+            </tr>
+            <tr>
+                <th>New Password:</th>
+                <td><input type="password" maxlength="29" size="20" name="newpass"></td>
+            </tr>
+            <tr>
+                <th>Confirm Password:</th>
+                <td><input type="password" maxlength="29" size="20" name="confpass"></td>
+            </tr>
+        </table>
+    </div>
+    <div class="adsl clearfix">
+        <input class="link_bg" type="submit" onclick="return saveChanges()" name="adduser" value="Add">
+        <input class="link_bg" type="submit" onclick="return modifyClick()" name="modify" value="Modify">
+        <VWS_FUNCTION (void*)showDeleteSubmitWithFunc();>
+        <input class="link_bg" type="reset" onclick="resetConfig()" name="reset" value="Reset">
+    </div>
+    <div class="column clearfix">
+        <div class="column_title">
+            <div class="column_title_left"></div>
+            <p>User Account Table:</p>
+            <div class="column_title_right"></div>
+        </div>
+        <div class="data_common data_vertical">
+            <table>
+                <tr>
+                    <th width="80">Select</th>
+                    <th>User Name</th>
+                    <th>Privilege</th>
+                </tr>
+                <VWS_FUNCTION  (void*)showUserTable(); >
+            </table>
+        </div>
+    </div>
+    <input type="hidden" name="hiddenpass">
+    <input type="hidden" NAME="submit.htm?userconfig.htm" VALUE="Send">
+    <script>
+        checkAction();
+    </script>  
+</form>
+</body>
+</html>
+#else
+<title>Password configuration</title>
+	<SCRIPT>
+
+	function includeSpace(str)
+	{
+	  for (var i=0; i<str.length; i++) {
+		if ( str.charAt(i) == ' ' ) {
+		  return true;
+		}
+	  }
+	  return false;
+	}
+
+	function saveChanges()
+	{
+		if ( document.password.defaultpwd.checked == true)
+		   return true;
+
+	   if ( document.password.username.value.length == 0 ) {
+		if ( !confirm('User account is empty.\nDo you want to disable the password protection?') ) {
+			document.password.username.focus();
+			return false;
+		}
+		else
+			return true;
+	  }
+
+	   if ( document.password.password.value != document.password.confirm.value) {
+		alert('Password is not matched. Please type the same password between \'new\' and \'confirmed\' box.');
+		document.password.password.focus();
+		return false;
+	   }
+
+	  if ( document.password.username.value.length > 0 &&
+			document.password.password.value.length == 0 ) {
+		alert('Password cannot be empty. Please try it again.');
+		document.password.password.focus();
+		return false;
+	  }
+	  if(!checkSpeicalChar(document.password.username.value,1))
+	  {
+		alert("Invalid characters!");
+		document.password.username.focus();
+		return false;  	
+	  }
+		if(!checkSpeicalChar(document.password.password.value,1))
+	  {
+		alert("Invalid characters!");
+		document.password.password.focus();
+		return false;  	
+	  }
+
+	  return true;
+	}
+
+	</SCRIPT>
+</head>
+
+<BODY>
+	<form action="form2auth.cgi" method=POST name="password">
+	<div class="intro_main ">
+        <p class="intro_title">Password Setup</p>
+        <p class="intro_content">This page is used to set the account to access the web server of ADSL Router.
+			Empty user name and password will disable the protection.<br>
+        </p>
+    </div>
+	<div class="data_common data_common_notitle">
+        <table>
+            <tr>
+                <th>User Name:</th>
+                <td>
+                   <VWS_SCREEN (char*) xscrnSelectUser[];>
+                </td>
+            </tr>
+            <tr>
+                <th>New Password:</th>
+                <td>
+                    <input type="password" name="password" size="20" maxlength="30">
+                </td>
+            </tr>
+			<tr>
+                <th>Confirmed Password:</th>
+                <td>
+                    <input type="password" name="confirm" size="20" maxlength="30">
+                </td>
+            </tr>
+			<tr>
+                <th>Set to Default Password:</th>
+                <td>
+                    <input type="CHECKBOX" name="defaultpwd"  VALUE="1">
+                </td>
+            </tr>
+        </table>
+    </div>
+	<div class="btn_ctl clearfix">
+		<input class="link_bg" type="submit" value="Apply Changes" onClick="return saveChanges()">
+		<input class="link_bg" type="reset" value="  Reset  " name="reset"></p>
+		<INPUT class="link_bg" TYPE="hidden" NAME="submit.htm?password.htm" VALUE="Send">
+    </div>
+	</form>
+</body>
+</html>
+#endif

@@ -1,0 +1,89 @@
+DHCP Server Setup
+'width='
+',height='
+',screenX='
+',screenY='
+',top='
+',left='
+', resizable=yes, toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes'
+("Please input DHCP IP pool range.")
+("Please input DHCP IP pool range.")
+("Starting address should be in the same network with ending address.")
+("dhcp pool size is larger than 254!")
+("Please input DHCP IP pool default gateway.")
+('Invalid DHCP lease time. It should not be 0.')
+('Invalid DHCP lease time. It should be the decimal number (0-9).')
+('Invalid DHCP lease time. It should be 1-' + maxleasetime + '.')
+("Invalid characters!")
+'DHCPTbl'
+'DHCPRtTbl'
+'DHCPVendorClassTbl'
+'DHCPInterfaceTbl'
+'DHCPCUCOpt60Tbl'
+'.'
+'.'
+'.'
+DHCP Mode
+This page can be used to config the DHCP mode:None,DHCP Relay or DHCP Server.
+(1)Enable the DHCP Server if you are using this device as a DHCP server. This page lists the IP address pools available to hosts on your LAN. The device distributes numbers in the pool to hosts on your network as they request Internet access.
+(2)Enable the DHCP Relay if you are using the other DHCP server to assign IP address to your hosts on the LAN. You can set the DHCP server ip address.
+(3)If you choose "None", then the modem will do nothing when the hosts request a IP address.
+LAN IP Address:
+Subnet Mask:
+DHCP Mode
+IP Pool Range
+Show Client
+Max Lease Time:
+minutes
+Domain Name:
+DNS Servers:
+Relay Server:
+Apply Changes
+Undo
+'width='
+',height='
+',screenX='
+',screenY='
+',top='
+',left='
+', resizable=yes, toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes'
+("Please input DHCP IP pool range.")
+("Invalid DHCP client start range. It should be the decimal number (0-9).")
+('Invalid DHCP client start range. It should be 1-254.')
+('Invalid DHCP client start address!\nIt should be located in the same subnet of current IP address.')
+("Please input DHCP IP pool range.")
+("Invalid DHCP client end address range. It should be the decimal number (0-9).")
+('Invalid DHCP client end range. It should be 1-254.')
+('Invalid DHCP client end address!\nIt should be located in the same subnet of current IP address.')
+('Invalid DHCP client address range!\nEnding address should be greater than starting address.')
+("Please input DHCP IP pool default gateway.")
+('Invalid DHCP lease time. It should not be 0.')
+('Invalid DHCP lease time. It should be the decimal number (0-9).')
+('Invalid DHCP lease time. It should be 1-'+maxleasetime+'.')
+("Invalid characters!")
+'DHCPTbl'
+'DHCPRtTbl'
+'DHCPVendorClassTbl'
+'DHCPInterfaceTbl'
+'DHCPCUCOpt60Tbl'
+'.'
+'.'
+'.'
+DHCP Mode
+This page can be used to config the DHCP mode:None,DHCP Relay or DHCP Server.
+(1)Enable the DHCP Server if you are using this device as a DHCP server. This page lists the IP address pools available to host on your LAN. The device distributes numbers in the pool to host on your network as they request Internet access.
+(2)Enable the DHCP Relay if you are using the other DHCP server to assign IP address to your host on the LAN. You can set the DHCP server IP address.
+(3)If you choose "None", then the modem will do nothing when the host request a IP address.
+LAN IP Address:
+Subnet Mask:
+DHCP Mode:
+IP Pool Range:
+Show Client
+is reserved!
+Max Lease Time:
+minutes
+Domain Name:
+DNS Servers:
+Relay Server:
+Apply Changes
+Undo

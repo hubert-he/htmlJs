@@ -1,0 +1,54 @@
+Wireless Security Setup
+'width='
+',height='
+',screenX='
+',screenY='
+',top='
+',left='
+', resizable=yes, toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes'
+("If the security is WEP, the WPS would be disabled.\nDo you sure?")
+'SetWEPKey'
+('Pre-Shared Key value should be 64 characters.')
+'a'
+'f'
+'A'
+'F'
+("Invalid Pre-Shared Key value. It should be in hex number (0-9 or a-f).")
+('Pre-Shared Key value should be set at least 8 characters.')
+('Pre-Shared Key value should be less than 64 characters.')
+('Pre-Shared Key value has illegal characters.')
+("If the security is WEP, the WPS would be disabled.\nDo you sure?")
+("If the security is WPA-TKIP/WPA2-TKIP, the WPS would be disabled.\nDo you sure?")
+Wireless Security Setup
+This page allows you setup the wireless security. Turn on WEP or WPA by using Encryption Keys could prevent any unauthorized access to your wireless network.
+SSID TYPE:
+Root
+VAP0
+VAP1
+VAP2
+VAP3
+Encryption:
+None
+WEP
+WPA (TKIP)
+WPA (AES)
+WPA2(AES)
+WPA2(TKIP)
+WPA2 Mixed
+Set WEP Key
+Use 802.1x Authentication
+WEP 64bits
+WEP 128bits
+WPA Authentication Mode:
+Enterprise (RADIUS)
+Personal (Pre-Shared Key)
+Pre-Shared Key Format:
+Passphrase
+Hex (64 characters)
+Pre-Shared Key:
+Authentication RADIUS Server:
+Port
+IP address
+Password
+Note: When encryption WEP is selected, you must set WEP key value.
+Apply Changes

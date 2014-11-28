@@ -1,0 +1,128 @@
+Vendor IP Range Set
+"+"
+"+"
+("IP address cannot be empty! It should be filled with 4 digit numbers as xxx.xxx.xxx.xxx.")
+("Invalid IP address value. It should be the decimal number (0-9).")
+("Invalid IP address. It should be filled with 4 digit numbers as xxx.xxx.xxx.xxx.")
+("Invalid IP address value.")
+('Invalid IP address range in 1st digit. It should be 224-255.')
+('Invalid IP address range in 2nd digit. It should be 0-255.')
+('Invalid IP address range in 3rd digit. It should be 0-255.')
+('Invalid IP address range in 4th digit. It should be 1-254.')
+("Invalid opch port value! You should set a value between 0-65535.")
+("stb dns1 address cannot be empty! It should be filled with 4 digit numbers as xxx.xxx.xxx.xxx.")
+("Invalid pool address range!\nEnding address should be greater than starting address.")
+("device name cannot be NULL!")
+("Please input DHCP IP pool default gateway.")
+("option60 cannot be NULL!")
+('Invalid IP range, endip should be larger than startip.')
+("device name cannot be NULL!")
+("Please input DHCP IP pool range.")
+("Invalid DHCP client start range. It should be the decimal number (0-9).")
+('Invalid DHCP client start range. It should be 1-254.')
+('Invalid DHCP client start address!\nIt should be located in the same subnet of current IP address.')
+("Please input DHCP IP pool range.")
+("Invalid DHCP client end address range. It should be the decimal number (0-9).")
+('Invalid DHCP client end range. It should be 1-254.')
+('Invalid DHCP client end address!\nIt should be located in the same subnet of current IP address.')
+('Invalid DHCP client address range!\nEnding address should be greater than starting address.')
+("Please input DHCP IP pool default gateway.")
+("option60 cannot be NULL!")
+'.'
+'.'
+'.'
+("select item cannot be NULL!")
+Device IP Range Table
+This page is used to configure the IP address range based on device type.
+device name:
+start address:
+end address:
+start address:
+end address:
+option60
+device type:
+PC
+Camera
+HGW
+STB
+Phone
+Unknown
+reserved option:
+Option 241
+Option 242
+Option 243
+Option 244
+Option 245
+option string
+reserved option
+DNS1:
+DNS2:
+OPCH Address:
+OPCH Port:
+add
+delete
+modify
+Close
+IP Range Table:
+Select
+device name
+device type
+start address
+end address
+default gateway
+option60
+reserved option
+"+"
+("device name cannot be NULL!")
+("Please input DHCP IP pool default gateway.")
+("option60 cannot be NULL!")
+('Invalid IP range, endip should be larger than startip.')
+Device IP Range Table
+This page is used to configure the IP address range based on device type.
+device name:
+start address:
+end address:
+option60
+add
+delete
+modify
+Close
+IP Range Table:
+select:
+device name:
+start address:
+end address:
+default gateway:
+option60:
+"+"
+("device name cannot be NULL!")
+("Please input DHCP IP pool range.")
+("Invalid DHCP client start range. It should be the decimal number (0-9).")
+('Invalid DHCP client start range. It should be 1-254.')
+('Invalid DHCP client start address!\nIt should be located in the same subnet of current IP address.')
+("Please input DHCP IP pool range.")
+("Invalid DHCP client end address range. It should be the decimal number (0-9).")
+('Invalid DHCP client end range. It should be 1-254.')
+('Invalid DHCP client end address!\nIt should be located in the same subnet of current IP address.')
+('Invalid DHCP client address range!\nEnding address should be greater than starting address.')
+("option60 cannot be NULL!")
+'.'
+'.'
+'.'
+Device IP Range Table
+This page is used to configure the IP address range based on device type.
+device name:
+start address:
+end address:
+option60
+add
+delete
+modify
+Close
+IP Range Table:
+Select
+device name
+start address
+end address
+default gateway
+option60

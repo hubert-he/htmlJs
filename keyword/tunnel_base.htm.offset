@@ -1,0 +1,34 @@
+Tunnel Configuration
+("Please make sure there is only ipv4 wan connection!")
+("Prefix select a wan interface!")
+("Relay ip can't be empty!")
+("Prefix can not be empty!")
+("Prefix length can not be empty!")
+("Mask length can not be empty!")
+("Relay ip can not be empty!")
+("Please input valid ipv6 address!")
+("Prefix length should be between 1 and 64!")
+("Mask length should be between 0 and 32!")
+("Please make sure there is only ipv6 wan connection!")
+("Please select WAN interface!")
+("AFTR value can't be empty!\n")
+Tunnel Configuration
+This page is used to configure v6inv4 tunnel or v4inv6 tunnel.
+V6inV4 Tunnel:
+Enable:
+Interface:
+(Only support IPv4 Wan Interface)
+Mode:
+Relay Router:
+6rd Mode:
+6rd Prefix:
+6rd Ipv4 Mask Length:
+Relay Router:
+Apply Changes
+DS-Lite Tunnel:
+Enable:
+Interface:
+(Only support IPv6 Wan Interface)
+Mode:
+AFTR Name Or Address:
+Apply Changes

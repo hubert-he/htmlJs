@@ -1,0 +1,76 @@
+Wi-Fi Protected Setup
+'WPS was disabled automatically because wireless mode setting could not be supported. '
+'You need go to Wireless/Basic page to modify settings to enable WPS.'
+'WPS was disabled automatically because Radius Authentication could not be supported. '
+'You need go to Wireless/Security page to modify settings to enable WPS.'
+"PIN number was generated. You have to click \'Apply Changes\' button to make change effectively."
+'WPS was disabled automatically because WPS2.0 has some restrictions to enable WPS:<BR>'
+'1. Broadcast SSID must be enabled.(Setting is in Wireless/Advanced page)<br>'
+'2. The encryption of security must not be WEP or WPA-TKIP/WPA2-TKIP.(Setting is in Wireless/Security page)<br>'
+'3. If ACL mode is set to "Allow List", the list must not be empty.(Setting is in Wireless/Access Control page)'
+"localPin"
+"peerPin"
+"peerPin"
+"peerPin"
+('Invalid Enrollee PIN length! The device PIN is usually four or eight digits long.')
+('Invalid Enrollee PIN! Enrollee PIN must be numeric digits. For example:\n1. 1234\n2. 12345670\n3. 1234 5670\n4. 1234-5670')
+('Checksum failed! Use PIN anyway? ') )
+"disableWPS"
+"save"
+"reset"
+"disableWPS"
+"localPin"
+"peerPin"
+"setPIN"
+"triggerPIN"
+"triggerPBC"
+"genPIN"
+"localPin"
+"peerPin"
+"setPIN"
+"genPIN"
+"triggerPIN"
+"triggerPBC"
+"config"
+"localPin"
+('Invalid PIN length! The device PIN is usually four or eight digits long.')
+('Invalid PIN! The device PIN must be numeric digits.')
+('Invalid PIN! Checksum error.')
+Wi-Fi Protected Setup
+This page allows you to change the setting for WPS (Wi-Fi Protected Setup). Using this feature could let your wireless client automically syncronize its setting and connect to the Access Point in a minute without any hassle.
+Disable WPS
+"</table>\n"
+"<span id = \"hide_div\" class = \"off\">\n"
+"<table border=\"0\" width=500>\n"
+WPS Status:
+Configured
+UnConfigured
+"</table>\n"
+"</span>\n"
+"<table border=\"0\" width=500>\n"
+Self-PIN Number:
+Regenerate PIN
+"</table>\n"
+"<span id = \"hide_div\" class = \"off\">\n"
+"<table border=\"0\" width=500>\n"
+PIN Configuration:
+Start PIN
+"</table>\n"
+"</span>\n"
+"<table border=\"0\" width=500>\n"
+Push Button Configuration:
+Start PBC
+"<tr><td colspan=\"2\" height=\"55\"><font size=2><em>"
+"</td></tr>"
+Apply Changes
+Reset
+"<span id = \"hide_div\" class = \"off\">\n"
+Current Key Info:
+Authentication
+Encryption
+Key
+"</span>\n"
+"<tr>\n"
+"<span id = \"hide_div\" class = \"off\">\n"
+Start PIN
+"</span>\n"

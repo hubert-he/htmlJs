@@ -1,0 +1,61 @@
+IP/Port Filtering
+"Help"
+"toolbar=no,location=no,directories=no,   status=no,menubar=no,scrollbars=yes,resizable=yes,width=500,height=500"
+("IP address cannot be empty!")
+("Invalid IP address value.")
+('Invalid IP address range in 1st digit. It should be 0-255.')
+('Invalid IP address range in 2nd digit. It should be 0-255.')
+('Invalid IP address range in 3rd digit. It should be 0-255.')
+('Invalid IP address range in 4th digit. It should be 1-254.')
+("Invalid SPort value! You should set a value between 1-65535.")
+("Invalid DPort value! You should set a value between 1-65535.")
+IP/Port Filtering
+Entries in this table are used to restrict certain types of data packets from your local network to Internet through the Gateway. Use of such filters can be helpful in securing or restricting your local network.
+Incoming Domain: LAN
+Outgoing Domain: WAN
+Default Action:
+Deny
+Allow
+Apply Changes
+Apply Changes
+Reset
+Help
+Rule Action:
+Permit
+Deny
+Protocol:
+IP
+ICMP
+TCP
+UDP
+Direction:
+Outgoing
+Incoming
+Source IP Address:
+Mask Address:
+Dest IP Address:
+Mask Address:
+SPort:
+DPort:
+Enable:
+Apply Changes
+Apply Changes
+Reset
+Help
+Current Filter Table:
+Rule
+Protocol
+Source IP/Mask
+SPort
+Dest IP/Mask
+DPort
+State
+Direction
+Action
+permit
+ip
+192.168.5.1/255.255.255.255
+0.0.0.0/0.0.0.0
+enable
+Delete
+disable

@@ -1,0 +1,110 @@
+ACL configuration
+"Help"
+"toolbar=no,location=no,directories=no,   status=no,menubar=no,scrollbars=yes,resizable=yes,width=500,height=500"
+("any ip address!please clear the end ip!")
+("The start Ip address in ip range must be lesser than end Ip address!")
+'web'
+' is invalid!'
+'telnet'
+' is invalid!'
+'tftp'
+' is invalid!'
+'ftp'
+' is invalid!'
+'snmp'
+' is invalid!'
+("Invalid port!More than one services occupy the same port!")
+("Invalid port!More than one services occupy the same port!")
+("Sorry!It must need at least one ip from lan to be permited to access the modem!")
+"lan"
+"wan"
+("Sorry!It must need at least one ip from lan or one lan interface to be permited to access the modem!")
+"lan"
+"wan"
+ACL Configuration
+You can specify which services are accessable form LAN or WAN side.
+Entries in this ACL table are used to permit certain types of data packets from your local network or Internet network to the Gateway.
+Using of such access control can be helpful in securing or restricting the Gateway managment.
+Direction Select:
+LAN
+WAN
+LAN ACL Switch:
+Apply
+WAN Setting:
+Interface
+IP Address
+IP Address:
+(The IP 0.0.0.0 represent any IP )
+WAN Interface:
+any
+Services Allowed:
+Any
+web
+Port:
+telnet
+Port:
+ftp
+Port:
+tftp
+Port:
+snmp
+Port:
+ping
+Add
+Reset
+Current ACL Table:
+Select
+Direction
+IP Address/Interface
+Service
+Port
+Action
+("Sorry!It must need at least one ip from lan to be permited to access the modem!")
+ACL Configuration
+You can specify which services are accessable form LAN or WAN side.
+Entries in this ACL table are used to permit certain types of data packets from your local network or Internet network to the Gateway.
+Using of such access control can be helpful in securing or restricting the Gateway managment.
+LAN ACL Mode:
+White List
+Black List
+WAN ACL Mode:
+White List
+Black List
+Apply
+Direction Select:
+LAN
+WAN
+LAN ACL Switch:
+Apply
+WAN Setting:
+Interface
+IP Address
+IP Address:
+(The IP 0.0.0.0 represent any IP )
+WAN Interface:
+any
+Services Allowed:
+any
+web
+Port:
+telnet
+Port:
+ssh
+Port:
+ftp
+Port:
+tftp
+Port:
+snmp
+Port:
+ping
+Add
+Reset
+Current ACL Table:
+Select
+Direction
+IP Address/Interface
+Service
+Port
+Action
+("Sorry!It must need at least one ip from lan or one lan interface to be permited to access the modem!")

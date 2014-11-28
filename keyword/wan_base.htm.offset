@@ -1,0 +1,117 @@
+ADSL Connection Mode
+('PPP user name cannot be empty!')
+('No select any entry to modified !!')
+('This interface (vpi='+document.adsl.vpi.value+', vci='+document.adsl.vci.value+') is reserved can not be modified !!')
+("Invalid VPI value! You should set a value between 0-255.")
+("Invalid VCI value! You should set a value between 32-65535.")
+('PPP user name cannot be empty!')
+("Invalid characters!")
+("Invalid characters!")
+('Invalid PPP IdleTime!')
+("DNS Server1 can't be empty!")
+("DNS Server1 and DNS Server2 can't be the same address!")
+("Invalid ipv6 address!")
+("Invalid ipv6 prefix length!")
+("Invalid ipv6 gateway address!")
+("Invalid DNS Server1 ipv6 address!")
+("Invalid DNS Server2 ipv6 address!")
+("DNS Server1 can't be empty!")
+("DNS Server1 and DNS Server2 can't be the same address!")
+('No select any entry to deleted !!')
+('This interface (vpi='+document.adsl.vpi.value+', vci='+document.adsl.vci.value+') is reserved can not be deleted !!')
+('Do you really want to delete the selected entry?') )
+"none"
+("auto search pvc mode will have only one wan interface,really?")
+"ON"
+"OFF"
+"ON"
+"OFF"
+("Invalid VPI value! You should set a value between 0-255.")
+("Invalid VCI value! You should set a value between 32-65535.")
+("Invalid VPI/VCI value!")
+(" You should enable Auto-PVC search first.")
+"pppoeusername"
+('WAN physical type will be changed and system will be reboot to effect automatically, are you sure to switch?')
+WAN Configuration
+This page is used to configure the parameters for the WAN interface of your ADSL and(or) Ethernet Modem/Router. Note : When connect type of PPPoE and PPPoA only is "Manual", the "Connect" and "Disconnect" button will be enable.
+WAN Physical Type:
+ADSL WAN
+Ethernet WAN
+Default Route Selection:
+Auto
+Specified
+VPI:
+VCI:
+Encapsulation:
+Channel Mode:
+Enable NAPT:
+Enable IGMP:
+Use Secondary IP as source IP:
+IP Protocol:
+Ipv4/Ipv6
+Application Mode:
+TR069_INTERNET
+INTERNET
+TR069
+PPP Settings:
+User Name:
+Password:
+Type:
+Continuous
+Connect on Demand
+Manual
+Idle Time (min):
+WAN IP Settings:
+Type:
+Fixed IP
+IP Address:
+Local IP Address:
+ISP Gateway:
+Remote IP Address:
+Subnet Mask:
+NetMask:
+DNS Server1:
+DNS Server2:
+Default Route:
+Disable
+Enable
+Auto
+Unnumbered:
+IPv6 WAN Setting:
+Address Mode:
+Slaac
+Static
+IPv6 Address:
+IPv6 Gateway:
+IPv6 DNS Mode:
+Auto
+Manual
+DNS Server1:
+DNS Server2:
+DHCPv6 Mode:
+Auto
+Enable
+Disable
+Request DHCPv6 Address:
+Request DHCPv6 PD:
+Connect
+Disconnect
+Add
+Modify
+Delete
+Undo
+Refresh
+WAN Interfaces Table:
+Select
+Inf
+Mode
+Encap
+IGMP
+DRoute
+IP Addr
+Remote IP
+NetMask
+User Name
+Status
+'<th width="40">Edit</th>'
+Edit

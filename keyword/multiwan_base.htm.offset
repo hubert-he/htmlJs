@@ -1,0 +1,71 @@
+ADSL Connection Mode
+('PPP user name cannot be empty!')
+('Select an entry to be modified !!')
+('This interface (vpi='+document.adsl.vpi.value+', vci='+document.adsl.vci.value+') is reserved can not be modified !!')
+("Invalid VPI value! You should set a value between 0-255.")
+("Invalid VCI value! You should set a value between 32-65535.")
+('PPP user name cannot be empty!')
+("Invalid characters!")
+("Invalid characters!")
+('Invalid PPP IdleTime!')
+('Select an entry to be deleted !!')
+('This interface (vpi='+document.adsl.vpi.value+', vci='+document.adsl.vci.value+') is reserved can not be deleted !!')
+('Do you really want to delete the selected entry?') )
+("auto search pvc mode will have only one wan interface,really?")
+"ON"
+"OFF"
+"ON"
+"OFF"
+("Invalid VPI value! You should set a value between 0-255.")
+("Invalid VCI value! You should set a value between 32-65535.")
+("Invalid VPI/VCI value!")
+(" You should enable Auto-PVC search first.")
+"pppoeusername"
+('WAN physical type will be changed and system will be reboot to effect automatically, are you sure to switch?')
+WAN Configuration
+This page is used to configure the parameters for the WAN interface of your ADSL and(or) Ethernet Modem/Router.
+WAN Physical Type:
+ADSL WAN
+Ethernet WAN
+VPI:
+VCI:
+Encapsulation:
+Channel Mode:
+Enable NAPT:
+Enable IGMP:
+PPP Settings:
+User Name:
+Password:
+Type:
+Continuous
+Connect on Demand
+Manual
+Idle Time(min):
+WAN IP Settings:
+Type:
+Fixed IP
+Local IP Address:
+Remote IP Address:
+NetMask:
+Default Route:
+Disable
+Enable
+Unnumbered:
+Add
+Modify
+Delete
+Undo
+Refresh
+WAN Interfaces Table:
+Select
+Inf
+Mode
+Encap
+IGMP
+DRoute
+IP Addr
+Remote IP
+NetMask
+User Name
+Status
+Edit

@@ -1,0 +1,68 @@
+LAN Interface Setup
+("The first IP and the second IP must belong to the different subnet!")
+"Allowed MAC address Table should not empty when enabled on interface(s)!"
+("Please select an entry to modify!")
+LAN Interface Setup
+This page is used to configure the LAN interface of your ADSL Router. Here you may change the setting for IP addresss, subnet mask, etc..
+Interface Name:
+Ethernet1
+IP Address:
+Subnet Mask:
+Apply Changes
+LAN Port:
+Link Speed/Duplex Mode:
+Modify
+ETHERNET Status Table:
+Select
+Port
+Link Mode
+MAC Address Control:
+Apply Changes
+New MAC Address:
+Add
+Current Allowed MAC Address Table:
+MAC Addr
+Action
+LAN Interface Setup
+This page is used to configure the LAN interface of your ADSL Router. Here you may change the setting for IP addresss, subnet mask, etc..
+Interface Name:
+Ethernet1
+IP Address:
+Subnet Mask:
+Apply Changes
+Apply Changes
+Undo
+MAC Address Control:
+Apply Changes
+New MAC Address:
+Add
+Current Allowed MAC Address Table:
+MAC Addr
+Action
+LAN Interface Setup
+This page is used to configure the LAN interface of your ADSL Router. Here you may change the setting for IP addresss, subnet mask, etc..
+Interface Name:
+br0
+Ethernet1
+IP Address:
+Subnet Mask:
+Apply Changes
+Apply Changes
+Undo
+LAN Port:
+Link Speed/Duplex Mode:
+Modify
+ETHERNET Status Table:
+Select
+Port
+Link Mode
+LAN Interface Setup
+This page is used to configure the LAN interface of your ADSL Router. Here you may change the setting for IP addresss, subnet mask, etc..
+Interface Name:
+br0
+Ethernet1
+IP Address:
+Subnet Mask:
+Apply Changes
+Apply Changes
+Undo

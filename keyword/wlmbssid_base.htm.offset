@@ -1,0 +1,52 @@
+MBSSID Setup
+('SSID cannot be empty!')
+('Invalid SSID.')
+('Invalid SSID.')
+('SSID cannot be empty!')
+('Invalid SSID.')
+('Invalid SSID.')
+('SSID cannot be empty!')
+('Invalid SSID.')
+('Invalid SSID.')
+('SSID cannot be empty!')
+('Invalid SSID.')
+('Invalid SSID.')
+Wireless Multiple BSSID Setup
+This page allows you to set virutal access points(VAP). Here you can enable/disable virtual AP, and set its SSID and authentication type. click "Apply Changes" to take it effect.
+Enable VAP0
+SSID:
+broadcast SSID:
+Enable
+Disable
+Authentication Type:
+Open System
+Shared Key
+Auto
+Enable VAP1
+SSID:
+broadcast SSID:
+Enable
+Disable
+Authentication Type:
+Open System
+Shared Key
+Auto
+Enable VAP2
+SSID:
+broadcast SSID:
+Enable
+Disable
+Authentication Type:
+Open System
+Shared Key
+Auto
+Enable VAP3
+SSID:
+broadcast SSID:
+Enable
+Disable
+Authentication Type:
+Open System
+Shared Key
+Auto
+Apply Changes

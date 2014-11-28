@@ -1,0 +1,39 @@
+DoS Setting
+("It cannot be empty!")
+("Invalid value. It should be the decimal number (0-9).")
+("The request is in process, please wait a few seconds!")
+DoS Setting
+A "denial-of-service" (DoS) attack is characterized by an explicit attempt by hackers to prevent legitimate users of a service from using that service.
+Enable DoS Prevention
+Whole System Flood: SYN
+Packets/Second
+Whole System Flood: FIN
+Packets/Second
+Whole System Flood: UDP
+Packets/Second
+Whole System Flood: ICMP
+Packets/Second
+Per-Source IP Flood: SYN
+Packets/Second
+Per-Source IP Flood: FIN
+Packets/Second
+Per-Source IP Flood: UDP
+Packets/Second
+Per-Source IP Flood: ICMP
+Packets/Second
+TCP/UDP PortScan
+Sensitivity
+ICMP Smurf
+IP Land
+IP Spoof
+IP TearDrop
+PingOfDeath
+TCP Scan
+TCP SynWithData
+UDP Bomb
+UDP EchoChargen
+Select ALL
+Clear ALL
+Enable Source IP Blocking
+Block time (sec)
+Apply Changes

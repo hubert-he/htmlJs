@@ -1,0 +1,138 @@
+IP QoS
+'width='
+',height='
+',screenX='
+',screenY='
+',top='
+',left='
+', resizable=yes, toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes'
+'qosTbl'
+("please select an entry to delete!")
+("Invalid source Mac!")
+("Invalid destination Mac!")
+("Invalid source ipv6 address!")
+("Invalid source ip address!")
+("Invalid destination ipv6 address!")
+("Invalid destination ip address!")
+("Source ip and Destination ip should be the same ip type!")
+("Invalid source port!")
+("source port range: 1-65535!")
+("Invalid destination port!")
+("destination port range: 1-65535")
+("Choose only one for TOS or DSCP!")
+("When set ipv6 address, can't set Ip precedence or Tos!")
+("When set ipv4 address, can't set Traffic Class!")
+("Choose only one for TOS/DSCP or TC !")
+("Please input ip precedence start value!")
+("Ip precedence end value should be larger than begin value!")
+("Please input 802.1p start value!")
+("802.1p end value should be larger than begin value!")
+("Please input DSCP begin value!")
+("Invalid DSCP value!")
+("Invalid DSCP value,should between 0~63.")
+("Invalid DSCP value!")
+("Invalid DSCP value,should between 0~63.")
+("DSCP end value should be larger than begin value!")
+("Please input traffic class begin value")
+("Invalid traffic class value!")
+("Invalid traffic class value,should between 0~255.")
+("Invalid traffic class value!")
+("Invalid traffic class value,should between 0~255.")
+("Traffic class end value should be larger than begin vlaue!")
+("Please set the mark!")
+("Choose only one way to set remark, TOS or DSCP!")
+("Choose only one way to set remark, TOS/DSCP or TC !")
+("Invaldi DSCP value!")
+("Invaldi DSCP value, should between 0 and 63.")
+("Invaldi TC value!")
+("Invaldi TC value, should between 0 and 255.")
+('you have selected 802.1p tag, please make sure 802.1q is enabled in specified WAN interface, otherwise 802.1p tag will not be tagged!')
+("no condition is set!")
+IP QoS
+IP QoS:
+disable
+enable
+Schedule Mode:
+strict prior
+WFQ(4:3:2:1)
+Apply
+QoS Rule List:
+src MAC
+dest MAC
+src IP
+sPort
+dest IP
+dPort
+App
+proto
+phy port
+QoS Rule List(Continue):
+IPP
+TOS
+DSCP
+TC
+802.1p
+Prior
+IPP Mark
+TOS Mark
+DSCP Mark
+TC Mark
+802.1p Mark
+sel
+Delete
+Add Rule
+Add Or Modify QoS Rule
+Application:
+TR069
+IGMP
+Source MAC:
+Destination MAC:
+Source IP:
+Source Mask:
+Destination IP:
+Destination Mask:
+Source Port:
+Destination Port:
+Protocol:
+TCP
+UDP
+ICMP
+TCP/UDP
+Phy Port:
+IPP/DS Field:
+IPP/TOS
+DSCP
+IP Precedence Range:
+Type of Service:
+Normal Service(0x0)
+Minimize Cost(0x2)
+Maximize Reliability(0x4)
+Maximize Throughput(0x8)
+Minimize Dela(0x10)
+DSCP Range:
+(Value Range:0~63)
+Traffic Class Range:
+(Value Range:0~255)
+802.1p:
+Priority:
+p3(Lowest)
+p2
+p1
+p0(Highest)
+insert or modify QoS mark
+IPP/DS Field:
+IPP/TOS
+DSCP
+IP Precedence:
+IP ToS:
+Normal Service(0x0)
+Minimize Cost(0x2)
+Maximize Reliability(0x4)
+Maximize Throughput(0x8)
+Minimize Delay(0x10)
+DSCP:
+(Value Range:0-63)
+Traffic Class:
+(Value Range:0~255)
+802.1p:
+Apply

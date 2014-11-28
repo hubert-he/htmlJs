@@ -1,0 +1,61 @@
+ACL configuration
+"Help"
+"toolbar=no,location=no,directories=no,   status=no,menubar=no,scrollbars=yes,resizable=yes,width=500,height=500"
+("Invalid Ipv6 Address.")
+("Please input Prefix Length!")
+("Wrong Prefix Length!")
+("Wrong Prefix Length!")
+'web'
+' is invalid!'
+'telnet'
+' is invalid!'
+'tftp'
+' is invalid!'
+'ftp'
+' is invalid!'
+'snmp'
+' is invalid!'
+("Invalid port!More than one services occupy the same port!")
+("Invalid port!More than one services occupy the same port!")
+("Sorry!It must need at least one ip from lan or one lan interface to be permited to access the modem!")
+"lan"
+"wan"
+ACL Configuration
+You can specify which services are accessable form LAN or WAN side.
+Entries in this ACL table are used to permit certain types of data packets from your local network or Internet network to the Gateway.
+Using of such access control can be helpful in securing or restricting the Gateway managment.
+Direction Select:
+LAN
+WAN
+LAN ACL Switch:
+Apply
+WAN Setting:
+Interface
+IP Address
+IP Address:
+WAN Interface:
+any
+Services Allowed:
+Any
+web
+Port:
+telnet
+Port:
+ssh
+Port:
+ftp
+Port:
+tftp
+Port:
+snmp
+Port:
+ping6
+Add
+Reset
+Current IPv6 ACL Table:
+Direction
+IPv6 Address/Interface
+Service
+Port
+Action
+("Sorry!It must need at least one ip from lan or one lan interface to be permited to access the modem!")

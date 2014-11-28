@@ -1,0 +1,57 @@
+IPv6/Port Filtering
+"Help"
+"toolbar=no,location=no,directories=no,   status=no,menubar=no,scrollbars=yes,resizable=yes,width=500,height=500"
+("Invalid Source Address.")
+("Please input Prefix Length!")
+("Wrong Prefix Length!")
+("Wrong Prefix Length!")
+("Invalid Destination Address.")
+("Please input Prefix Length!")
+("Wrong Prefix Length!")
+("Wrong Prefix Length!")
+("Invalid SPort value! You should set a value between 1-65535.")
+("Invalid SPort value! You should set a value between 1-65535.")
+("Invalid Sport value range! port from is larger than port to.")
+("Invalid DPort value! You should set a value between 1-65535.")
+("Invalid DPort value! You should set a value between 1-65535.")
+("Invalid Dport value range! port from is larger than port to.")
+IPv6/Port Filtering
+Entries in this table are used to restrict certain types of ipv6 data packets from your local network to Internet through the Gateway. Use of such filters can be helpful in securing or restricting your local network.
+Outgoing Default Policy
+Incoming Default Policy
+Apply Changes
+Reset
+Help
+Rule Action:
+Permit
+Deny
+Protocol:
+ICMP6
+TCP
+UDP
+Icmp6Type:
+PING6
+Direction:
+Upstream
+Downstream
+Source IPv6 Address:
+Prefix Length:
+Dest IPv6 Address:
+Prefix Length:
+SPort:
+DPort:
+Enable:
+Apply Changes
+Reset
+Help
+Current Filter Table:
+Rule
+Protocol
+Source IPv6/Prefix
+SPort
+Dest IPv6/Prefix
+DPort
+ICMP6Type
+State
+Direction
+Action

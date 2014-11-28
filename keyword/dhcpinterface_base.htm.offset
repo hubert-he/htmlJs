@@ -1,0 +1,60 @@
+Interface IP Range Set
+","
+("device name cannot be NULL!")
+("you should select at least one interface!")
+("Please input DHCP IP pool range.")
+("Please input DHCP IP pool range.")
+("Starting address should be in the same network with ending address.")
+("dhcp pool size is larger than 254!")
+("Please input DHCP IP pool default gateway.")
+('Invalid DHCP lease time. It should not be 0.')
+('Invalid DHCP lease time. It should be the decimal number (0-9).')
+('Invalid DHCP lease time. It should be 1-'+maxleasetime+'.')
+("Invalid characters!")
+","
+'.'
+'.'
+'.'
+("device name cannot be NULL!")
+("you should select at least one interface!")
+("Please input DHCP IP pool range.")
+("Invalid DHCP client start range. It should be the decimal number (0-9).")
+('Invalid DHCP client start range. It should be 1-254.')
+('Invalid DHCP client start address!\nIt should be located in the same subnet of current IP address.')
+("Please input DHCP IP pool range.")
+("Invalid DHCP client end address range. It should be the decimal number (0-9).")
+('Invalid DHCP client end range. It should be 1-254.')
+('Invalid DHCP client end address!\nIt should be located in the same subnet of current IP address.')
+('Invalid DHCP client address range!\nEnding address should be greater than starting address.')
+("Please input DHCP IP pool default gateway.")
+('Invalid DHCP lease time. It should not be 0.')
+('Invalid DHCP lease time. It should be the decimal number (0-9).')
+('Invalid DHCP lease time. It should be 1-'+maxleasetime+'.')
+("Invalid characters!")
+Interface IP Range Table
+This page is used to configure the IP address range based on interface.
+Device name:
+Start address:
+End address:
+Start address:
+End address:
+Subnet mask:
+Max Lease Time:
+minutes
+Domain Name:
+DNS Servers:
+add
+delete
+modify
+Close
+IP Range Table:
+Select
+Device name
+Interface
+Start address
+End address
+Subnet mask
+Default gateway
+Lease time
+Domain name
+DNS

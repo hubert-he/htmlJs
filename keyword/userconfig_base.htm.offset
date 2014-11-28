@@ -1,0 +1,39 @@
+User Account configuration
+('Password cannot be empty. Please try it again.')
+('Password is not matched. Please type the same password between \'new\' and \'confirmed\' box.')
+('Invalid username,Please try it again.')
+('Invalid password,Please try it again.')
+("Please select an entry to modify!")
+('Added user name can not be modified, need to add a new user')
+('Incorrect old password. Please try it again.')
+("Please select an entry to delete!")
+("Can't delete!")
+("Can't delete!")
+User Account Configuration
+This page is used to add user account to access the web server of ADSL Router. Empty user name or password is not allowed.
+User Name:
+Privilege:
+Old Password:
+New Password:
+Confirm Password:
+Add
+Modify
+Reset
+User Account Table:
+Select
+User Name
+Privilege
+Password configuration
+('User account is empty.\nDo you want to disable the password protection?') )
+('Password is not matched. Please type the same password between \'new\' and \'confirmed\' box.')
+('Password cannot be empty. Please try it again.')
+("Invalid characters!")
+("Invalid characters!")
+Password Setup
+This page is used to set the account to access the web server of ADSL Router. Empty user name and password will disable the protection.
+User Name:
+New Password:
+Confirmed Password:
+Set to Default Password:
+Apply Changes
+Reset

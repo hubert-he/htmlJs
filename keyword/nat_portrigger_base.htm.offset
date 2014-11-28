@@ -1,0 +1,141 @@
+Nat Port Trigger
+'please select an application'
+'please input the match port & relate port rightly'
+':'
+"Aim Talk"
+"Asheron's Call"
+"Calista IP Phone"
+"Delta Force (Client/Server)"
+"ICQ"
+"Napster"
+"Net2Phone"
+"QuickTime 4 Client"
+"Rainbow Six/Rogue Spea"
+('Not support selection')
+"form2PortriggerRule.cgi?"
+"&nbsp;"
+'&AppName='
+('please input an application name')
+("illeagal server name!")
+"&nbsp;"
+'&AppName='
+'xxxx'
+'&triggerProto='
+'&matchPort_s='
+'&matchPort_e='
+'&openProto='
+'&relatePort_s='
+'&relatePort_e='
+'&dir='
+('The start trigger port "' + matchPort_s[i].value + '" is unvalid.')
+('The end trigger port"' + matchPort_e[i].value + '" is unvalid.')
+('The start relate port "' + relatePort_s[i].value + '" is unvalid.')
+('he end relate port"' + relatePort_e[i].value + '" is unvalid.')
+('The range of open port [' + tS + '-' + tE + '] is unvalid.')
+('The range of related port [' + oS + '-' + oE + '] is unvalid.')
+','
+','
+','
+','
+','
+','
+','
+'&submit.htm?nat_portrigger.htm=Send'
+'location="'
+Nat Port Trigger
+Entries in this table are used to restrict certain types of data packets from your local network to Internet through the Gateway. Use of such filters can be helpful in securing or restricting your local network.
+Nat Port Trigger:
+Apply Changes
+Application Type:
+Usual Application Name:
+Select One
+Aim Talk
+Asheron's Call
+Calista IP Phone
+Delta Force (Client/Server)
+ICQ
+Napster
+Net2Phone
+QuickTime 4 Client
+Rainbow Six/RogueSpea
+User-defined Application Name:
+Start Match Port
+End Match Port
+Trigger Protocol
+Start Relate Port
+End Relate Port
+Open Protocol
+Nat Type
+UDP
+TCP
+TCP/UDP
+UDP
+TCP
+TCP/UDP
+outgoing
+incoming
+UDP
+TCP
+TCP/UDP
+UDP
+TCP
+TCP/UDP
+outgoing
+incoming
+UDP
+TCP
+TCP/UDP
+UDP
+TCP
+TCP/UDP
+outgoing
+incoming
+UDP
+TCP
+TCP/UDP
+UDP
+TCP
+TCP/UDP
+outgoing
+incoming
+UDP
+TCP
+TCP/UDP
+UDP
+TCP
+TCP/UDP
+outgoing
+incoming
+UDP
+TCP
+TCP/UDP
+UDP
+TCP
+TCP/UDP
+outgoing
+incoming
+UDP
+TCP
+TCP/UDP
+UDP
+TCP
+TCP/UDP
+outgoing
+incoming
+UDP
+TCP
+TCP/UDP
+UDP
+TCP
+TCP/UDP
+outgoing
+incoming
+Apply Changes
+Current Port Trigger Table:
+ServerName
+Trigger Protocol
+Direction
+Match Port
+Open Protocol
+Relate Port
+Action

@@ -1,0 +1,76 @@
+WLAN Basic Settings
+'width='
+',height='
+',screenX='
+',screenY='
+',top='
+',left='
+', resizable=yes, toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes'
+'showWirelessClient'
+('Invalid SSID.')
+"ON"
+"OFF"
+"Auto"
+Wireless Basic Settings
+This page is used to configure the parameters for your wireless network.
+Disable Wireless LAN Interface
+Band:
+2.4 GHz (B)
+2.4 GHz (G)
+2.4 GHz (B+G)
+2.4 GHz (N)
+2.4 GHz (G+N)
+2.4 GHz (B+G+N)
+Mode:
+SSID:
+DJAWEB_
+Channel Width:
+20MHZ
+40MHZ
+Control Sideband:
+Upper
+Lower
+Country/Area:
+Channel Number:
+Current Channel:
+Radio Power (Percent):
+100%
+80%
+50%
+25%
+10%
+Associated Clients:
+Show Active Clients
+Apply Changes
+'width='
+',height='
+',screenX='
+',screenY='
+',top='
+',left='
+', resizable=yes, toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes'
+'showWirelessClient'
+('Invalid SSID.')
+"ON"
+"OFF"
+"Auto"
+Wireless Basic Settings
+This page is used to configure the parameters for your wireless network .
+Disable Wireless LAN Interface
+Band:
+2.4 GHz (B)
+2.4 GHz (G)
+2.4 GHz (B+G)
+Mode:
+SSID:
+Channel Number:
+Current Channel:
+Radio Power (Percent):
+100%
+80%
+50%
+25%
+10%
+Associated Clients:
+Show Active Clients
+Apply Changes

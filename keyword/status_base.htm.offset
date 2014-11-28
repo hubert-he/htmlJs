@@ -1,0 +1,74 @@
+ADSL Router Status
+'width='
+',height='
+',screenX='
+',screenY='
+',top='
+',left='
+', resizable=yes, toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes'
+'Status_Modify'
+Status
+This page shows the current status and some basic settings of the device.
+System
+Alias Name
+Uptime
+Date/Time
+Firmware Version
+Built Date
+Serial Number
+DSL
+Operational Status
+Upstream Speed
+Downstream Speed
+CWMP Status
+Inform Status
+Connecion Request Status
+LAN Configuration
+IP Address
+Subnet Mask
+IPV6 Address
+DHCP Server
+MAC Address
+DNS Status
+DNS Mode
+DNS Servers
+IPv6 DNS Mode
+IPv6 DNS Servers
+ADSL WAN Interfaces
+Interface
+VPI/VCI
+Encap
+AppMode
+Droute
+Protocol
+IP Address
+DNS
+Gateway
+Status
+ADSL WAN IPV6 Configuration
+Interface
+VPI/VCI
+Encap
+AppMode
+Protocol
+IPv6 Address
+DNS
+Prefix
+Gateway
+Droute
+Status
+Ethernet WAN Interfaces
+Interface
+Droute
+Protocol
+IP Address
+Gateway
+Status
+Ethernet WAN IPV6 Configuration
+Interface
+Protocol
+IPv6 Address
+Gateway
+Droute
+Status
+Refresh

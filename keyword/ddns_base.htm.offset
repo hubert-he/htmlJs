@@ -1,0 +1,41 @@
+Routing Configuration
+("Please enter hostname for this account!")
+("Invalid value in hostname!")
+("Please enter username for this account!")
+("Invalid value in username!")
+("Please enter password for this account!")
+("Invalid value in password!")
+("Please enter email for this account!")
+("Invalid value in email!")
+("Please enter key for this account!")
+("Invalid value in key!")
+("Please enter email for this account!")
+("Invalid value in email!")
+("Please enter password for this account!")
+("Invalid value in password!")
+Dynamic DNS Configuration
+This page is used to configure the Dynamic DNS address from DynDNS.org or TZO. Here you can Add/Remove to configure Dynamic DNS.
+DDNS provider:
+DynDNS.org
+TZO
+Hostname:
+Interface:
+Enable:
+DynDns Settings:
+Username:
+Password:
+TZO Settings:
+Email:
+Key:
+NO-IP Settings:
+Email:
+Password:
+Add
+Remove
+Dynamic DDNS Table:
+Select
+State
+Service
+Hostname
+Username
+Interface

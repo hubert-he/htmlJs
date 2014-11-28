@@ -1,0 +1,125 @@
+Wireless Advanced Setting
+("Invalid value. It should be in decimal number (0-9).")
+('Invalid value of Fragment Threshold. Input value should be between 256-2346 in decimal.')
+('Invalid value of RTS Threshold. Input value should be between 0-2347 in decimal.')
+('Invalid value of Beacon Interval. Input value should be between 20-1024 in decimal.')
+('Invalid value of DTIM. Input value should be between 1-255 in decimal.')
+("If 'Broadcast SSID' is disable, the WPS would be disabled.\nDo you sure?")
+Wireless Advanced Settings
+These settings are only for more technically advanced users who have a sufficient knowledge about wireless LAN. These settings should not be changed unless you know what effect the changes will have on your Access Point.
+Authentication Type:
+Open System
+Shared Key
+Auto
+Fragment Threshold:
+(256-2346)
+RTS Threshold:
+(0-2347)
+Beacon Interval:
+(20-1024 ms)
+DTIM Interval:
+(1-255)
+Data Rate:
+"Auto"
+"1M"
+"2M"
+"5.5M"
+"11M"
+"6M"
+"9M"
+"12M"
+"18M"
+"24M"
+"36M"
+"48M"
+"54M"
+"MCS0"
+"MCS1"
+"MCS2"
+"MCS3"
+"MCS4"
+"MCS5"
+"MCS6"
+"MCS7"
+"MCS8"
+"MCS9"
+"MCS10"
+"MCS11"
+"MCS12"
+"MCS13"
+"MCS14"
+"MCS15"
+'<option value="'
+'\n'
+Preamble Type:
+Long Preamble
+Short Preamble
+Broadcast SSID:
+Enabled
+Disabled
+Relay Blocking:
+Enabled
+Disabled
+Ethernet to Wireless Blocking:
+Enabled
+Disabled
+Wifi Multicast to Unicast:
+Enabled
+Disabled
+Aggregation:
+Enabled
+Disabled
+Short GI:
+Enabled
+Disabled
+Apply Changes
+function updateState() { if (document.advanceSetup.wlanDisabled.value == "ON") { disableRadioGroup(document.advanceSetup.authType); disableTextField(document.advanceSetup.fragThreshold); disableTextField(document.advanceSetup.rtsThreshold); disableTextField(document.advanceSetup.beaconInterval); disableTextField(document.advanceSetup.dtimInterval); disableTextField(document.advanceSetup.txRate); disableRadioGroup(document.advanceSetup.preamble); disableRadioGroup(document.advanceSetup.hiddenSSID); disableRadioGroup(document.advanceSetup.block); disableRadioGroup(document.advanceSetup.BlockEth2Wir); disableRadioGroup(document.advanceSetup.mc2uc); disableRadioGroup(document.advanceSetup.wmm); disableButton(document.advanceSetup.save); } }
+Wireless Advanced Settings
+These settings are only for more technically advanced users who have a sufficient knowledge about wireless LAN. These settings should not be changed unless you know what effect the changes will have on your Access Point.
+Authentication Type:
+Open System
+Shared Key
+Auto
+Fragment Threshold:
+(256-2346)
+RTS Threshold:
+(0-2347)
+Beacon Interval:
+(20-1024 ms)
+DTIM Interval:
+(1-255)
+Data Rate:
+"Auto"
+"1M"
+"2M"
+"5.5M"
+"11M"
+"6M"
+"9M"
+"12M"
+"18M"
+"24M"
+"36M"
+"48M"
+"54M"
+'<option value="'
+'\n'
+Preamble Type:
+Long Preamble
+Short Preamble
+Broadcast SSID:
+Enabled
+Disabled
+Relay Blocking:
+Enabled
+Disabled
+Ethernet to Wireless Blocking:
+Enabled
+Disabled
+Wifi Multicast to Unicast:
+Enabled
+Disabled
+WMM:
+Enabled
+Disabled
+Apply Changes

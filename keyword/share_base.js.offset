@@ -1,0 +1,92 @@
+'A'
+'F'
+'a'
+'f'
+'A'
+'F'
+'a'
+'f'
+("IP address cannot be empty! It should be filled with 4 digit numbers as xxx.xxx.xxx.xxx.")
+("Invalid IP address value. It should be the decimal number (0-9).")
+("Invalid IP address. It should be filled with 4 digit numbers as xxx.xxx.xxx.xxx")
+("Invalid IP address value.")
+('Invalid IP address range in 1st digit. It should be 1-223.')
+('Invalid IP address range in 2nd digit. It should be 0-255.')
+('Invalid IP address range in 3rd digit. It should be 0-255.')
+('Invalid IP address range in 4th digit. It should be 1-254.')
+("Invalid IP address value. It should be the decimal number (0-9).")
+("Invalid IP address. It should be filled with 4 digit numbers as xxx.xxx.xxx.xxx.")
+("Invalid IP address value.")
+('Invalid IP address range in 1st digit. It should be 1-223.')
+('Invalid IP address range in 2nd digit. It should be 0-255.')
+('Invalid IP address range in 3rd digit. It should be 0-255.')
+('Invalid IP address range in 4th digit. It should be 1-254.')
+"1st"
+"2nd"
+"3rd"
+"4th"
+("Subnet mask cannot be empty! It should be filled with 4 digit numbers as xxx.xxx.xxx.xxx.")
+("Invalid  netmask value. It should be filled with 4 digit numbers as xxx.xxx.xxx.xxx.")
+("Invalid netmask value. It should be filled with 4 digit numbers as xxx.xxx.xxx.xxx.")
+('Invalid subnet mask '+str[i]+' digit.\nIt should be the number of 0, 128, 192, 224, 240, 248, 252 or 254')
+('Invalid subnet mask!')
+"1st"
+"2nd"
+"3rd"
+"4th"
+("Subnet mask cannot be empty! It should be filled with 4 digit numbers as xxx.xxx.xxx.xxx.")
+("Invalid  netmask value. It should be filled with 4 digit numbers as xxx.xxx.xxx.xxx.")
+("Invalid netmask value. It should be filled with 4 digit numbers as xxx.xxx.xxx.xxx.")
+("Invalid  netmask value. It should not be 0.0.0.0.")
+("Invalid  netmask value. It should not be 255.255.255.255.")
+('Invalid subnet mask '+str[i]+' digit.\nIt should be the number of 0, 128, 192, 224, 240, 248, 252 or 254')
+('Invalid subnet mask!')
+'A'
+'Z'
+'a'
+'z'
+('Do you really want to delete the selected entry?') )
+('Do you really want to delete the all entries?') )
+('Are you sure you want to delete?') )
+('Are you sure you want to delete?') )
+"MSIE"
+"Netscape"
+"ie4"
+"ns"
+'DISABLED'
+'Netscape'
+'DISABLED'
+'DISABLED'
+'Netscape'
+("Input MAC address is not complete. Ex. xx:xx:xx:xx:xx:xx")
+("Invalid MAC address. MAC address can not be all '0'")
+'a'
+'f'
+'A'
+'F'
+("Invalid MAC address. It should be in hex number (0-9 or a-f). Ex. xx:xx:xx:xx:xx:xx")
+("Invalid MAC address. It should be in hex number (0-9 or a-f). Ex. xx:xx:xx:xx:xx:xx")
+("Broadcast/Multicast MAC is invalid!")
+("Input MAC address is not complete. Ex. xx:xx:xx:xx:xx:xx")
+("Invalid MAC address. MAC address can not be all '0'")
+'a'
+'f'
+'A'
+'F'
+("Invalid MAC address. It should be in hex number (0-9 or a-f). Ex. xx:xx:xx:xx:xx:xx")
+("Invalid MAC address. It should be in hex number (0-9 or a-f). Ex. xx:xx:xx:xx:xx:xx")
+'width='
+',height='
+',screenX='
+',screenY='
+',top='
+',left='
+', resizable=yes, toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes'
+'RouteTbl'
+':'
+'f'
+'a'
+'::'
+':'
+':'
+':'

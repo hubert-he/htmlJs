@@ -1,0 +1,47 @@
+Routing Configuration
+("Enter Destination Network ID !")
+("Invalid Destination value.")
+("Invalid Destination value.")
+('Invalid Destination range in 1st digit. It should be 0-255.')
+('Invalid Destination range in 2nd digit. It should be 0-255.')
+('Invalid Destination range in 3rd digit. It should be 0-255.')
+('Invalid Destination range in 4th digit. It should be 0-254.')
+("Enter Subnet Mask !")
+("netmask doesn't match route address")
+("Invalid Next Hop value.")
+("Invalid Next Hop value.")
+('Invalid Next Hop range in 1st digit. It should be 0-255.')
+('Invalid Next Hop range in 2nd digit. It should be 0-255.')
+('Invalid Next Hop range in 3rd digit. It should be 0-255.')
+('Invalid Next Hop range in 4th digit. It should be 1-254.')
+("Invalid metric. It should be 1-255.")
+'width='
+',height='
+',screenX='
+',screenY='
+',top='
+',left='
+', resizable=yes, toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes'
+'RouteTbl'
+("please select an entry to delete!")
+("please select an entry to update!")
+Routing Configuration
+This page is used to configure the routing information. Here you can add/delete IP routes.
+Enable:
+Destination:
+Subnet Mask:
+Next Hop:
+Metric:
+Interface:
+Add Route
+Update
+Delete Selected
+Show Routes
+Static Route Table:
+Select
+State
+Destination
+Subnet Mask
+NextHop
+Metric
+Itf

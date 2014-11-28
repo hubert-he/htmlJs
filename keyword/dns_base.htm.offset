@@ -1,0 +1,36 @@
+DNS Configuration
+("Enter DNS value !")
+("Invalid DNS 1 value.")
+("Invalid DNS 1.")
+('Invalid DNS 1 range in 1st digit. It should be 0-223.')
+('Invalid DNS 1 range in 1st digit. It should not be 127.xxx.xxx.xxx.')
+('Invalid DNS 1 range in 2nd digit. It should be 0-255.')
+('Invalid DNS 1 range in 3rd digit. It should be 0-255.')
+('Invalid DNS 1 range in 4th digit. It should be 1-254.')
+("Please input the DNS2 IP")
+("Invalid DNS 2 value.")
+("Invalid DNS 2.")
+('Invalid DNS 2 range in 1st digit. It should be 0-223.')
+('Invalid DNS 2 range in 1st digit. It should not be 127.xxx.xxx.xxx.')
+('Invalid DNS 2 range in 2nd digit. It should be 0-255.')
+('Invalid DNS 2 range in 3rd digit. It should be 0-255.')
+('Invalid DNS 2 range in 4th digit. It should be 1-254.')
+("The DNS1 IP is equal to DNS2 IP!")
+("Invalid DNS 3 value.")
+("Invalid DNS 3.")
+('Invalid DNS 3 range in 1st digit. It should be 0-223.')
+('Invalid DNS 3 range in 1st digit. It should not be 127.xxx.xxx.xxx.')
+('Invalid DNS 3 range in 2nd digit. It should be 0-255.')
+('Invalid DNS 3 range in 3rd digit. It should be 0-255.')
+('Invalid DNS 3 range in 4th digit. It should be 1-254.')
+("The DNS1 IP is equal to DNS3 IP!")
+("The DNS2 IP is equal to DNS3 IP!")
+DNS Configuration
+This page is used to configure the DNS server ip addresses for DNS Relay.
+Attain DNS Automatically
+Set DNS Manually
+DNS 1:
+DNS 2:
+DNS 3:
+Apply Changes
+Reset Selected

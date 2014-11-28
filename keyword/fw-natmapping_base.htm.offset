@@ -1,0 +1,50 @@
+NAT IP MAPPING
+("The nat ip mapping table(MAX 20) is full!")
+("The high ip should be bigger than the low ip!")
+("The high ip should be bigger than the low ip!")
+NAT IP MAPPING
+Entries in this table allow you to config one IP pool for specified source ip address from lan,so one packet which's source ip is in range of the specified address will select one IP address from pool for NAT.
+Type:
+One-to-One
+Many-to-One
+Many-to-Many
+One-to-Many
+Local Start IP:
+Local End IP:
+Global Start IP:
+Global End IP:
+Apply Changes
+Reset
+Current NAT IP MAPPING Table:
+Local Start IP
+Local End IP
+Global Start IP
+Global End IP
+Action
+Delete Selected
+Delete All
+'select'
+','
+NAT IP POOL
+("The high ip should be bigger than the low ip!")
+'width='
+',height='
+',screenX='
+',screenY='
+',top='
+',left='
+', resizable=yes, toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes'
+'NATTbl'
+NAT IP POOL
+Entries in this table allow you to config one IP pool for any WAN Router pvc interface,so one packet through the interface will select one IP address from pool for NAT.
+IP Range:
+interface:
+netmask:
+Apply Changes
+Reset
+Current NAT Pool Table:
+WAN Interface
+Low IP
+High IP
+Netmask
+Action

@@ -1,0 +1,208 @@
+LAN IPv6 Setup
+'#dhcp6mode'
+'#dhcp6server_block'
+'display'
+"block"
+'#dhcp6Autoserver_block'
+'display'
+"none"
+'#lan_dhcp_dns'
+'display'
+"block"
+'#dhcp6server_block'
+'display'
+"none"
+'#dhcp6Autoserver_block'
+'display'
+"block"
+'#lan_dhcp_dns'
+'display'
+"block"
+'#dhcp6server_block'
+'display'
+"none"
+'#dhcp6Autoserver_block'
+'display'
+"none"
+'#lan_dhcp_dns'
+'display'
+"none"
+'#manualmode'
+'#dhcp6manual_block'
+'display'
+'inline'
+'#dhcp6manual_block'
+'display'
+"none"
+'#dhcp6mode'
+'dhcp6dPoolS'
+'DHCPV6 Pool Start Address'
+'dhcp6dPoolE'
+'DHCPV6 Pool End Address'
+'dns1'
+'DNS Server 1'
+'dns2'
+'DNS Server 2'
+'dns3'
+'DNS Server 3'
+'#'
+(ipv6s[i][1] + ' can not be empty!')
+'#'
+'#'
+(ipv6s[i][1] + ' is invalid!')
+'#'
+'pltime'
+'Preferred Time '
+'vltime'
+'Valid Time'
+'prefixlength'
+'Prefix Length'
+'#'
+'Please input a valid number for '
+'#'
+'#vltime'
+'#pltime'
+("Valid Time must be larger than Preferred Time!")
+'#prefixlength'
+'#prefixlength'
+("Prefix Length should be between 16 and 64!")
+'dhcp6dSuffixPoolS'
+'DHCPV6 Auto Suffix Pool Start Address'
+'dhcp6dSuffixPoolE'
+'DHCPV6 Auto Suffix Pool End Address'
+'#'
+(ipv6a[i][1] + ' can not be empty!')
+'#'
+'2001:FFFF:FFFF:FFFF'
+'#'
+(ipv6a[i][1] + ' is invalid!')
+'#'
+'dns1'
+'DNS Server 1'
+'dns2'
+'DNS Server 2'
+'dns3'
+'DNS Server 3'
+'#'
+(ipv6s[i][1] + ' can not be empty!')
+'#'
+'#'
+(ipv6s[i][1] + ' is invalid!')
+'#'
+("Please input address!")
+("Invalid address.")
+("Please input link-local address!")
+"#raEnable"
+"#Basic02"
+"#raParameter"
+"#raMode"
+"#raSetup"
+"checked"
+'display'
+"block"
+'display'
+"block"
+'display'
+"block"
+"#prefixmode"
+'display'
+"none"
+'display'
+"block"
+"#ULA"
+'display'
+"block"
+'display'
+"none"
+'display'
+"none"
+'display'
+"none"
+"#ULA"
+'display'
+"none"
+"#ULAEnable"
+"#ulaSetup"
+"checked"
+'display'
+"block"
+'display'
+"none"
+("Max Interval should be between 4 and 1800!")
+("Min Interval should be between 3 and 3/4*(Max Interval)!")
+("Please input Prefix Address!")
+("Invalid Prefix Address.")
+("Invalid Prefix Address.")
+("Wrong Prefix Length!")
+("Wrong Preferred Time!")
+("Wrong Valid Time!")
+("Valid Time should be larger than Preferred Time!")
+"#ULAEnable"
+"checked"
+'#ula_radvdPrefix'
+("Please input Prefix Address!")
+'#ula_radvdPrefix'
+'#ula_radvdPrefix'
+("Invalid Prefix Address.")
+'#ula_radvdPrefix'
+'#ula_RAPrefixLen'
+("Wrong Prefix Length!")
+'#ula_RAPrefixLen'
+'#ula_RAt1'
+("Wrong Preferred Time!")
+'#ula_RAt1'
+'#ula_RAt2'
+("Wrong Valid Time!")
+'#ula_RAt2'
+("Valid Time should be larger than Preferred Time!")
+'#ula_RAt2'
+("Invalid address.")
+("Please input global address!")
+("Prefixlen can't be empty!")
+("Wrong Prefix Length!")
+LAN IPv6 Setting
+This page is used to configurate ipv6 lan setting. User can set lan RA server work mode and lan DHCPv6 server work mode.
+Lan Global Address Setting
+Global Address:
+Apply Changes
+RA Setting
+Enable:
+M Flag:
+O Flag:
+Max Interval:
+Secs
+Min Interval:
+Secs
+Prefix Mode:
+Prefix Address:
+Prefix Length:
+[16 - 64]
+Preferred Time:
+[600 - 2147483647 S] or [-1 S]
+Valid Time:
+[600 - 2147483647 S] or [-1 S]
+ULA Enable:
+Prefix Address:
+Prefix Length:
+[16 - 64]
+Preferred Time:
+[600 - 2147483647 S] or [-1 S]
+Valid Time:
+[600 - 2147483647 S] or [-1 S]
+Apply Changes
+DHCPv6 Setting
+DHCPv6 Mode:
+Address Mode:
+IPv6 Address Pool:
+Prefix Length:
+Preferred Time:
+Secs
+Valid Time:
+Secs
+IPv6 Address Suffix Pool:
+(ex. :1:1:1:1 or ::1)
+IPv6 DNS Mode:
+Auto
+Manual
+DNS Servers:
+Apply Changes

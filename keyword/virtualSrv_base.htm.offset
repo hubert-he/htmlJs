@@ -1,0 +1,73 @@
+Status - Modify
+"AUTH"
+"DNS"
+"FTP"
+"IPSEC"
+"POP3"
+"PPTP"
+"SMTP"
+"SSH"
+"TELNET"
+"TFTP"
+"WEB"
+"The port that you assign has been occupied by  "
+"("
+"-"
+"),please reinput !"
+("Sorry,the inputed port  has been occupied by remote access.please input one other port!")
+("The virtual server table is full!")
+("Invalid characters,please reinput!")
+'The WAN port'
+' is invalid.'
+'The LAN Open port'
+'is invalid.'
+':'
+"[:]"
+'Invalid WAN port!'
+':'
+"[:]"
+'Invalid LAN Open port range!'
+'Invalid LAN Open port!'
+"The interval of lan&wan port should be equal!"
+("It's modem's IP.please input an valid IP from LAN")
+"itf"
+"ip"
+Virtual Server
+This page allows you to config virtual server,so others can access the server through the Gateway.
+Service Type:
+Usual Service Name:
+AUTH
+DNS
+FTP
+IPSEC
+POP3
+PPTP
+SMTP
+SSH
+TELNET
+TFTP
+WEB
+User-defined Service Name:
+Protocol:
+TCP
+UDP
+WAN Setting:
+Interface
+Ip Address
+WAN IP Address:
+WAN Interface:
+any
+WAN Port:
+(ex. 5001:5010)
+LAN Open Port:
+LAN Ip Address:
+Apply Changes
+Current Virtual Server Forwarding Table:
+ServerName
+Protocol
+Local IP Address
+Local Port
+WAN IP Address
+WAN Port
+State
+Action

@@ -1,0 +1,24 @@
+Ethernet to ATM PVC Mapping
+('Group must have WAN interface !')
+('Group must have LAN interface !')
+','
+','
+','
+','
+','
+','
+','
+','
+Port Mapping Configuration
+To manipulate a mapping group:
+1. Select a group from the table.
+2. Select interfaces from the available/grouped interface list and add it to the grouped/available interface list using the arrow buttons to manipulate the required mapping of the ports.
+3. Click "Apply Changes" button to save the changes.
+Note that the selected interfaces will be removed from their existing groups and added to the new group.
+Disable
+Enable
+WAN
+Add>
+<Del
+LAN
+Apply

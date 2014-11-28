@@ -1,0 +1,62 @@
+IP/Port Filtering
+"Help"
+"toolbar=no,location=no,directories=no,   status=no,menubar=no,scrollbars=yes,resizable=yes,width=500,height=500"
+("Invalid Source value.")
+("Invalid Source value.")
+('Invalid Source range in 1st digit. It should be 0-239.')
+('Invalid Source range in 1st digit. 127.xx.xx.xx is loopback ip address!')
+('Invalid Source range in 2nd digit. It should be 0-255.')
+('Invalid Source range in 3rd digit. It should be 0-255.')
+('Invalid Source range in 4th digit. It should be 0-254.')
+("Enter Source Subnet Mask!")
+("Source mask doesn't match source ip address!")
+("Invalid Destination value.")
+("Invalid Destination value.")
+('Invalid Destination range in 1st digit. It should be 0-239.')
+('Invalid Destination range in 1st digit. 127.xx.xx.xx is loopback ip address!')
+('Invalid Destination range in 2nd digit. It should be 0-255.')
+('Invalid Destination range in 3rd digit. It should be 0-255.')
+('Invalid Destination range in 4th digit. It should be 0-254.')
+("Enter Destination Subnet Mask!")
+("destination mask doesn't match destination ip address!")
+("Invalid SPort value! You should set a value between 1-65535.")
+("Invalid SPort value! You should set a value between 1-65535.")
+("Invalid Sport value range! port from is larger than port to.")
+("Invalid DPort value! You should set a value between 1-65535.")
+("Invalid DPort value! You should set a value between 1-65535.")
+("Invalid Dport value range! port from is larger than port to.")
+IP/Port Filtering
+Entries in this table are used to restrict certain types of data packets from your local network to Internet through the Gateway. Use of such filters can be helpful in securing or restricting your local network.
+Outgoing Default Policy
+Incoming Default Policy
+Rule Action:
+Permit
+Deny
+WAN Interface:
+any
+Protocol:
+IP
+ICMP
+TCP
+UDP
+Source IP Address:
+Mask Address:
+Dest IP Address:
+Mask Address:
+SPort:
+DPort:
+Enable:
+Apply Changes
+Reset
+Help
+Current Filter Table:
+Rule
+WanItf
+Protocol
+Source IP/Mask
+SPort
+Dest IP/Mask
+DPort
+State
+Direction
+Action

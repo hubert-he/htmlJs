@@ -1,0 +1,39 @@
+Quick Setup
+(" Invalid VPI , should be in 0 ~ 255.")
+("Invalid VCI should be in 32~65535.")
+('PPP username can\'t be empty!')
+('PPP password can\'t be empty!')
+Quick Setup
+Step 1: WAN Connection Setting
+Please select the wan connection mode
+VPI/VCI:
+VPI:
+(0-255)
+VCI:
+(32-65535)
+Encapsulation:
+LLC/SNAP
+Connection Mode:
+1483 Bridged
+1483 MER
+PPP over Ethernet(PPPoE)
+PPP over ATM(PPPoA)
+1483 Routed
+PPP Settings:
+Username:
+Password:
+WAN IP Settings:
+Attain IP Automatically
+IP Manually:
+IP Address:
+Netmask:
+Gateway:
+Default Route:
+Enable
+Disable
+DNS Settings:
+Attain DNS Automatically
+Set DNS Manually :
+DNS Server 1:
+DNS Server 2:
+next

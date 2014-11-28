@@ -1,0 +1,51 @@
+System Time Configuration
+'Jan'
+'Feb'
+'Mar'
+'Apr'
+'May'
+'Jun'
+'Jul'
+'Aug'
+'Sep'
+'Oct'
+'Nov'
+'Dec'
+("year cannot be empty!")
+("Invalid year value. It should be the decimal number (0-9).")
+("Invalid year . It should be 0-9999.")
+("day cannot be empty!")
+("Invalid day value. It should be the decimal number (0-9).")
+("Invalid day . It should be 1-31.")
+("Invalid date!please input a right date")
+("Invalid date!please input a right date")
+("Invalid date!please input a right date")
+("hour cannot be empty!")
+("Invalid hour value. It should be the decimal number (0-9).")
+("Invalid hour . It should be 0-23.")
+("min cannot be empty!")
+("Invalid min value. It should be the decimal number (0-9).")
+("Invalid min . It should be 0-59.")
+("sec cannot be empty!")
+("Invalid sec value. It should be the decimal number (0-9).")
+("Invalid sec . It should be 0-59.")
+("Invalid character,please input again!")
+("Interval cannot be empty!")
+("Invalid intetval value. It should be the decimal number (0-9).")
+("Invalid intetval . It should be 1-999.")
+System Time Configuration
+This page is used to configure the system time and Network Time Protocol(NTP) server. Here you can change the settings or view some information on the system time and NTP parameters.
+System Time:
+Apply Changes
+Reset
+NTP Configuration:
+State:
+Server:
+Server2:
+Interval:
+Time Zone:
+GMT time:
+Apply Changes
+Reset
+NTP Start:
+Get GMT Time
